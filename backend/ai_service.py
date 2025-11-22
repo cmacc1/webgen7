@@ -21,15 +21,47 @@ class AIService:
         }
         return model_map.get(model, ("openai", "gpt-5"))
 
-    async def generate_response(self, prompt: str, model: str, session_id: str) -> Dict[str, Any]:
-        """Generate AI response for user prompt"""
+    async def generate_response(self, prompt: str, model: str, session_id: str, current_website: Optional[Dict] = None) -> Dict[str, Any]:
+        """Generate AI response for user prompt with website context"""
         provider, model_name = self._get_model_config(model)
+        
+        # Build context-aware system message
+        system_message = "You are Code Weaver, an expert AI assistant that helps users create professional, production-ready web applications. You understand full-stack development, modern frameworks, and can generate clean, scalable code with backends, frontends, and databases. Always be helpful, creative, and provide clear explanations."
+        
+        # If there's existing website code, add it to context
+        context_info = ""
+        if current_website:
+            context_info = f"""
+
+📋 CURRENT PROJECT CODE (Available for modifications):
+
+**HTML ({len(current_website.get('html_content', ''))} characters):**
+```html
+{current_website.get('html_content', '')[:2000]}...
+```
+
+**CSS ({len(current_website.get('css_content', ''))} characters):**
+```css
+{current_website.get('css_content', '')[:1000]}...
+```
+
+**JavaScript ({len(current_website.get('js_content', ''))} characters):**
+```javascript
+{current_website.get('js_content', '')[:1000]}...
+```
+
+**Backend ({len(current_website.get('python_backend', ''))} characters):**
+```python
+{current_website.get('python_backend', '')[:1000]}...
+```
+
+When the user asks to modify, update, or change the website, you can see the current code above. Make specific changes based on their requests."""
         
         try:
             chat = LlmChat(
                 api_key=self.api_key,
                 session_id=session_id,
-                system_message="You are Code Weaver, an expert AI assistant that helps users create professional, production-ready web applications. You understand full-stack development, modern frameworks, and can generate clean, scalable code with backends, frontends, and databases. Always be helpful, creative, and provide clear explanations."
+                system_message=system_message + context_info
             )
             chat.with_model(provider, model_name)
             
