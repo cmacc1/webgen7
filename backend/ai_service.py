@@ -538,28 +538,14 @@ Generate ONLY the complete HTML code in a ```html code block."""
                 if "</body>" in html:
                     html = html.replace("</body>", f"<script>\n{js}\n</script>\n</body>")
         
-        # Final validation - if STILL no good HTML, generate a basic structure
+        # Final validation - if STILL no good HTML, use proper fallback templates
         if not html or len(html) < 300:
-            logger.error("Generation failed completely, creating minimal structure")
-            html = f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generated Website</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        {css if css else "body {{ font-family: Arial; padding: 40px; }}"}
-    </style>
-</head>
-<body>
-    <h1>Website for: {prompt}</h1>
-    <p>Generation in progress...</p>
-    <script>
-        {js if js else "console.log('Website loaded');"}
-    </script>
-</body>
-</html>"""
+            logger.warning(f"Generation failed after retry (HTML length: {len(html)}). Using context-aware fallback template.")
+            fallback_result = await self._generate_fallback_frontend(prompt, analysis)
+            html = fallback_result.get('html', '')
+            css = fallback_result.get('css', '')
+            js = fallback_result.get('js', '')
+            logger.info(f"Fallback template applied: HTML={len(html)}, CSS={len(css)}, JS={len(js)}")
         
         if len(css) < 300:
             logger.warning(f"CSS too short ({len(css)} chars), enhancing")
