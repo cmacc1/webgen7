@@ -67,23 +67,23 @@ class ProjectManager:
         static_dir = dirs["static"]
         backend_dir = dirs["backend"]
         
-        # Modify HTML to link external CSS and JS files
-        html_content_linked = self._link_external_files(html_content, css_content, js_content)
+        # Modify HTML to link external CSS and JS files, and extract embedded content
+        html_content_linked, final_css, final_js = self._link_external_files(html_content, css_content, js_content)
         
         # Save HTML (root level for easy serving)
         html_path = project_dir / "index.html"
         html_path.write_text(html_content_linked, encoding='utf-8')
-        logger.info(f"Saved index.html: {html_path}")
+        logger.info(f"Saved index.html: {html_path} ({len(html_content_linked)} chars)")
         
-        # Save CSS
+        # Save CSS (use extracted content if available)
         css_path = static_dir / "styles.css"
-        css_path.write_text(css_content, encoding='utf-8')
-        logger.info(f"Saved styles.css: {css_path}")
+        css_path.write_text(final_css, encoding='utf-8')
+        logger.info(f"Saved styles.css: {css_path} ({len(final_css)} chars)")
         
-        # Save JS
+        # Save JS (use extracted content if available)
         js_path = static_dir / "app.js"
-        js_path.write_text(js_content, encoding='utf-8')
-        logger.info(f"Saved app.js: {js_path}")
+        js_path.write_text(final_js, encoding='utf-8')
+        logger.info(f"Saved app.js: {js_path} ({len(final_js)} chars)")
         
         # Save backend files if provided
         if python_backend:
