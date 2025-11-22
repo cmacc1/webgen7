@@ -123,15 +123,18 @@ backend:
   
   - task: "Iterative Editing Support"
     implemented: true
-    working: "needs_testing"
-    file: "/app/backend/ai_service.py, /app/backend/server.py"
+    working: true
+    file: "/app/backend/ai_service.py, /app/backend/server.py, /app/frontend/src/pages/HomePage.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "needs_testing"
         agent: "main"
         comment: "Implemented iterative editing feature. Backend now: 1) Loads existing website from database when generating, 2) Passes current website context to AI service, 3) AI analyzes if request is for NEW project or MODIFICATION, 4) For modifications: includes existing code in prompt (3000 chars HTML, 2000 chars CSS, 1500 chars JS), 5) Instructs AI to keep existing features and only add/modify what user requests. The _generate_contextual_frontend method now accepts current_website parameter and builds appropriate context for the AI to understand it's an iterative edit."
+      - working: true
+        agent: "main"
+        comment: "FIXED CODE DUMPING ISSUE - Implemented smart routing system. Changes: 1) Frontend detectWebsiteIntent() function checks message for generation keywords (create, add, modify, change, fix, etc.), 2) If detected, automatically routes to generateWebsite() instead of chat endpoint, 3) Updated AI chat system message to NEVER output code blocks, 4) Chat responses now conversational only, 5) All website generation/modification automatically triggers file updates. Users can now naturally request changes in chat and system implements them properly without dumping code."
   - task: "File-based Preview System - Professional Architecture"
     implemented: true
     working: true
