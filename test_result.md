@@ -249,7 +249,8 @@ metadata:
 test_plan:
   current_focus:
     - "Iterative Editing Support"
-  stuck_tasks: []
+  stuck_tasks: 
+    - "Iterative Editing Support"
   test_all: false
   test_priority: "high_first"
 
