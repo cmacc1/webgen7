@@ -429,6 +429,140 @@ class WebsiteGenerationTester:
         
         return test_result
     
+    async def test_file_extraction_system(self):
+        """Test 4: File Extraction System - Extract embedded CSS/JS to external files"""
+        logger.info("\n" + "="*60)
+        logger.info("TEST 4: FILE EXTRACTION SYSTEM")
+        logger.info("="*60)
+        
+        # Use the specific test command from the review request
+        session_id = "test-extraction-fix"
+        
+        # Generate website with colorful landing page (should have embedded styles)
+        result = await self.generate_website(
+            session_id, 
+            "Create a colorful landing page with a gradient background",
+            framework="html"
+        )
+        
+        validation_errors = []
+        
+        if not result.get('success'):
+            validation_errors.append(f"Website generation failed: {result.get('error')}")
+            return {
+                "test_name": "File Extraction System",
+                "success": False,
+                "validation_errors": validation_errors
+            }
+        
+        # Check backend logs for extraction messages
+        try:
+            import subprocess
+            log_result = subprocess.run(
+                ['tail', '-n', '100', '/var/log/supervisor/backend.err.log'],
+                capture_output=True,
+                text=True
+            )
+            backend_logs = log_result.stdout
+            
+            # Look for extraction messages
+            extraction_found = any([
+                "Extracted" in backend_logs and "chars of CSS" in backend_logs,
+                "Saved styles.css" in backend_logs,
+                "chars)" in backend_logs
+            ])
+            
+            if not extraction_found:
+                validation_errors.append("Backend logs don't show CSS extraction messages")
+            else:
+                logger.info("✅ Backend logs show CSS extraction activity")
+                
+        except Exception as e:
+            validation_errors.append(f"Could not check backend logs: {e}")
+        
+        # Verify CSS file has content (should be > 1000 bytes)
+        try:
+            css_file_path = f"/app/backend/generated_projects/{session_id}/static/styles.css"
+            if os.path.exists(css_file_path):
+                css_size = os.path.getsize(css_file_path)
+                logger.info(f"CSS file size: {css_size} bytes")
+                
+                if css_size < 1000:
+                    validation_errors.append(f"CSS file too small: {css_size} bytes (expected >1000)")
+                else:
+                    logger.info("✅ CSS file has substantial content")
+            else:
+                validation_errors.append("CSS file not found on disk")
+        except Exception as e:
+            validation_errors.append(f"Could not check CSS file size: {e}")
+        
+        # Verify HTML links to external files and has no embedded styles
+        try:
+            html_file_path = f"/app/backend/generated_projects/{session_id}/index.html"
+            if os.path.exists(html_file_path):
+                with open(html_file_path, 'r') as f:
+                    html_content = f.read()
+                
+                # Check for external CSS link
+                if 'href="static/styles.css"' not in html_content:
+                    validation_errors.append("HTML doesn't link to external CSS file")
+                else:
+                    logger.info("✅ HTML properly links to external CSS")
+                
+                # Check that embedded styles are removed
+                embedded_style_count = html_content.count('<style>')
+                if embedded_style_count > 0:
+                    validation_errors.append(f"HTML still contains {embedded_style_count} embedded <style> tags")
+                else:
+                    logger.info("✅ HTML has no embedded styles (properly extracted)")
+                    
+            else:
+                validation_errors.append("HTML file not found on disk")
+        except Exception as e:
+            validation_errors.append(f"Could not check HTML file: {e}")
+        
+        # Test preview CSS endpoint
+        try:
+            async with aiohttp.ClientSession() as session:
+                css_url = f"{self.base_url}/preview/{session_id}/static/styles.css"
+                async with session.get(css_url) as response:
+                    if response.status == 200:
+                        content_type = response.headers.get('content-type', '')
+                        if 'text/css' in content_type:
+                            logger.info("✅ Preview CSS endpoint returns 200 OK with correct content-type")
+                        else:
+                            validation_errors.append(f"CSS endpoint wrong content-type: {content_type}")
+                    else:
+                        validation_errors.append(f"CSS preview endpoint failed: {response.status}")
+        except Exception as e:
+            validation_errors.append(f"Could not test CSS preview endpoint: {e}")
+        
+        test_result = {
+            "test_name": "File Extraction System",
+            "success": len(validation_errors) == 0,
+            "session_id": session_id,
+            "generation_success": result.get('success', False),
+            "html_length": result.get('html_length', 0),
+            "css_length": result.get('css_length', 0),
+            "js_length": result.get('js_length', 0),
+            "validation_errors": validation_errors
+        }
+        
+        self.test_results.append(test_result)
+        
+        if test_result['success']:
+            logger.info("✅ File extraction system test PASSED")
+            logger.info("   - CSS extracted from embedded styles")
+            logger.info("   - External files contain extracted content") 
+            logger.info("   - HTML properly links to external files")
+            logger.info("   - Preview endpoints serve files correctly")
+        else:
+            logger.error("❌ File extraction system test FAILED")
+            for error in validation_errors:
+                logger.error(f"   - {error}")
+        
+        return test_result
+
     async def run_all_tests(self):
         """Run all tests"""
         logger.info("🚀 Starting AI Website Generation Tests")
@@ -436,10 +570,8 @@ class WebsiteGenerationTester:
         
         start_time = time.time()
         
-        # Run tests
-        test1 = await self.test_basic_generation_flow()
-        test2 = await self.test_different_website_types()
-        test3 = await self.test_fallback_mechanism()
+        # Run tests - focusing on file extraction system as requested
+        test4 = await self.test_file_extraction_system()
         
         total_time = time.time() - start_time
         
