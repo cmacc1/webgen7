@@ -468,9 +468,12 @@ MAKE IT LOOK AND FUNCTION LIKE THE REAL THING!"""
         css = self._extract_code_block(response, "css") or ""
         js = self._extract_code_block(response, "javascript") or self._extract_code_block(response, "js") or ""
         
+        logger.info(f"Initial extraction: HTML={len(html)} chars, CSS={len(css)} chars, JS={len(js)} chars")
+        
         # Fallback extraction
         if not html and "<!DOCTYPE" in response:
             html = self._extract_html_direct(response)
+            logger.info(f"Direct HTML extraction applied: {len(html)} chars")
         
         # CRITICAL: For iframe preview, CSS and JS MUST be embedded in HTML
         # Remove any external file references and embed the content
