@@ -227,7 +227,7 @@ async def send_message(request: ChatRequest):
 
 @api_router.post("/generate/website", response_model=GeneratedWebsite)
 async def generate_website(request: GenerateWebsiteRequest):
-    """Generate complete website with backend"""
+    """Generate complete website with backend and save to file system"""
     logger.info(f"Generating website for session {request.session_id}")
     
     # Get conversation history
@@ -244,7 +244,24 @@ async def generate_website(request: GenerateWebsiteRequest):
         conversation_history=messages
     )
     
-    # Save generated website
+    # Save files to disk for proper serving
+    file_paths = project_manager.save_project_files(
+        session_id=request.session_id,
+        html_content=website_data.get('html_content', ''),
+        css_content=website_data.get('css_content', ''),
+        js_content=website_data.get('js_content', ''),
+        python_backend=website_data.get('python_backend'),
+        requirements_txt=website_data.get('requirements_txt'),
+        package_json=website_data.get('package_json'),
+        readme=website_data.get('readme')
+    )
+    
+    logger.info(f"Saved project files to disk: {file_paths}")
+    
+    # Generate preview URL
+    preview_url = f"/api/preview/{request.session_id}/"
+    
+    # Save generated website to database
     website = GeneratedWebsite(
         session_id=request.session_id,
         html_content=website_data.get('html_content'),
@@ -255,6 +272,7 @@ async def generate_website(request: GenerateWebsiteRequest):
         package_json=website_data.get('package_json'),
         readme=website_data.get('readme'),
         framework=request.framework,
+        preview_url=preview_url,
         structure=website_data.get('structure'),
         files=website_data.get('files', [])
     )
@@ -263,7 +281,7 @@ async def generate_website(request: GenerateWebsiteRequest):
     doc['created_at'] = doc['created_at'].isoformat()
     await db.generated_websites.insert_one(doc)
     
-    logger.info(f"Website saved with {len(website.files or [])} files")
+    logger.info(f"Website saved with {len(website.files or [])} files, preview: {preview_url}")
     
     return website
 
