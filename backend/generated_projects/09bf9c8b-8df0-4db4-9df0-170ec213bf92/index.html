@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="page-loading" id="pageLoading">
+        <div class="spinner"></div>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="navigateToPage('home')">
+                <i class="fas fa-rocket"></i> TechFlow
+            </a>
+            <ul class="nav-links">
+                <li><a onclick="navigateToPage('home')">Home</a></li>
+                <li><a onclick="navigateToPage('about')">About</a></li>
+                <li><a onclick="navigateToPage('services')">Services</a></li>
+                <li><a onclick="navigateToPage('contact')">Contact</a></li>
+            </ul>
+            <div class="profile-container">
+                <button class="profile-btn" onclick="toggleProfileDropdown()">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profile</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a class="dropdown-item" onclick="navigateToPage('profile')">
+                        <i class="fas fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <a class="dropdown-item" onclick="navigateToPage('settings')">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <a class="dropdown-item" onclick="navigateToPage('billing')">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Billing</span>
+                    </a>
+                    <a class="dropdown-item" onclick="navigateToPage('help')">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help Center</span>
+                    </a>
+                    <a class="dropdown-item" onclick="navigateToPage('signin')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Sign In</span>
+                    </a>
+                    <a class="dropdown-item" onclick="navigateToPage('signup')">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Sign Up</span>
+                    </a>
+                    <a class="dropdown-item" onclick="signOut()" style="color: #e53e3e;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Sign Out</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <section class="hero">
+                <h1>Welcome to TechFlow</h1>
+                <p>Innovative solutions for modern businesses. Transform your ideas into reality with our cutting-edge technology platform.</p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-primary" onclick="navigateToPage('getstarted')">Get Started</a>
+                    <a href="#" class="btn btn-secondary" onclick="navigateToPage('demo')">Watch Demo</a>
+                </div>
+            </section>
+
+            <section class="features">
+                <h2>Our Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card" onclick="navigateToPage('analytics')">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Analytics Dashboard</h3>
+                        <p>Get detailed insights into your business performance with our advanced analytics tools.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateToPage('automation')">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Smart Automation</h3>
+                        <p>Automate repetitive tasks and workflows to increase productivity and efficiency.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateToPage('security')">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Enterprise Security</h3>
+                        <p>Bank-level security protocols to keep your data safe and secure at all times.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a onclick="navigateToPage('privacy')">Privacy Policy</a>
+                <a onclick="navigateToPage('terms')">Terms of Service</a>
+                <a onclick="navigateToPage('support')">Support</a>
+                <a onclick="navigateToPage('careers')">Careers</a>
+                <a onclick="navigateToPage('blog')">Blog</a>
+            </div>
+            <p>&copy; 2024 TechFlow. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Profile dropdown functionality
+        function toggleProfileDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const profileContainer = document.querySelector('.profile-container');
+            const dropdown = document.getElementById('profileDropdown');
+            
+            if (!profileContainer.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Navigation function with loading animation
+        function navigateToPage(page) {
+            const loading = document.getElementById('pageLoading');
+            loading.classList.add('active');
+            
+            // Close profile dropdown if open
+            document.getElementById('profileDropdown').classList.remove('active');
+            
+            // Simulate page loading
+            setTimeout(() => {
+                // In a real application, you would navigate to the actual page
+                // For demonstration, we'll just show an alert and remove loading
+                let message = '';
+                
+                switch(page) {
+                    case 'home':
+                        message = 'Navigating to Home page...';
+                        break;
+                    case 'about':
+                        message = 'Navigating to About page...';
+                        break;
+                    case 'services':
+                        message = 'Navigating to Services page...';
+                        break;
+                    case 'contact':
+                        message = 'Navigating to Contact page...';
+                        break;
+                    case '
