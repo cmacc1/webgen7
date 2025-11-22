@@ -1,7 +1,7 @@
 import os
 import logging
 import json
-import base64
+import re
 from typing import Dict, Any, List, Optional
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
@@ -19,7 +19,7 @@ class AIService:
             "gpt-5-mini": ("openai", "gpt-5-mini"),
             "gemini-2.5-pro": ("gemini", "gemini-2.5-pro")
         }
-        return model_map.get(model, ("anthropic", "claude-4-sonnet-20250514"))
+        return model_map.get(model, ("openai", "gpt-5"))
 
     async def generate_response(self, prompt: str, model: str, session_id: str) -> Dict[str, Any]:
         """
@@ -53,267 +53,338 @@ class AIService:
 
     async def generate_website(self, prompt: str, model: str, framework: str, conversation_history: List[Dict]) -> Dict[str, Any]:
         """
-        Multi-agent website generation process:
-        1. Requirement Planner Agent - Creates structured plan
-        2. Code Generation Agent - Generates actual code
-        3. Design & Styling Agent - Creates visual assets
+        Generate complete website with proper HTML/CSS/JS
         """
         provider, model_name = self._get_model_config(model)
         session_id = f"gen_{os.urandom(8).hex()}"
         
+        logger.info(f"Starting website generation with {provider}/{model_name}")
+        logger.info(f"User prompt: {prompt}")
+        
         try:
-            # Step 1: Planning Agent
-            planning_result = await self._planning_agent(prompt, provider, model_name, session_id)
+            # Direct generation with very explicit instructions
+            result = await self._generate_complete_website(prompt, provider, model_name, session_id)
             
-            # Step 2: Code Generation Agent
-            code_result = await self._code_generation_agent(planning_result, prompt, provider, model_name, session_id, framework)
+            # Log what was generated
+            html_len = len(result.get('html_content', ''))
+            css_len = len(result.get('css_content', ''))
+            js_len = len(result.get('js_content', ''))
             
-            # Validate generated code
-            if not code_result.get('html_content') or len(code_result.get('html_content', '')) < 100:
-                # Fallback to direct generation if planning failed
-                logger.warning("Planning-based generation failed, using direct generation")
-                code_result = await self._direct_code_generation(prompt, provider, model_name, session_id, framework)
+            logger.info(f"Generated HTML: {html_len} chars, CSS: {css_len} chars, JS: {js_len} chars")
             
-            return code_result
+            # Validate we have substantial content
+            if html_len < 500:
+                logger.error(f"HTML too short ({html_len} chars), retrying...")
+                result = await self._generate_complete_website(prompt, provider, model_name, session_id + "_retry")
+                html_len = len(result.get('html_content', ''))
+                logger.info(f"Retry generated HTML: {html_len} chars")
+            
+            return result
+            
         except Exception as e:
-            logger.error(f"Website generation failed: {str(e)}")
-            # Return fallback website
-            return await self._direct_code_generation(prompt, provider, model_name, session_id, framework)
+            logger.error(f"Website generation failed: {str(e)}", exc_info=True)
+            return self._create_fallback_website(prompt)
 
-    async def _planning_agent(self, prompt: str, provider: str, model: str, session_id: str) -> Dict[str, Any]:
+    async def _generate_complete_website(self, prompt: str, provider: str, model: str, session_id: str) -> Dict[str, Any]:
         """
-        Requirement Planner Agent - Analyzes prompt and creates structured plan
-        """
-        chat = LlmChat(
-            api_key=self.api_key,
-            session_id=f"{session_id}_planner",
-            system_message="""You are a website planning expert. Analyze user requirements and create a detailed JSON structure.
-Output ONLY valid JSON with this structure:
-{
-  "pages": ["Home", "About", "Contact"],
-  "sections": {
-    "Home": ["Hero", "Features", "CTA"],
-    "About": ["Story", "Team"],
-    "Contact": ["Form", "Info"]
-  },
-  "style": {
-    "theme": "modern/minimal/corporate/creative",
-    "colors": {"primary": "#color", "secondary": "#color"},
-    "typography": "font-family"
-  },
-  "features": ["responsive", "animations", "forms"]
-}"""
-        )
-        chat.with_model(provider, model)
-        
-        user_message = UserMessage(
-            text=f"Analyze this website request and create a JSON plan: {prompt}"
-        )
-        
-        response = await chat.send_message(user_message)
-        
-        # Try to parse JSON from response
-        try:
-            # Extract JSON from markdown code blocks if present
-            if "```json" in response:
-                json_str = response.split("```json")[1].split("```")[0].strip()
-            elif "```" in response:
-                json_str = response.split("```")[1].split("```")[0].strip()
-            else:
-                json_str = response
-            
-            plan = json.loads(json_str)
-            return plan
-        except:
-            # Fallback plan if JSON parsing fails
-            return {
-                "pages": ["Home"],
-                "sections": {"Home": ["Hero", "Features", "About", "Contact"]},
-                "style": {"theme": "modern", "colors": {"primary": "#3b82f6", "secondary": "#8b5cf6"}},
-                "features": ["responsive"]
-            }
-
-    async def _code_generation_agent(self, plan: Dict, original_prompt: str, provider: str, model: str, session_id: str, framework: str) -> Dict[str, Any]:
-        """
-        Code Generation Agent - Generates actual HTML/CSS/JS code
+        Generate a complete website with explicit, forceful prompting
         """
         chat = LlmChat(
             api_key=self.api_key,
-            session_id=f"{session_id}_coder",
-            system_message=f"""You are an expert web developer specializing in creating beautiful, functional websites.
+            session_id=session_id,
+            system_message="""You are an expert full-stack web developer. You MUST generate complete, working HTML websites.
 
-IMPORTANT RULES:
-1. Generate COMPLETE, WORKING HTML code with embedded CSS and JavaScript
-2. Use modern design practices with proper spacing, colors, and typography
-3. Make it fully responsive (mobile, tablet, desktop)
-4. Include ALL necessary elements and functionality requested
-5. Use semantic HTML5 tags
-6. Add smooth animations and transitions
-7. Ensure proper contrast and accessibility
-8. Generate realistic content and text (not just placeholders)
+CRITICAL RULES - FOLLOW EXACTLY:
+1. Generate COMPLETE HTML documents (minimum 1000 characters)
+2. Include ALL HTML structure: <!DOCTYPE html>, <html>, <head>, <body>
+3. Embed ALL CSS inside <style> tags in the <head>
+4. Embed ALL JavaScript inside <script> tags before </body>
+5. Use modern, beautiful design with proper colors and spacing
+6. Make it fully responsive with media queries
+7. Include realistic content (not "Lorem ipsum" placeholders)
+8. Add interactivity with JavaScript where appropriate
+9. Use semantic HTML5 tags
+10. Output ONLY the HTML code, nothing else
 
-For styling:
-- Use embedded <style> tags in the HTML
-- Use modern CSS with flexbox/grid
-- Add hover effects and transitions
-- Use professional color schemes
-- Implement responsive breakpoints
-
-For JavaScript:
-- Use vanilla JavaScript (no dependencies)
-- Add interactivity where needed
-- Include event listeners and functionality
-- Make it production-ready"""
+You will be penalized for:
+- Empty or minimal responses
+- Missing CSS or JavaScript
+- Placeholder text instead of real content
+- Incomplete HTML structure
+- Black screens or blank pages"""
         )
         chat.with_model(provider, model)
         
-        prompt = f"""Create a complete, functional website based on this request:
-
-USER REQUEST: {original_prompt}
-
-PLAN: {json.dumps(plan, indent=2)}
-
-Generate a COMPLETE HTML file with:
-1. Full HTML structure (doctype, head, body)
-2. Embedded CSS in <style> tags (make it beautiful and responsive)
-3. Embedded JavaScript in <script> tags (add all necessary functionality)
-4. Realistic content (not just placeholders)
-5. All sections and features from the plan
-
-IMPORTANT:
-- Generate ONE complete HTML file with everything embedded
-- Make it look professional and modern
-- Include all navigation, sections, and interactive elements
-- Use proper semantic HTML
-- Add CSS for responsive design
-- Include JavaScript for any dynamic features
-
-Format your response with ONLY the HTML code inside triple backticks:
-
-```html
-[COMPLETE HTML CODE HERE]
-```
-
-Do NOT add any explanations before or after the code."""
-        
-        user_message = UserMessage(text=prompt)
-        response = await chat.send_message(user_message)
-        
-        # Extract HTML code
-        html_content = self._extract_code_block(response, "html")
-        
-        if not html_content or len(html_content) < 100:
-            # Try without language specifier
-            if "```" in response:
-                parts = response.split("```")
-                for i in range(1, len(parts), 2):
-                    potential_html = parts[i].strip()
-                    if potential_html.startswith("<!DOCTYPE") or potential_html.startswith("<html"):
-                        html_content = potential_html
-                        break
-        
-        # Validate HTML
-        if not html_content:
-            html_content = response  # Use full response as fallback
-        
-        # Ensure HTML has DOCTYPE and basic structure
-        if not html_content.strip().startswith("<!DOCTYPE"):
-            html_content = f"<!DOCTYPE html>\n{html_content}"
-        
-        return {
-            "html_content": html_content,
-            "css_content": "",  # CSS is embedded in HTML
-            "js_content": "",   # JS is embedded in HTML
-            "structure": plan
-        }
-
-    async def _direct_code_generation(self, prompt: str, provider: str, model: str, session_id: str, framework: str) -> Dict[str, Any]:
-        """
-        Direct code generation without planning step (fallback method)
-        """
-        chat = LlmChat(
-            api_key=self.api_key,
-            session_id=f"{session_id}_direct",
-            system_message="""You are an expert web developer. Generate complete, working HTML websites.
-
-RULES:
-1. Output ONLY HTML code (with embedded CSS and JS)
-2. Make it beautiful, modern, and fully functional
-3. Include ALL requested features and sections
-4. Use responsive design
-5. Add realistic content (not placeholders)
-6. Embed CSS in <style> tags
-7. Embed JavaScript in <script> tags
-8. Make it production-ready"""
-        )
-        chat.with_model(provider, model)
-        
-        user_message = UserMessage(
-            text=f"""Create a complete, functional website for:
+        # Create very explicit prompt
+        full_prompt = f"""CREATE A COMPLETE, WORKING WEBSITE:
 
 {prompt}
 
-Generate ONE complete HTML file with everything embedded (CSS and JavaScript).
-Make it beautiful, modern, and fully functional.
-Include all requested features and sections.
+REQUIREMENTS:
+1. Full HTML5 document structure
+2. Embedded CSS with modern styling (colors, fonts, spacing, animations)
+3. Embedded JavaScript for any interactive features
+4. Responsive design (mobile, tablet, desktop)
+5. Professional appearance
+6. Real, meaningful content (not placeholders)
 
-Output format:
+FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
+
 ```html
-[YOUR COMPLETE HTML CODE]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Title</title>
+    <style>
+        /* PUT ALL CSS HERE */
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        
+        body {{
+            font-family: Arial, sans-serif;
+            /* MORE STYLES */
+        }}
+        
+        /* ADD ALL YOUR CSS RULES HERE */
+    </style>
+</head>
+<body>
+    <!-- PUT ALL HTML CONTENT HERE -->
+    
+    <script>
+        // PUT ALL JAVASCRIPT HERE
+    </script>
+</body>
+</html>
 ```
 
-Only output the HTML code, nothing else."""
-        )
+START GENERATING NOW. Output ONLY the HTML code block above with your complete website."""
         
+        user_message = UserMessage(text=full_prompt)
         response = await chat.send_message(user_message)
         
-        # Extract HTML
-        html_content = self._extract_code_block(response, "html")
+        logger.info(f"AI Response length: {len(response)} characters")
+        logger.info(f"Response preview: {response[:500]}...")
         
-        if not html_content:
-            # Try to find HTML in response
-            if "```" in response:
-                parts = response.split("```")
-                for i in range(1, len(parts), 2):
-                    potential_html = parts[i].strip()
-                    # Remove language identifier
-                    if potential_html.startswith("html\n"):
-                        potential_html = potential_html[5:]
-                    if "<html" in potential_html or "<!DOCTYPE" in potential_html:
-                        html_content = potential_html
-                        break
+        # Extract HTML with multiple strategies
+        html_content = self._extract_html_aggressively(response)
         
-        if not html_content or len(html_content) < 100:
+        if not html_content or len(html_content) < 500:
+            logger.warning("HTML extraction failed or too short, using full response")
             html_content = response
         
-        # Ensure DOCTYPE
-        if not html_content.strip().startswith("<!DOCTYPE"):
-            html_content = f"<!DOCTYPE html>\n{html_content}"
+        # Ensure proper HTML structure
+        html_content = self._ensure_proper_html(html_content)
+        
+        # Extract embedded CSS and JS for reference
+        css_content = self._extract_embedded_css(html_content)
+        js_content = self._extract_embedded_js(html_content)
+        
+        logger.info(f"Final HTML length: {len(html_content)}")
+        logger.info(f"Extracted CSS length: {len(css_content)}")
+        logger.info(f"Extracted JS length: {len(js_content)}")
         
         return {
             "html_content": html_content,
-            "css_content": "",
-            "js_content": "",
+            "css_content": css_content,
+            "js_content": js_content,
             "structure": {}
         }
 
-    def _extract_code_block(self, text: str, language: str) -> Optional[str]:
-        """Extract code from markdown code blocks"""
-        try:
-            marker = f"```{language}"
-            if marker in text:
-                parts = text.split(marker)
+    def _extract_html_aggressively(self, text: str) -> str:
+        """Extract HTML using multiple strategies"""
+        # Strategy 1: Look for ```html code block
+        if "```html" in text:
+            try:
+                parts = text.split("```html")
                 if len(parts) > 1:
-                    code = parts[1].split("```")[0].strip()
-                    return code
-            return None
+                    html = parts[1].split("```")[0].strip()
+                    if len(html) > 100:
+                        logger.info("Extracted HTML from ```html block")
+                        return html
+            except:
+                pass
+        
+        # Strategy 2: Look for any ``` code block with HTML content
+        if "```" in text:
+            try:
+                parts = text.split("```")
+                for i in range(1, len(parts), 2):
+                    potential_html = parts[i].strip()
+                    # Remove language identifier if present
+                    if potential_html.startswith(("html\n", "HTML\n")):
+                        potential_html = potential_html.split("\n", 1)[1]
+                    
+                    if "<!DOCTYPE" in potential_html or "<html" in potential_html:
+                        logger.info("Extracted HTML from generic code block")
+                        return potential_html
+            except:
+                pass
+        
+        # Strategy 3: Look for DOCTYPE or <html> directly in response
+        if "<!DOCTYPE" in text or "<html" in text:
+            try:
+                # Find start of HTML
+                start_idx = text.find("<!DOCTYPE")
+                if start_idx == -1:
+                    start_idx = text.find("<html")
+                
+                if start_idx != -1:
+                    # Find end of HTML
+                    end_idx = text.rfind("</html>")
+                    if end_idx != -1:
+                        html = text[start_idx:end_idx + 7].strip()
+                        logger.info("Extracted HTML by finding DOCTYPE/html tags")
+                        return html
+            except:
+                pass
+        
+        # Strategy 4: Use regex to find HTML structure
+        try:
+            pattern = r'<!DOCTYPE html>.*?</html>'
+            match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
+            if match:
+                logger.info("Extracted HTML using regex")
+                return match.group(0)
         except:
-            return None
+            pass
+        
+        logger.warning("All HTML extraction strategies failed")
+        return ""
+
+    def _ensure_proper_html(self, html: str) -> str:
+        """Ensure HTML has proper structure"""
+        html = html.strip()
+        
+        # Add DOCTYPE if missing
+        if not html.startswith("<!DOCTYPE"):
+            html = "<!DOCTYPE html>\n" + html
+        
+        # Ensure it has <html> tags
+        if "<html" not in html.lower():
+            html = f"<!DOCTYPE html>\n<html lang='en'>\n<head>\n<meta charset='UTF-8'>\n<meta name='viewport' content='width=device-width, initial-scale=1.0'>\n<title>Generated Website</title>\n</head>\n<body>\n{html}\n</body>\n</html>"
+        
+        # Ensure it has closing tags
+        if "</html>" not in html.lower():
+            html += "\n</html>"
+        
+        return html
+
+    def _extract_embedded_css(self, html: str) -> str:
+        """Extract CSS from <style> tags"""
+        try:
+            pattern = r'<style[^>]*>(.*?)</style>'
+            matches = re.findall(pattern, html, re.DOTALL | re.IGNORECASE)
+            return "\n\n".join(matches)
+        except:
+            return ""
+
+    def _extract_embedded_js(self, html: str) -> str:
+        """Extract JavaScript from <script> tags"""
+        try:
+            pattern = r'<script[^>]*>(.*?)</script>'
+            matches = re.findall(pattern, html, re.DOTALL | re.IGNORECASE)
+            # Filter out external scripts (those with src attribute)
+            return "\n\n".join([m for m in matches if m.strip()])
+        except:
+            return ""
+
+    def _create_fallback_website(self, prompt: str) -> Dict[str, Any]:
+        """Create a fallback website if generation fails"""
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Website</title>
+    <style>
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }}
+        
+        .container {{
+            background: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            text-align: center;
+        }}
+        
+        h1 {{
+            color: #333;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }}
+        
+        p {{
+            color: #666;
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }}
+        
+        .button {{
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }}
+        
+        .button:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Welcome</h1>
+        <p>This is your generated website based on: <strong>{prompt[:200]}</strong></p>
+        <p>The website generation system is working. This is a fallback template.</p>
+        <a href="#" class="button">Get Started</a>
+    </div>
+    
+    <script>
+        console.log('Website loaded successfully!');
+        document.querySelector('.button').addEventListener('click', (e) => {{
+            e.preventDefault();
+            alert('Button clicked! This website is working.');
+        }});
+    </script>
+</body>
+</html>"""
+        
+        return {
+            "html_content": html,
+            "css_content": self._extract_embedded_css(html),
+            "js_content": self._extract_embedded_js(html),
+            "structure": {}
+        }
 
     async def generate_image(self, prompt: str) -> str:
-        """
-        Generate image using Gemini Imagen (nano-banana)
-        """
+        """Generate image using Gemini Imagen"""
         session_id = f"img_{os.urandom(8).hex()}"
         
         try:
@@ -328,11 +399,9 @@ Only output the HTML code, nothing else."""
             text, images = await chat.send_message_multimodal_response(msg)
             
             if images and len(images) > 0:
-                # Return base64 encoded image
                 return f"data:{images[0]['mime_type']};base64,{images[0]['data']}"
             else:
                 raise Exception("No image generated")
         except Exception as e:
             logger.error(f"Image generation failed: {str(e)}")
-            # Return placeholder
             return "https://via.placeholder.com/800x600?text=Image+Generation+Placeholder"
