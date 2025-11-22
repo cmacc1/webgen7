@@ -89,3 +89,13 @@ code {
   background: transparent;
   padding: 0;
 }
+
+/* Force hide Emergent badge if it appears */
+#emergent-badge,
+a[href*="emergent.sh"][style*="fixed"],
+a[href*="utm_source=emergent-badge"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
