@@ -743,38 +743,719 @@ class AdvancedEditingTester:
         
         return test_result
 
-    async def run_all_tests(self):
-        """Run all tests"""
-        logger.info("🚀 Starting Format Specifier Fix Test")
+    def check_for_blank_screens(self, html_content: str) -> List[str]:
+        """Check for blank white/black/gray screens in HTML"""
+        issues = []
+        
+        # Check for minimal content
+        if len(html_content) < 500:
+            issues.append(f"HTML too short ({len(html_content)} chars) - likely blank screen")
+        
+        # Check for missing body content
+        body_match = re.search(r'<body[^>]*>(.*?)</body>', html_content, re.DOTALL | re.IGNORECASE)
+        if body_match:
+            body_content = body_match.group(1).strip()
+            # Remove script and style tags for content check
+            body_content = re.sub(r'<script[^>]*>.*?</script>', '', body_content, flags=re.DOTALL | re.IGNORECASE)
+            body_content = re.sub(r'<style[^>]*>.*?</style>', '', body_content, flags=re.DOTALL | re.IGNORECASE)
+            
+            if len(body_content) < 100:
+                issues.append("Body has minimal content - likely blank screen")
+        else:
+            issues.append("No body tag found")
+        
+        # Check for proper styling
+        has_styles = '<style>' in html_content or 'href=' in html_content
+        if not has_styles:
+            issues.append("No CSS styling found - likely unstyled/blank appearance")
+        
+        # Check for common blank screen indicators
+        if 'background: white' in html_content or 'background-color: white' in html_content:
+            issues.append("White background detected - potential blank screen")
+        
+        if 'background: #000' in html_content or 'background-color: black' in html_content:
+            issues.append("Black background detected - potential blank screen")
+        
+        return issues
+
+    def analyze_edit_precision(self, original_html: str, edited_html: str, requested_change: str) -> Dict[str, Any]:
+        """Analyze if edits were applied with surgical precision"""
+        analysis = {
+            "length_change": len(edited_html) - len(original_html),
+            "length_change_percent": ((len(edited_html) - len(original_html)) / len(original_html)) * 100 if original_html else 0,
+            "is_regeneration": False,
+            "preserved_content": True,
+            "issues": []
+        }
+        
+        # Check for regeneration (massive length change)
+        if abs(analysis["length_change_percent"]) > 70:
+            analysis["is_regeneration"] = True
+            analysis["issues"].append(f"Massive length change ({analysis['length_change_percent']:.1f}%) suggests regeneration, not editing")
+        
+        # Check if original classes are preserved
+        original_classes = set(re.findall(r'class="([^"]*)"', original_html))
+        edited_classes = set(re.findall(r'class="([^"]*)"', edited_html))
+        
+        preserved_classes = len(original_classes.intersection(edited_classes))
+        total_original_classes = len(original_classes)
+        
+        if total_original_classes > 0:
+            preservation_rate = preserved_classes / total_original_classes
+            if preservation_rate < 0.3:
+                analysis["preserved_content"] = False
+                analysis["issues"].append(f"Only {preservation_rate:.1%} of original CSS classes preserved")
+        
+        return analysis
+
+    async def test_phase_1_initial_generation(self):
+        """PHASE 1: Generate initial fitness app website"""
+        logger.info("\n" + "="*80)
+        logger.info("PHASE 1: GENERATE INITIAL FITNESS APP WEBSITE")
+        logger.info("="*80)
+        
+        # Create session
+        session_id = await self.create_session("Advanced Editing Test - Fitness App")
+        if not session_id:
+            return {"success": False, "error": "Failed to create session"}
+        
+        # Generate initial fitness app
+        prompt = """Create a landing page for a fitness app with:
+- Hero section with headline
+- Features section (3 cards)
+- Pricing section
+- Contact form
+- Footer"""
+        
+        result = await self.generate_website(session_id, prompt)
+        
+        validation_errors = []
+        
+        if not result.get('success'):
+            validation_errors.append(f"Initial generation failed: {result.get('error')}")
+            return {
+                "test_name": "Phase 1: Initial Generation",
+                "success": False,
+                "validation_errors": validation_errors
+            }
+        
+        # Check for blank screens
+        html_content = result.get('html_content', '')
+        blank_screen_issues = self.check_for_blank_screens(html_content)
+        validation_errors.extend(blank_screen_issues)
+        
+        # Verify required sections exist
+        required_sections = ['hero', 'features', 'pricing', 'contact', 'footer']
+        missing_sections = []
+        
+        for section in required_sections:
+            if section.lower() not in html_content.lower():
+                missing_sections.append(section)
+        
+        if missing_sections:
+            validation_errors.append(f"Missing sections: {missing_sections}")
+        
+        # Check for proper styling
+        if result.get('css_length', 0) < 1000:
+            validation_errors.append(f"CSS too short ({result.get('css_length')} chars) - likely insufficient styling")
+        
+        test_result = {
+            "test_name": "Phase 1: Initial Generation",
+            "success": len(validation_errors) == 0,
+            "session_id": session_id,
+            "html_length": len(html_content),
+            "css_length": result.get('css_length', 0),
+            "js_length": result.get('js_length', 0),
+            "generation_time": result.get('generation_time', 0),
+            "blank_screen_issues": blank_screen_issues,
+            "missing_sections": missing_sections,
+            "validation_errors": validation_errors,
+            "original_html": html_content  # Store for later comparison
+        }
+        
+        self.test_results.append(test_result)
+        
+        if test_result['success']:
+            logger.info("✅ Phase 1: Initial generation PASSED")
+            logger.info(f"   - Generated {len(html_content)} char HTML")
+            logger.info(f"   - All required sections present")
+            logger.info(f"   - No blank screen issues")
+        else:
+            logger.error("❌ Phase 1: Initial generation FAILED")
+            for error in validation_errors:
+                logger.error(f"   - {error}")
+        
+        return test_result
+
+    async def test_phase_2_adding_features(self, session_id: str, original_html: str):
+        """PHASE 2: Test adding features (3 tests)"""
+        logger.info("\n" + "="*80)
+        logger.info("PHASE 2: TEST ADDING FEATURES")
+        logger.info("="*80)
+        
+        phase_results = []
+        
+        # Test 2.1 - Add New Section
+        logger.info("\n--- Test 2.1: Add Testimonials Section ---")
+        add_section_result = await self.generate_website(
+            session_id,
+            "Add a testimonials section with 3 customer reviews between features and pricing"
+        )
+        
+        validation_errors = []
+        
+        if not add_section_result.get('success'):
+            validation_errors.append(f"Add section failed: {add_section_result.get('error')}")
+        else:
+            new_html = add_section_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check if testimonials section was added
+            if 'testimonial' not in new_html.lower():
+                validation_errors.append("Testimonials section not found in HTML")
+            
+            # Check if original sections are preserved
+            if 'features' not in new_html.lower():
+                validation_errors.append("Original features section missing")
+            if 'pricing' not in new_html.lower():
+                validation_errors.append("Original pricing section missing")
+            
+            # Analyze edit precision
+            edit_analysis = self.analyze_edit_precision(original_html, new_html, "add testimonials")
+            if edit_analysis["is_regeneration"]:
+                validation_errors.extend(edit_analysis["issues"])
+        
+        test_2_1 = {
+            "test_name": "Test 2.1: Add Testimonials Section",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_2_1)
+        
+        # Test 2.2 - Add New Element
+        logger.info("\n--- Test 2.2: Add Newsletter Form ---")
+        add_element_result = await self.generate_website(
+            session_id,
+            "Add a newsletter signup form in the footer"
+        )
+        
+        validation_errors = []
+        
+        if not add_element_result.get('success'):
+            validation_errors.append(f"Add element failed: {add_element_result.get('error')}")
+        else:
+            new_html = add_element_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check if newsletter form was added
+            newsletter_indicators = ['newsletter', 'signup', 'subscribe', 'email']
+            if not any(indicator in new_html.lower() for indicator in newsletter_indicators):
+                validation_errors.append("Newsletter signup form not found")
+            
+            # Check if footer still exists
+            if 'footer' not in new_html.lower():
+                validation_errors.append("Footer section missing")
+        
+        test_2_2 = {
+            "test_name": "Test 2.2: Add Newsletter Form",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_2_2)
+        
+        # Test 2.3 - Add Styling
+        logger.info("\n--- Test 2.3: Add Animations ---")
+        add_styling_result = await self.generate_website(
+            session_id,
+            "Add animations to the feature cards - they should slide in from bottom on scroll"
+        )
+        
+        validation_errors = []
+        
+        if not add_styling_result.get('success'):
+            validation_errors.append(f"Add styling failed: {add_styling_result.get('error')}")
+        else:
+            new_html = add_styling_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check if animations were added
+            animation_indicators = ['animation', 'transform', 'transition', 'keyframes', '@keyframes']
+            if not any(indicator in new_html.lower() for indicator in animation_indicators):
+                validation_errors.append("Animation CSS not found")
+            
+            # Check if feature cards still exist
+            if 'feature' not in new_html.lower():
+                validation_errors.append("Feature cards missing")
+        
+        test_2_3 = {
+            "test_name": "Test 2.3: Add Animations",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_2_3)
+        
+        # Overall phase result
+        phase_success = all(test.get('success', False) for test in phase_results)
+        
+        phase_result = {
+            "test_name": "Phase 2: Adding Features",
+            "success": phase_success,
+            "sub_tests": phase_results,
+            "session_id": session_id
+        }
+        
+        self.test_results.append(phase_result)
+        
+        if phase_success:
+            logger.info("✅ Phase 2: Adding features PASSED")
+        else:
+            logger.error("❌ Phase 2: Adding features FAILED")
+            for test in phase_results:
+                if not test.get('success'):
+                    logger.error(f"   - {test['test_name']}: {test.get('validation_errors', [])}")
+        
+        return phase_result
+
+    async def test_phase_3_modifying_features(self, session_id: str):
+        """PHASE 3: Test modifying features (3 tests)"""
+        logger.info("\n" + "="*80)
+        logger.info("PHASE 3: TEST MODIFYING FEATURES")
+        logger.info("="*80)
+        
+        phase_results = []
+        
+        # Test 3.1 - Change Colors
+        logger.info("\n--- Test 3.1: Change Primary Color ---")
+        change_color_result = await self.generate_website(
+            session_id,
+            "Change the primary color from current to deep blue (#1e40af) throughout the site"
+        )
+        
+        validation_errors = []
+        
+        if not change_color_result.get('success'):
+            validation_errors.append(f"Color change failed: {change_color_result.get('error')}")
+        else:
+            new_html = change_color_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check if blue color was applied
+            blue_indicators = ['#1e40af', 'blue', 'rgb(30, 64, 175)']
+            if not any(indicator in new_html.lower() for indicator in blue_indicators):
+                validation_errors.append("Deep blue color (#1e40af) not found in HTML")
+        
+        test_3_1 = {
+            "test_name": "Test 3.1: Change Primary Color",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_3_1)
+        
+        # Test 3.2 - Modify Layout
+        logger.info("\n--- Test 3.2: Change Hero Layout ---")
+        modify_layout_result = await self.generate_website(
+            session_id,
+            "Change the hero section to have text on the left and an image placeholder on the right"
+        )
+        
+        validation_errors = []
+        
+        if not modify_layout_result.get('success'):
+            validation_errors.append(f"Layout change failed: {modify_layout_result.get('error')}")
+        else:
+            new_html = modify_layout_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check for 2-column layout indicators
+            layout_indicators = ['grid', 'flex', 'column', 'left', 'right', 'image']
+            if not any(indicator in new_html.lower() for indicator in layout_indicators):
+                validation_errors.append("2-column layout indicators not found")
+            
+            # Check if hero section still exists
+            if 'hero' not in new_html.lower():
+                validation_errors.append("Hero section missing")
+        
+        test_3_2 = {
+            "test_name": "Test 3.2: Change Hero Layout",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_3_2)
+        
+        # Test 3.3 - Change Text
+        logger.info("\n--- Test 3.3: Update Headline ---")
+        change_text_result = await self.generate_website(
+            session_id,
+            "Update the main headline to 'Transform Your Body, Transform Your Life'"
+        )
+        
+        validation_errors = []
+        
+        if not change_text_result.get('success'):
+            validation_errors.append(f"Text change failed: {change_text_result.get('error')}")
+        else:
+            new_html = change_text_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check if new headline exists
+            if "Transform Your Body, Transform Your Life" not in new_html:
+                validation_errors.append("New headline text not found in HTML")
+        
+        test_3_3 = {
+            "test_name": "Test 3.3: Update Headline",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_3_3)
+        
+        # Overall phase result
+        phase_success = all(test.get('success', False) for test in phase_results)
+        
+        phase_result = {
+            "test_name": "Phase 3: Modifying Features",
+            "success": phase_success,
+            "sub_tests": phase_results,
+            "session_id": session_id
+        }
+        
+        self.test_results.append(phase_result)
+        
+        if phase_success:
+            logger.info("✅ Phase 3: Modifying features PASSED")
+        else:
+            logger.error("❌ Phase 3: Modifying features FAILED")
+            for test in phase_results:
+                if not test.get('success'):
+                    logger.error(f"   - {test['test_name']}: {test.get('validation_errors', [])}")
+        
+        return phase_result
+
+    async def test_phase_4_removing_features(self, session_id: str):
+        """PHASE 4: Test removing features (3 tests)"""
+        logger.info("\n" + "="*80)
+        logger.info("PHASE 4: TEST REMOVING FEATURES")
+        logger.info("="*80)
+        
+        phase_results = []
+        
+        # Test 4.1 - Remove Section
+        logger.info("\n--- Test 4.1: Remove Pricing Section ---")
+        remove_section_result = await self.generate_website(
+            session_id,
+            "Remove the pricing section"
+        )
+        
+        validation_errors = []
+        
+        if not remove_section_result.get('success'):
+            validation_errors.append(f"Remove section failed: {remove_section_result.get('error')}")
+        else:
+            new_html = remove_section_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check if pricing section was removed
+            if 'pricing' in new_html.lower():
+                validation_errors.append("Pricing section still exists in HTML")
+            
+            # Check if other sections are preserved
+            if 'features' not in new_html.lower():
+                validation_errors.append("Features section was incorrectly removed")
+            if 'contact' not in new_html.lower():
+                validation_errors.append("Contact section was incorrectly removed")
+        
+        test_4_1 = {
+            "test_name": "Test 4.1: Remove Pricing Section",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_4_1)
+        
+        # Test 4.2 - Remove Element
+        logger.info("\n--- Test 4.2: Remove Newsletter Form ---")
+        remove_element_result = await self.generate_website(
+            session_id,
+            "Remove the newsletter form from the footer"
+        )
+        
+        validation_errors = []
+        
+        if not remove_element_result.get('success'):
+            validation_errors.append(f"Remove element failed: {remove_element_result.get('error')}")
+        else:
+            new_html = remove_element_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check if newsletter form was removed
+            newsletter_indicators = ['newsletter', 'signup', 'subscribe']
+            if any(indicator in new_html.lower() for indicator in newsletter_indicators):
+                validation_errors.append("Newsletter form still exists")
+            
+            # Check if footer still exists
+            if 'footer' not in new_html.lower():
+                validation_errors.append("Footer was incorrectly removed")
+        
+        test_4_2 = {
+            "test_name": "Test 4.2: Remove Newsletter Form",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_4_2)
+        
+        # Test 4.3 - Remove Styling
+        logger.info("\n--- Test 4.3: Remove Animations ---")
+        remove_styling_result = await self.generate_website(
+            session_id,
+            "Remove the animations from the feature cards"
+        )
+        
+        validation_errors = []
+        
+        if not remove_styling_result.get('success'):
+            validation_errors.append(f"Remove styling failed: {remove_styling_result.get('error')}")
+        else:
+            new_html = remove_styling_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check if animations were removed
+            animation_indicators = ['@keyframes', 'animation:', 'transform:', 'transition:']
+            if any(indicator in new_html.lower() for indicator in animation_indicators):
+                validation_errors.append("Animation CSS still exists")
+            
+            # Check if feature cards still exist
+            if 'feature' not in new_html.lower():
+                validation_errors.append("Feature cards were incorrectly removed")
+        
+        test_4_3 = {
+            "test_name": "Test 4.3: Remove Animations",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors
+        }
+        phase_results.append(test_4_3)
+        
+        # Overall phase result
+        phase_success = all(test.get('success', False) for test in phase_results)
+        
+        phase_result = {
+            "test_name": "Phase 4: Removing Features",
+            "success": phase_success,
+            "sub_tests": phase_results,
+            "session_id": session_id
+        }
+        
+        self.test_results.append(phase_result)
+        
+        if phase_success:
+            logger.info("✅ Phase 4: Removing features PASSED")
+        else:
+            logger.error("❌ Phase 4: Removing features FAILED")
+            for test in phase_results:
+                if not test.get('success'):
+                    logger.error(f"   - {test['test_name']}: {test.get('validation_errors', [])}")
+        
+        return phase_result
+
+    async def test_phase_5_complex_multi_part_edit(self, session_id: str):
+        """PHASE 5: Complex multi-part edit test"""
+        logger.info("\n" + "="*80)
+        logger.info("PHASE 5: COMPLEX MULTI-PART EDIT TEST")
+        logger.info("="*80)
+        
+        # Test 5.1 - Multiple Changes at Once
+        logger.info("\n--- Test 5.1: Multiple Changes at Once ---")
+        multi_edit_result = await self.generate_website(
+            session_id,
+            "Make the contact form have a dark background with white text, add a 'Join Now' button to the hero section, and change the footer to be centered instead of left-aligned"
+        )
+        
+        validation_errors = []
+        
+        if not multi_edit_result.get('success'):
+            validation_errors.append(f"Multi-part edit failed: {multi_edit_result.get('error')}")
+        else:
+            new_html = multi_edit_result.get('html_content', '')
+            
+            # Check for blank screens
+            blank_issues = self.check_for_blank_screens(new_html)
+            validation_errors.extend(blank_issues)
+            
+            # Check for dark contact form
+            dark_indicators = ['background: black', 'background-color: black', 'bg-black', 'dark']
+            if not any(indicator in new_html.lower() for indicator in dark_indicators):
+                validation_errors.append("Dark background for contact form not found")
+            
+            # Check for white text
+            white_text_indicators = ['color: white', 'text-white', 'color: #fff']
+            if not any(indicator in new_html.lower() for indicator in white_text_indicators):
+                validation_errors.append("White text for contact form not found")
+            
+            # Check for Join Now button
+            if 'join now' not in new_html.lower():
+                validation_errors.append("'Join Now' button not found in hero section")
+            
+            # Check for centered footer
+            center_indicators = ['text-center', 'text-align: center', 'justify-center']
+            if not any(indicator in new_html.lower() for indicator in center_indicators):
+                validation_errors.append("Centered footer styling not found")
+        
+        test_result = {
+            "test_name": "Phase 5: Complex Multi-Part Edit",
+            "success": len(validation_errors) == 0,
+            "validation_errors": validation_errors,
+            "session_id": session_id
+        }
+        
+        self.test_results.append(test_result)
+        
+        if test_result['success']:
+            logger.info("✅ Phase 5: Complex multi-part edit PASSED")
+            logger.info("   - Contact form has dark background and white text")
+            logger.info("   - 'Join Now' button added to hero")
+            logger.info("   - Footer is centered")
+        else:
+            logger.error("❌ Phase 5: Complex multi-part edit FAILED")
+            for error in validation_errors:
+                logger.error(f"   - {error}")
+        
+        return test_result
+
+    async def check_backend_logs_for_edit_mode(self):
+        """Check backend logs for EDIT MODE activation"""
+        try:
+            import subprocess
+            result = subprocess.run(
+                ['tail', '-n', '200', '/var/log/supervisor/backend.out.log'],
+                capture_output=True,
+                text=True
+            )
+            
+            backend_logs = result.stdout
+            
+            edit_mode_indicators = [
+                "EDIT-ONLY MODE ENFORCED" in backend_logs,
+                "EDIT MODE" in backend_logs,
+                "Existing website found" in backend_logs,
+                "will EDIT this website" in backend_logs
+            ]
+            
+            return any(edit_mode_indicators), backend_logs
+            
+        except Exception as e:
+            logger.error(f"Could not check backend logs: {e}")
+            return False, ""
+
+    async def run_comprehensive_editing_test(self):
+        """Run the comprehensive advanced editing system test"""
+        logger.info("🚀 Starting Comprehensive Advanced Editing System Test")
         logger.info(f"Backend URL: {self.base_url}")
         
         start_time = time.time()
         
-        # Run the specific test for format specifier fix
-        test_result = await self.test_format_specifier_fix()
+        # Phase 1: Generate initial website
+        phase_1_result = await self.test_phase_1_initial_generation()
+        if not phase_1_result.get('success'):
+            logger.error("❌ Phase 1 failed - cannot continue with editing tests")
+            return self._generate_final_summary(start_time)
         
+        session_id = phase_1_result.get('session_id')
+        original_html = phase_1_result.get('original_html', '')
+        
+        # Phase 2: Test adding features
+        await self.test_phase_2_adding_features(session_id, original_html)
+        
+        # Phase 3: Test modifying features
+        await self.test_phase_3_modifying_features(session_id)
+        
+        # Phase 4: Test removing features
+        await self.test_phase_4_removing_features(session_id)
+        
+        # Phase 5: Complex multi-part edit
+        await self.test_phase_5_complex_multi_part_edit(session_id)
+        
+        # Check backend logs for edit mode
+        edit_mode_detected, logs = await self.check_backend_logs_for_edit_mode()
+        
+        return self._generate_final_summary(start_time, edit_mode_detected)
+
+    def _generate_final_summary(self, start_time: float, edit_mode_detected: bool = False):
+        """Generate final test summary"""
         total_time = time.time() - start_time
         
-        # Summary
+        # Count results
         passed_tests = sum(1 for test in self.test_results if test.get('success'))
         total_tests = len(self.test_results)
         
-        logger.info("\n" + "="*60)
-        logger.info("TEST SUMMARY")
-        logger.info("="*60)
+        # Collect all validation errors
+        all_errors = []
+        for test in self.test_results:
+            if not test.get('success'):
+                test_name = test.get('test_name', 'Unknown Test')
+                errors = test.get('validation_errors', [])
+                for error in errors:
+                    all_errors.append(f"{test_name}: {error}")
+                
+                # Check sub-tests
+                sub_tests = test.get('sub_tests', [])
+                for sub_test in sub_tests:
+                    if not sub_test.get('success'):
+                        sub_errors = sub_test.get('validation_errors', [])
+                        for error in sub_errors:
+                            all_errors.append(f"{sub_test.get('test_name', 'Unknown Sub-Test')}: {error}")
+        
+        logger.info("\n" + "="*80)
+        logger.info("COMPREHENSIVE ADVANCED EDITING SYSTEM TEST SUMMARY")
+        logger.info("="*80)
         logger.info(f"Total Tests: {total_tests}")
         logger.info(f"Passed: {passed_tests}")
         logger.info(f"Failed: {total_tests - passed_tests}")
+        logger.info(f"Success Rate: {(passed_tests/total_tests)*100:.1f}%" if total_tests > 0 else "0%")
         logger.info(f"Total Time: {total_time:.2f}s")
+        logger.info(f"Edit Mode Detected in Logs: {'✅ YES' if edit_mode_detected else '❌ NO'}")
         logger.info(f"Sessions Created: {len(self.session_ids)}")
         
         # Detailed results
+        logger.info("\nDETAILED RESULTS:")
         for test in self.test_results:
             status = "✅ PASS" if test.get('success') else "❌ FAIL"
             logger.info(f"{status} - {test.get('test_name')}")
-            if not test.get('success') and test.get('validation_errors'):
-                for error in test['validation_errors']:
-                    logger.info(f"      {error}")
+            
+            # Show sub-test results
+            sub_tests = test.get('sub_tests', [])
+            for sub_test in sub_tests:
+                sub_status = "✅ PASS" if sub_test.get('success') else "❌ FAIL"
+                logger.info(f"    {sub_status} - {sub_test.get('test_name')}")
+        
+        # Show all errors
+        if all_errors:
+            logger.info("\nALL VALIDATION ERRORS:")
+            for error in all_errors:
+                logger.info(f"❌ {error}")
         
         return {
             "total_tests": total_tests,
@@ -782,8 +1463,10 @@ class AdvancedEditingTester:
             "failed_tests": total_tests - passed_tests,
             "success_rate": passed_tests / total_tests if total_tests > 0 else 0,
             "total_time": total_time,
+            "edit_mode_detected": edit_mode_detected,
             "test_results": self.test_results,
-            "sessions_created": self.session_ids
+            "sessions_created": self.session_ids,
+            "all_errors": all_errors
         }
 
 async def main():
