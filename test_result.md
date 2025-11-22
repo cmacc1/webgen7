@@ -127,11 +127,11 @@ backend:
   
   - task: "Iterative Editing Support"
     implemented: true
-    working: true
+    working: "needs_testing"
     file: "/app/backend/ai_service.py, /app/backend/server.py, /app/frontend/src/pages/HomePage.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "needs_testing"
         agent: "main"
@@ -148,6 +148,9 @@ backend:
       - working: true
         agent: "main"
         comment: "THOROUGH EDITING SYSTEM - AI now applies ALL requested changes. Major enhancements: 1) Created structured 5-step editing process (Analyze→Locate→Plan→Apply→Preserve), 2) Added mandatory checklist forcing AI to verify all changes applied, 3) Included intelligent interpretation guide (bigger=increase size, darker=darker colors, etc), 4) Added visual terms translation dictionary, 5) Multiple examples showing correct vs wrong editing, 6) Backend editing support added - modifies existing backend code when needed, 7) AI must break down complex requests into individual changes and apply each one. System now ensures EVERY edit is applied to HTML/CSS/JS/Backend."
+      - working: "needs_testing"
+        agent: "main"
+        comment: "ADVANCED EDIT VALIDATION & RETRY SYSTEM - Latest enhancements to prevent regeneration: 1) Edit mode detection based on existing content size (>500 chars), 2) Complete existing code shown to AI (full HTML/CSS/JS, not truncated), 3) Edit validation checks length differences and class preservation to detect regeneration, 4) Automatic retry with STRONGER instructions if AI regenerates instead of edits, 5) Validation thresholds: >70% length change AND <30% class preservation = regeneration detected. System now has safeguards to ensure AI edits rather than rebuilds. Testing needed to verify: a) No blank white/black/gray screens, b) Correct sections edited, c) Can ADD features, d) Can REMOVE features, e) Surgical precision in editing."
   - task: "File-based Preview System - Professional Architecture"
     implemented: true
     working: true
