@@ -121,6 +121,13 @@ export default function HomePage() {
       return;
     }
 
+    // CRITICAL: If a website already exists in this session, ALWAYS edit it (never create new)
+    if (generatedWebsite) {
+      console.log('🔒 EDIT-ONLY MODE: Website exists - routing to edit/modify existing website');
+      await generateWebsite(message);
+      return;
+    }
+
     // Check if message is asking for website generation or modification
     const isWebsiteRequest = detectWebsiteIntent(message);
     
