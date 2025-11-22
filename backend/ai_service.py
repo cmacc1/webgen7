@@ -1569,9 +1569,325 @@ document.addEventListener('DOMContentLoaded', () => {
         return {"html": html, "css": css, "js": js}
 
     def _create_generic_fallback(self, prompt: str) -> Dict[str, str]:
-        """Generic fallback"""
-        # Use the existing fallback from before
-        return {"html": "", "css": "", "js": ""}
+        """Generic fallback for landing pages and general websites"""
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Website</title>
+    
+    <!-- Modern Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        
+        body {{
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }}
+        
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }}
+        
+        /* Header */
+        header {{
+            padding: 20px 0;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }}
+        
+        nav {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+        
+        .logo {{
+            font-size: 28px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }}
+        
+        .nav-links {{
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }}
+        
+        .nav-links a {{
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }}
+        
+        .nav-links a:hover {{
+            opacity: 0.8;
+        }}
+        
+        /* Hero Section */
+        .hero {{
+            text-align: center;
+            padding: 120px 20px;
+        }}
+        
+        .hero h1 {{
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            line-height: 1.2;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+        }}
+        
+        .hero p {{
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            font-weight: 300;
+        }}
+        
+        .cta-buttons {{
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }}
+        
+        .btn {{
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }}
+        
+        .btn-primary {{
+            background: #ffffff;
+            color: #667eea;
+        }}
+        
+        .btn-primary:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }}
+        
+        .btn-secondary {{
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }}
+        
+        .btn-secondary:hover {{
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }}
+        
+        /* Features Section */
+        .features {{
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }}
+        
+        .features h2 {{
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }}
+        
+        .feature-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }}
+        
+        .feature-card {{
+            background: rgba(255, 255, 255, 0.15);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }}
+        
+        .feature-card:hover {{
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }}
+        
+        .feature-icon {{
+            font-size: 48px;
+            margin-bottom: 20px;
+        }}
+        
+        .feature-card h3 {{
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }}
+        
+        .feature-card p {{
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.8;
+        }}
+        
+        /* Footer */
+        footer {{
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 80px;
+        }}
+        
+        footer p {{
+            opacity: 0.8;
+        }}
+        
+        /* Responsive */
+        @media (max-width: 768px) {{
+            .hero h1 {{
+                font-size: 40px;
+            }}
+            
+            .hero p {{
+                font-size: 18px;
+            }}
+            
+            .nav-links {{
+                display: none;
+            }}
+            
+            .feature-grid {{
+                grid-template-columns: 1fr;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-rocket"></i>
+                <span>Generated Site</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to Your<br>Generated Website</h1>
+            <p>Built with AI • Powered by Code Weaver</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="handleGetStarted()">
+                    <i class="fas fa-rocket"></i> Get Started
+                </button>
+                <button class="btn btn-secondary" onclick="handleLearnMore()">
+                    <i class="fas fa-info-circle"></i> Learn More
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Amazing Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Optimized for speed and performance with modern web technologies.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Fully Responsive</h3>
+                    <p>Looks great on all devices, from mobile phones to desktop screens.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure & Reliable</h3>
+                    <p>Built with security best practices and modern web standards.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Generated Website • Built with Code Weaver</p>
+        </div>
+    </footer>
+    
+    <script>
+        function handleGetStarted() {{
+            alert('Get Started clicked! This would normally redirect to a signup page.');
+        }}
+        
+        function handleLearnMore() {{
+            alert('Learn More clicked! This would show more information.');
+        }}
+        
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {{
+            anchor.addEventListener('click', function (e) {{
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {{
+                    target.scrollIntoView({{
+                        behavior: 'smooth',
+                        block: 'start'
+                    }});
+                }}
+            }});
+        }});
+        
+        console.log('Website loaded successfully!');
+    </script>
+</body>
+</html>"""
+
+        # Extract CSS and JS for the separate tabs
+        css_match = re.search(r'<style>(.*?)</style>', html, re.DOTALL)
+        css = css_match.group(1).strip() if css_match else ""
+        
+        js_match = re.search(r'<script>(.*?)</script>', html, re.DOTALL)
+        js = js_match.group(1).strip() if js_match else ""
+        
+        return {"html": html, "css": css, "js": js}
 
     async def _generate_backend(self, prompt: str, provider: str, model: str, session_id: str) -> Dict[str, str]:
         """Generate Python FastAPI backend"""
