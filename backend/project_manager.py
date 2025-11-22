@@ -114,7 +114,7 @@ class ProjectManager:
             "requirements": str(backend_dir / "requirements.txt") if requirements_txt else None
         }
     
-    def _link_external_files(self, html: str, css: str, js: str) -> str:
+    def _link_external_files(self, html: str, css: str, js: str) -> tuple:
         """Modify HTML to link external CSS and JS files properly"""
         import re
         
@@ -122,23 +122,42 @@ class ProjectManager:
         has_embedded_css = "<style>" in html
         has_embedded_js = "<script>" in html and "</script>" in html
         
-        # Extract embedded CSS if present and css parameter is empty
+        # ALWAYS try to extract embedded content if it exists in HTML
+        # This ensures we never serve blank CSS/JS files
         extracted_css = css
-        if has_embedded_css and not css.strip():
+        if has_embedded_css:
             # Extract all CSS from style tags
-            style_matches = re.findall(r'<style>(.*?)</style>', html, re.DOTALL)
+            style_matches = re.findall(r'<style[^>]*>(.*?)</style>', html, re.DOTALL | re.IGNORECASE)
             if style_matches:
-                extracted_css = '\n\n'.join(style_matches)
-                logger.info(f"Extracted {len(extracted_css)} chars of CSS from embedded styles")
+                embedded_css = '\n\n'.join(style_matches).strip()
+                if embedded_css:
+                    # Use embedded CSS if provided CSS is empty or much smaller
+                    if not css.strip() or len(embedded_css) > len(css.strip()):
+                        extracted_css = embedded_css
+                        logger.info(f"✅ Extracted {len(extracted_css)} chars of CSS from embedded <style> tags")
+                    else:
+                        logger.info(f"Using provided CSS ({len(css)} chars), not extracting embedded")
         
-        # Extract embedded JS if present and js parameter is empty
+        # ALWAYS try to extract embedded JS if it exists in HTML
         extracted_js = js
-        if has_embedded_js and not js.strip():
+        if has_embedded_js:
             # Extract all JS from script tags (excluding those with src attribute)
-            script_matches = re.findall(r'<script(?![^>]*src=)>(.*?)</script>', html, re.DOTALL)
+            script_matches = re.findall(r'<script(?![^>]*src=)>(.*?)</script>', html, re.DOTALL | re.IGNORECASE)
             if script_matches:
-                extracted_js = '\n\n'.join(script_matches)
-                logger.info(f"Extracted {len(extracted_js)} chars of JS from embedded scripts")
+                embedded_js = '\n\n'.join(script_matches).strip()
+                if embedded_js:
+                    # Use embedded JS if provided JS is empty or much smaller
+                    if not js.strip() or len(embedded_js) > len(js.strip()):
+                        extracted_js = embedded_js
+                        logger.info(f"✅ Extracted {len(extracted_js)} chars of JS from embedded <script> tags")
+                    else:
+                        logger.info(f"Using provided JS ({len(js)} chars), not extracting embedded")
+        
+        # Validate we have actual content
+        if not extracted_css.strip():
+            logger.warning("⚠️ WARNING: No CSS content found - website may appear unstyled!")
+        if not extracted_js.strip():
+            logger.warning("⚠️ WARNING: No JS content found - website may lack interactivity")
         
         # Only modify HTML and link external files if we have content to link
         if extracted_css.strip():
