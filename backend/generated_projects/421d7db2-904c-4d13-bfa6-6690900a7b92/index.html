@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="#" class="logo" onclick="showHome()">
+                <i class="fab fa-youtube"></i>
+                YouTube
+            </a>
+        </div>
+        
+        <div class="header-center">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search" id="searchInput">
+                <button class="search-btn" onclick="performSearch()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button class="header-btn">
+                <i class="fas fa-video"></i>
+            </button>
+            <button class="header-btn">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="header-btn">
+                <i class="fas fa-user-circle"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-item active" onclick="showHome()">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-fire"></i>
+                <span>Trending</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-music"></i>
+                <span>Music</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-gamepad"></i>
+                <span>Gaming</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-newspaper"></i>
+                <span>News</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-trophy"></i>
+                <span>Sports</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-clock"></i>
+                <span>Watch later</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-thumbs-up"></i>
+                <span>Liked videos</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-section">
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-flag"></i>
+                <span>Report history</span>
+            </a>
+            <a href="#" class="sidebar-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main" id="mainContent">
+        <div class="video-grid" id="videoGrid">
+            <!-- Videos will be generated here -->
+        </div>
+    </main>
+
+    <!-- Watch Page -->
+    <div class="watch-page" id="watchPage">
+        <div class="watch-content">
+            <div>
+                <div class="video-player">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="video-details">
+                    <h1 class="video-title-large" id="watchVideoTitle">Sample Video Title</h1>
+                    <div class="video-stats">
+                        <span class="video-views" id="watchVideoViews">
