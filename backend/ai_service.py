@@ -193,7 +193,48 @@ When users ask to modify the website, acknowledge their request and explain what
             }
             
         except Exception as e:
-            logger.error(f"Complete project generation failed: {str(e)}", exc_info=True)
+            error_str = str(e)
+            logger.error(f"Complete project generation failed: {error_str}", exc_info=True)
+            
+            # Check if it's an API error (not a code issue)
+            if "BadGatewayError" in error_str or "502" in error_str or "503" in error_str or "timeout" in error_str.lower():
+                logger.warning("API error detected - retrying generation once...")
+                try:
+                    # Retry once for API errors
+                    analysis = await self._analyze_user_intent(prompt, provider, model_name, session_id, current_website)
+                    frontend_result = await self._generate_contextual_frontend(prompt, analysis, provider, model_name, session_id, current_website)
+                    backend_result = await self._generate_backend(prompt, provider, model_name, session_id)
+                    readme = await self._generate_readme(prompt, provider, model_name, session_id)
+                    
+                    files = []
+                    if frontend_result.get('html'):
+                        files.append({"filename": "index.html", "content": frontend_result['html'], "file_type": "html", "description": "Main HTML file"})
+                    if frontend_result.get('css'):
+                        files.append({"filename": "styles.css", "content": frontend_result['css'], "file_type": "css", "description": "Stylesheet"})
+                    if frontend_result.get('js'):
+                        files.append({"filename": "app.js", "content": frontend_result['js'], "file_type": "js", "description": "JavaScript"})
+                    
+                    package_json = self._generate_package_json(prompt)
+                    files.append({"filename": "package.json", "content": package_json, "file_type": "json", "description": "Package configuration"})
+                    
+                    logger.info("✅ Retry successful!")
+                    
+                    return {
+                        "html_content": frontend_result.get('html', ''),
+                        "css_content": frontend_result.get('css', ''),
+                        "js_content": frontend_result.get('js', ''),
+                        "python_backend": backend_result.get('python', ''),
+                        "requirements_txt": backend_result.get('requirements', ''),
+                        "package_json": package_json,
+                        "readme": readme,
+                        "structure": analysis,
+                        "files": files
+                    }
+                except Exception as retry_error:
+                    logger.error(f"Retry also failed: {str(retry_error)}")
+            
+            # Only use fallback as last resort
+            logger.warning("Using fallback project template")
             return await self._generate_fallback_project(prompt)
 
     async def _analyze_user_intent(self, prompt: str, provider: str, model: str, session_id: str, current_website: Optional[Dict] = None) -> Dict[str, Any]:
