@@ -135,6 +135,9 @@ backend:
       - working: true
         agent: "main"
         comment: "FIXED CODE DUMPING ISSUE - Implemented smart routing system. Changes: 1) Frontend detectWebsiteIntent() function checks message for generation keywords (create, add, modify, change, fix, etc.), 2) If detected, automatically routes to generateWebsite() instead of chat endpoint, 3) Updated AI chat system message to NEVER output code blocks, 4) Chat responses now conversational only, 5) All website generation/modification automatically triggers file updates. Users can now naturally request changes in chat and system implements them properly without dumping code."
+      - working: true
+        agent: "main"
+        comment: "PROPER EDITING AGENT IMPLEMENTED - Major enhancement for iterative development. Changes: 1) Shows COMPLETE existing code to AI (not previews), 2) Separate editing prompt for modifications vs creation, 3) Explicit instructions: 'make surgical edits', 'keep everything else', 'don't rebuild', 4) Editing mode prompt emphasizes preservation of existing features, 5) AI receives full HTML/CSS/JS to understand structure, 6) Clear DO/DON'T guidelines for editing vs creating. System now properly modifies existing websites instead of regenerating from scratch."
   - task: "File-based Preview System - Professional Architecture"
     implemented: true
     working: true
