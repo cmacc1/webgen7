@@ -524,7 +524,7 @@ EDITING VERIFICATION:
 ═══════════════════════════════════════════════════════════════
 """
         
-        if current_website:
+        if edit_mode:
             # EDITING MODE - Structured, thorough approach
             frontend_prompt = f"""🔄 WEBSITE EDITING TASK - APPLY ALL REQUESTED CHANGES 🔄
 
