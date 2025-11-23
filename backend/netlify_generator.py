@@ -937,6 +937,63 @@ Respond with JSON:
         
         return files
     
+    def _extract_embedded_content(self, files: Dict[str, str]) -> Dict[str, str]:
+        """
+        Extract embedded <style> and <script> tags from HTML and create separate files
+        """
+        if 'index.html' not in files:
+            return files
+        
+        html = files['index.html']
+        extracted_files = files.copy()
+        
+        try:
+            import re
+            
+            # Extract CSS from <style> tags
+            if 'styles.css' not in files:
+                style_pattern = r'<style[^>]*>(.*?)</style>'
+                style_matches = re.findall(style_pattern, html, re.DOTALL | re.IGNORECASE)
+                
+                if style_matches:
+                    css_content = '\n\n'.join(style_matches)
+                    extracted_files['styles.css'] = css_content
+                    logger.info(f"✅ Extracted CSS from <style> tags ({len(css_content)} chars)")
+                    
+                    # Remove <style> tags from HTML and add <link>
+                    html = re.sub(style_pattern, '', html, flags=re.DOTALL | re.IGNORECASE)
+                    
+                    # Add link to external CSS if not present
+                    if 'href="styles.css"' not in html and "href='styles.css'" not in html:
+                        # Insert after <head> tag
+                        html = html.replace('</head>', '    <link rel="stylesheet" href="styles.css">\n</head>')
+            
+            # Extract JavaScript from <script> tags (excluding external scripts)
+            if 'app.js' not in files and 'script.js' not in files:
+                # Match script tags that don't have src attribute
+                script_pattern = r'<script(?![^>]*\ssrc=)[^>]*>(.*?)</script>'
+                script_matches = re.findall(script_pattern, html, re.DOTALL | re.IGNORECASE)
+                
+                if script_matches:
+                    js_content = '\n\n'.join(script_matches)
+                    extracted_files['app.js'] = js_content
+                    logger.info(f"✅ Extracted JavaScript from <script> tags ({len(js_content)} chars)")
+                    
+                    # Remove inline scripts from HTML and add external script
+                    html = re.sub(script_pattern, '', html, flags=re.DOTALL | re.IGNORECASE)
+                    
+                    # Add script tag before </body> if not present
+                    if 'src="app.js"' not in html and "src='app.js'" not in html:
+                        html = html.replace('</body>', '    <script src="app.js"></script>\n</body>')
+            
+            # Update HTML in files
+            extracted_files['index.html'] = html
+            
+        except Exception as e:
+            logger.error(f"Error extracting embedded content: {str(e)}")
+        
+        return extracted_files
+    
     def _find_closing_quote(self, text: str, start_pos: int) -> int:
         """Find the closing quote position, handling escaped quotes"""
         i = start_pos
