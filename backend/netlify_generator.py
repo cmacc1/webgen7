@@ -6,6 +6,7 @@ import os
 import logging
 import json
 import re
+import asyncio
 from typing import Dict, Any, List, Optional
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 from fastapi import HTTPException
