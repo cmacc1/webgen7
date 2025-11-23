@@ -136,22 +136,22 @@ Generate code as a JSON object with files as keys and content as values.
         checklist = self._generate_requirement_checklist(requirements)
         features_str = ', '.join(analysis.get('features', []))
         
-        user_prompt = f"""Generate a complete Netlify-deployable project for:
+        user_prompt = """Generate a complete Netlify-deployable project for:
 
-"{prompt}"
+""" + f'"{prompt}"' + """
 
 PROJECT SPECIFICATIONS:
-- Type: {analysis.get('project_type', 'web app')}
-- Framework: {framework}
-- Backend Required: {needs_backend}
-- Database Required: {needs_database}
-- Features: {features_str}
+- Type: """ + analysis.get('project_type', 'web app') + """
+- Framework: """ + framework + """
+- Backend Required: """ + str(needs_backend) + """
+- Database Required: """ + str(needs_database) + """
+- Features: """ + features_str + """
 
 🚨 CRITICAL COMPLETENESS REQUIREMENTS:
 You MUST include EVERY item mentioned in the prompt above. Read it carefully:
 
 USER REQUESTED THESE SPECIFIC ITEMS:
-{requirements_json}
+""" + requirements_json + """
 
 VERIFICATION CHECKLIST (Complete ALL items):
 """ + checklist + """
