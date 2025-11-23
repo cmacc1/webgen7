@@ -122,11 +122,31 @@ class NetlifyGenerator:
         # Health check before expensive operation
         is_healthy = await self._check_api_health(provider, model)
         if not is_healthy:
-            logger.warning("⚠️ API health check failed, but proceeding with retry logic...")
-        
-        # Analyze user intent with detailed requirements extraction
-        analysis = await self._analyze_project_requirements(prompt, provider, model, session_id)
-        logger.info(f"📋 Project analysis: {json.dumps(analysis, indent=2)}")
+            logger.warning("⚠️ API health check failed - skipping analysis to reduce load")
+            # Use fallback analysis to reduce API calls
+            analysis = {
+                "project_type": "web_app",
+                "framework": "vanilla",
+                "needs_backend": False,
+                "needs_database": False,
+                "features": [],
+                "database_type": "none"
+            }
+        else:
+            # Analyze user intent with detailed requirements extraction
+            try:
+                analysis = await self._analyze_project_requirements(prompt, provider, model, session_id)
+                logger.info(f"📋 Project analysis: {json.dumps(analysis, indent=2)}")
+            except Exception as e:
+                logger.warning(f"⚠️ Analysis failed: {str(e)[:100]} - using fallback")
+                analysis = {
+                    "project_type": "web_app",
+                    "framework": "vanilla",
+                    "needs_backend": False,
+                    "needs_database": False,
+                    "features": [],
+                    "database_type": "none"
+                }
         
         # Extract explicit requirements from prompt
         requirements = self._extract_requirements(prompt)
