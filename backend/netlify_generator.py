@@ -166,33 +166,59 @@ Generate complete JSON with all 3 files. Make it visually stunning!"""
             # Set max_tokens to allow complete responses
             chat.with_params(max_tokens=16000)
             
-            # Retry logic for API failures (502 errors, rate limits, etc.)
-            max_retries = 5  # Increased retries
-            retry_delay = 3  # Longer initial delay
+            # Retry logic with exponential backoff and jitter for stability
+            max_retries = 5
+            base_delay = 3
             response = None
+            last_error = None
             
             for attempt in range(max_retries):
                 try:
-                    response = await chat.send_message(UserMessage(text=user_prompt))
-                    logger.info(f"✅ AI Response received: {len(response)} characters")
+                    # Add timeout wrapper for stability
+                    response = await asyncio.wait_for(
+                        chat.send_message(UserMessage(text=user_prompt)),
+                        timeout=120.0  # 2 minute timeout per attempt
+                    )
+                    logger.info(f"✅ AI Response received: {len(response)} characters on attempt {attempt + 1}")
                     break
+                    
+                except asyncio.TimeoutError:
+                    last_error = "Request timed out after 120 seconds"
+                    logger.warning(f"⏱️ Timeout on attempt {attempt + 1}/{max_retries}")
+                    if attempt < max_retries - 1:
+                        wait_time = base_delay * (2 ** attempt) + (attempt * 0.5)  # Add jitter
+                        logger.warning(f"   Retrying in {wait_time:.1f}s...")
+                        await asyncio.sleep(wait_time)
+                        continue
+                    
                 except Exception as e:
                     error_str = str(e)
-                    is_502 = '502' in error_str or 'BadGateway' in error_str
-                    is_timeout = 'timeout' in error_str.lower() or 'timed out' in error_str.lower()
+                    last_error = error_str
                     
-                    if (is_502 or is_timeout) and attempt < max_retries - 1:
-                        wait_time = retry_delay * (2 ** attempt)  # Exponential backoff: 3s, 6s, 12s, 24s, 48s
-                        logger.warning(f"⚠️ API error on attempt {attempt + 1}/{max_retries}. Retrying in {wait_time}s...")
-                        logger.warning(f"   Error: {error_str[:200]}")
+                    # Check if error is retryable
+                    is_502 = '502' in error_str or 'BadGateway' in error_str.lower()
+                    is_503 = '503' in error_str or 'service unavailable' in error_str.lower()
+                    is_timeout = 'timeout' in error_str.lower() or 'timed out' in error_str.lower()
+                    is_connection = 'connection' in error_str.lower() or 'network' in error_str.lower()
+                    
+                    is_retryable = is_502 or is_503 or is_timeout or is_connection
+                    
+                    if is_retryable and attempt < max_retries - 1:
+                        # Exponential backoff with jitter to reduce load
+                        wait_time = base_delay * (2 ** attempt) + (attempt * 0.5)
+                        logger.warning(f"⚠️ Retryable error on attempt {attempt + 1}/{max_retries}")
+                        logger.warning(f"   Error: {error_str[:150]}")
+                        logger.warning(f"   Waiting {wait_time:.1f}s before retry...")
                         await asyncio.sleep(wait_time)
                         continue
                     else:
-                        logger.error(f"❌ API failed after {attempt + 1} attempts: {error_str}")
-                        raise  # Re-raise if not retryable or last attempt
+                        logger.error(f"❌ Non-retryable error or final attempt: {error_str[:200]}")
+                        raise
             
             if response is None:
-                raise Exception("Failed to get response from AI after all retries")
+                error_msg = f"Failed to get response after {max_retries} attempts. Last error: {last_error}"
+                logger.error(f"❌ {error_msg}")
+                raise Exception(error_msg)
             
             # Parse the JSON response
             project_data = self._parse_project_response(response)
