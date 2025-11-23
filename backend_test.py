@@ -313,8 +313,8 @@ class NetlifyDeploymentTester:
                     validation_errors.append(f"Live URL returned status {url_test_result.get('status_code')}")
                 if not url_test_result.get('has_html'):
                     validation_errors.append("Live URL does not contain HTML content")
-                if not url_test_result.get('has_coffee_content'):
-                    validation_errors.append("Live URL does not contain expected coffee shop content")
+                if not url_test_result.get('has_renovation_content'):
+                    validation_errors.append("Live URL does not contain expected renovation business content")
         
         # Step 6: Check backend logs
         logger.info("\n--- Step 6: Check Backend Logs ---")
