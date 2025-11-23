@@ -1750,16 +1750,16 @@ class NetlifyDeploymentTester:
         }
 
 async def main():
-    """Main test runner for Advanced Editing System"""
-    tester = AdvancedEditingTester()
-    results = await tester.run_comprehensive_editing_test()
+    """Main test runner for Netlify Deployment System"""
+    tester = NetlifyDeploymentTester()
+    results = await tester.run_netlify_deployment_test()
     
     # Return exit code based on results
-    if results['failed_tests'] == 0:
-        logger.info("🎉 All advanced editing tests passed!")
+    if results['success']:
+        logger.info("🎉 Netlify deployment test passed!")
         return 0
     else:
-        logger.error(f"💥 {results['failed_tests']} advanced editing test(s) failed!")
+        logger.error(f"💥 Netlify deployment test failed!")
         return 1
 
 if __name__ == "__main__":
