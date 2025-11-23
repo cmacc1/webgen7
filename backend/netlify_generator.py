@@ -867,6 +867,11 @@ Respond with JSON:
                 logger.info("Strategy 1 failed, trying raw content extraction...")
                 files = self._extract_raw_content(response)
             
+            # Strategy 3: If we have HTML but no separate CSS/JS, extract embedded content
+            if files and 'index.html' in files and ('styles.css' not in files or 'app.js' not in files):
+                logger.info("Found HTML-only, extracting embedded CSS and JS...")
+                files = self._extract_embedded_content(files)
+            
         except Exception as e:
             logger.error(f"Regex extraction error: {str(e)}")
         
