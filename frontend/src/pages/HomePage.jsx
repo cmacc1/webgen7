@@ -255,21 +255,36 @@ export default function HomePage() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       setGenerationSteps(prev => prev.map(step => ({ ...step, status: 'complete' })));
 
-      setGeneratedWebsite(response.data);
+      // Extract website data from Netlify response
+      const websiteData = {
+        ...response.data.project,
+        netlify_deploy_url: response.data.deploy_preview_url || response.data.instant_url,
+        netlify_site_id: response.data.deployment?.site_id,
+        netlify_deployed: response.data.deployment?.success
+      };
       
-      // Add success message
+      setGeneratedWebsite(websiteData);
+      
+      // Add success message with Netlify URL
+      const deployUrl = response.data.deploy_preview_url || response.data.instant_url;
       const successMsg = {
         role: 'assistant',
-        content: `✅ I've successfully generated your website! You can see it in the preview panel on the right. Feel free to:
+        content: `✅ I've successfully generated and deployed your website to Netlify!
+
+🌐 **Live URL**: ${deployUrl || 'Processing...'}
+
+You can:
 - View the HTML, CSS, and JavaScript tabs to see the code
+- Visit the live URL to see it deployed
 - Download the code using the download button
-- Open it in a new tab for full-screen viewing
-- Ask me to make any changes or improvements!`,
+- Ask me to make any changes or improvements!
+
+${deployUrl ? `Click here to visit: ${deployUrl}` : 'The deployment is processing and will be ready shortly.'}`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, successMsg]);
       
-      toast.success('Website generated successfully!');
+      toast.success('Website generated and deployed to Netlify!');
     } catch (error) {
       console.error('Failed to generate website:', error);
       toast.error('Failed to generate website. Please try again.');
