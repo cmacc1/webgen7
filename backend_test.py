@@ -63,18 +63,19 @@ class NetlifyDeploymentTester:
                 return None
     
     async def test_netlify_generate_and_deploy(self, session_id: str) -> Dict[str, Any]:
-        """Test the complete Netlify generation and deployment flow"""
+        """Test the complete Netlify generation and deployment flow with the EXACT prompt from review request"""
         logger.info("\n" + "="*80)
-        logger.info("CRITICAL TEST - NETLIFY AUTO-DEPLOYMENT")
+        logger.info("CRITICAL TEST - MAX TOKENS FIX VERIFICATION")
         logger.info("="*80)
         
         async with aiohttp.ClientSession() as session:
             try:
                 start_time = time.time()
                 
+                # EXACT prompt from review request
                 payload = {
                     "session_id": session_id,
-                    "prompt": "create a modern landing page for a coffee shop with a hero section, menu, and contact form. use beautiful colors and modern design",
+                    "prompt": "make me a modern website for a renovation business, the home page background should have high quality images and the tab bar should be designed well along with the buttons that take you to different sections on the site such as services and the contact form. the renovation business's services are as follows: Flooring including epoxy flooring, Bathrooms, Kitchens, Full house, etc.. make it look good",
                     "model": "gpt-5",
                     "edit_mode": False
                 }
