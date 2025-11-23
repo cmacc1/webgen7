@@ -123,11 +123,11 @@ backend:
         agent: "testing"
         comment: "DESIGN QUALITY VERIFIED! Testing shows netlify_generator now produces beautiful, professional websites with comprehensive design. Database inspection shows generated projects include: Tailwind CSS integration, Font Awesome icons, Google Fonts, responsive design, modern color schemes, proper spacing/typography. The design knowledge restoration is SUCCESSFUL. AI generates pixel-perfect modern designs matching requirements."
 
-  - task: "Netlify Auto-Deployment - Fix Critical Issues"
+  - task: "Netlify Auto-Deployment - Fix Blank Page Issue"
     implemented: true
-    working: "blocked"
-    file: "/app/backend/netlify_deploy_service.py, /app/backend/server.py"
-    stuck_count: 1
+    working: "needs_testing"
+    file: "/app/backend/netlify_generator.py"
+    stuck_count: 2
     priority: "P0"
     needs_retesting: true
     status_history:
@@ -137,6 +137,12 @@ backend:
       - working: "blocked"
         agent: "main"
         comment: "DEPENDENCY FIX APPLIED: Installed text-unidecode and Unidecode packages. Added to requirements.txt. Backend restarted successfully. However, additional testing reveals AI service is having intermittent 502 Bad Gateway errors (litellm.BadGatewayError) which blocks deployment testing. The deployment service code is correct and dependency issue is resolved. BLOCKED ON: AI service 502 errors need investigation. May be API rate limits, budget issues, or temporary service issues. Need to test with working AI service to verify deployment flow."
+      - working: "false"
+        agent: "user"
+        comment: "USER REPORTS: Netlify deployment IS working and creating pages successfully! BUT the deployed Netlify pages are showing BLANK WHITE SCREENS. The website content is not visible. This indicates files are being uploaded to Netlify but the HTML/CSS/JS structure is incorrect."
+      - working: "needs_testing"
+        agent: "main"
+        comment: "BLANK PAGE ROOT CAUSE IDENTIFIED & FIXED: The AI was generating HTML files that referenced external stylesheets (<link href='static/styles.css'> or <link href='styles.css'>) but those CSS files either didn't exist or weren't being extracted properly from the AI response. For Netlify deployment, the HTML MUST have EMBEDDED styles and scripts that the system then extracts into separate files. FIX APPLIED: 1) Added explicit instructions in system prompt requiring ALL CSS in <style> tags and ALL JavaScript in <script> tags, 2) Added critical file structure example showing proper embedded content, 3) Explicitly prohibited external file references like href='styles.css', 4) Emphasized that system will automatically extract embedded content into separate files, 5) Updated both system prompt and user prompt with this requirement. The _extract_embedded_content method was already correctly implemented - the issue was the AI wasn't generating content in the right format. Backend restarted. READY FOR TESTING."
   
 backend:
   - task: "AI Website Generation - Fix repetitive layouts"
