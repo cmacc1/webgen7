@@ -140,134 +140,20 @@ Rules:
 ═══════════════════════════════════════════════════════════════
 """
         
-        # Build user prompt based on analysis
-        needs_backend = analysis.get("needs_backend", False)
-        needs_database = analysis.get("needs_database", False)
-        framework = analysis.get("framework", "vanilla")
-        
-        requirements_json = json.dumps(requirements, indent=2)
-        checklist = self._generate_requirement_checklist(requirements)
-        features_str = ', '.join(analysis.get('features', []))
-        
-        user_prompt = """Generate a complete Netlify-deployable project for:
+        # Streamlined user prompt
+        user_prompt = f"""Create a beautiful, modern website for:
 
-""" + f'"{prompt}"' + """
+"{prompt}"
 
-PROJECT SPECIFICATIONS:
-- Type: """ + analysis.get('project_type', 'web app') + """
-- Framework: """ + framework + """
-- Backend Required: """ + str(needs_backend) + """
-- Database Required: """ + str(needs_database) + """
-- Features: """ + features_str + """
+Requirements:
+- Modern design with Tailwind CSS
+- Professional colors, gradients, shadows
+- Font Awesome icons
+- Smooth animations
+- Fully responsive
+- Include index.html, styles.css, and app.js
 
-🚨 CRITICAL COMPLETENESS REQUIREMENTS:
-You MUST include EVERY item mentioned in the prompt above. Read it carefully:
-
-USER REQUESTED THESE SPECIFIC ITEMS:
-""" + requirements_json + """
-
-VERIFICATION CHECKLIST (Complete ALL items):
-""" + checklist + """
-
-GENERATE:
-1. Frontend files (HTML/CSS/JS or React)
-2. Netlify Functions (if backend needed)
-3. netlify.toml configuration
-4. package.json (if using npm)
-5. README.md with setup instructions
-
-IMPORTANT RULES:
-- Use Netlify Functions for ALL backend logic
-- API endpoints accessible via `/.netlify/functions/[name]`
-- Include environment variable placeholders
-- Make it production-ready and VISUALLY STUNNING
-- MUST use modern CSS frameworks (Tailwind, Bootstrap) OR comprehensive custom CSS
-- Use gradients, shadows, animations, hover effects
-- Professional color schemes and typography
-- Font Awesome icons (NOT emojis)
-- Generous spacing and proper layout
-- Ensure mobile responsiveness with media queries
-
-🎨 VISUAL DESIGN CHECKLIST (ALL MANDATORY):
-✅ Tailwind CSS OR Bootstrap CDN link in <head>
-✅ Font Awesome CDN link for professional icons
-✅ Google Fonts for modern typography
-✅ Proper color palette (not just black text on white)
-✅ Gradients and shadows for depth
-✅ Hover effects on interactive elements
-✅ Smooth transitions and animations
-✅ Responsive breakpoints
-✅ Professional spacing and layout
-✅ Modern component designs (cards, buttons, forms)
-
-⚠️ BEFORE SUBMITTING YOUR CODE:
-Go through the verification checklist above and confirm EVERY item is present in your code.
-If ANY item is missing (especially design elements), ADD IT NOW before responding.
-
-🚨 OUTPUT FORMAT - CRITICAL:
-
-YOU MUST OUTPUT THREE SEPARATE FILES IN JSON FORMAT:
-
-{
-  "files": {
-    "index.html": "Complete HTML that links to styles.css and app.js",
-    "styles.css": "ALL CSS code for beautiful styling",
-    "app.js": "ALL JavaScript code for interactivity"
-  },
-  "deploy_config": {
-    "build_command": "",
-    "publish_dir": ".",
-    "functions_dir": "netlify/functions"
-  }
-}
-
-HTML STRUCTURE (index.html):
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
-    
-    <!-- CDN Links - Required -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Link to your CSS file -->
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <!-- Your HTML content here -->
-    
-    <!-- Link to your JS file before closing body tag -->
-    <script src="app.js"></script>
-</body>
-</html>
-```
-
-STYLES.CSS: Put ALL your custom CSS here (minimum 300 lines for a professional website)
-APP.JS: Put ALL your JavaScript here (interactivity, animations, event handlers)
-
-ESCAPING RULES FOR JSON:
-- Escape " as \\"
-- Escape newlines as \\n
-- Escape backslashes as \\\\
-
-FOCUS: Generate COMPLETE, BEAUTIFUL code with ALL user requirements across these 3 files.
-
-═══════════════════════════════════════════════════════════════
-🚨 REQUIREMENT COMPLETION CHECKLIST - MANDATORY
-═══════════════════════════════════════════════════════════════
-
-Before submitting your code, verify EACH requirement is implemented:
-
-""" + checklist_text + """
-
-YOU MUST CHECK OFF EVERY ITEM. If any item is NOT implemented, add it now before responding.
-
-REMEMBER: Beautiful design is great, but COMPLETENESS is mandatory. Every feature, section, element, and detail the user requested MUST be present in your code."""
+Generate complete JSON with all 3 files. Make it visually stunning!"""
 
         try:
             chat = LlmChat(
