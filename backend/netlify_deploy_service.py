@@ -50,16 +50,22 @@ class NetlifyDeployService:
                 # Step 3: Wait for build to complete
                 build_status = await self._wait_for_build(session, deploy_id)
                 
+                # Get the clean site URL (without deploy ID prefix)
+                clean_site_url = site_data.get("ssl_url") or f"https://{site_data.get('name')}.netlify.app"
+                
+                logger.info(f"✅ Clean Site URL: {clean_site_url}")
+                
                 return {
                     "site_id": site_id,
                     "site_name": site_data.get("name"),
-                    "site_url": site_url,
+                    "site_url": clean_site_url,  # Use clean URL
                     "deploy_id": deploy_id,
-                    "deploy_url": deploy_url,
-                    "deploy_preview_url": deploy_url,
+                    "deploy_url": clean_site_url,  # Use clean URL
+                    "deploy_preview_url": clean_site_url,  # Use clean URL for consistency
+                    "deploy_preview_url_with_id": deploy_url,  # Keep original for reference
                     "build_status": build_status,
                     "admin_url": site_data.get("admin_url"),
-                    "ssl_url": site_data.get("ssl_url")
+                    "ssl_url": clean_site_url
                 }
                 
         except Exception as e:
