@@ -122,39 +122,7 @@ CRITICAL NETLIFY REQUIREMENTS
 OUTPUT FORMAT REQUIREMENTS
 ═══════════════════════════════════════════════════════════════
 
-Generate code as a JSON object with this EXACT structure:
-
-```json
-{
-  "files": {
-    "index.html": "<!DOCTYPE html>...",
-    "styles.css": "body { ... }",
-    "app.js": "// JavaScript code",
-    "netlify.toml": "[build]\\n  publish = \\".\\"\\n  functions = \\"netlify/functions\\"",
-    "netlify/functions/api.js": "exports.handler = async ...",
-    "netlify/functions/contact.js": "exports.handler = async ...",
-    "package.json": "{ \\"name\\": \\"project\\" ... }",
-    "README.md": "# Project Name\\n..."
-  },
-  "deploy_config": {
-    "build_command": "npm run build",
-    "publish_dir": "dist",
-    "functions_dir": "netlify/functions",
-    "environment_variables": {
-      "SUPABASE_URL": "https://example.supabase.co",
-      "SUPABASE_KEY": "your-key-here"
-    }
-  }
-}
-```
-
-KEY POINTS:
-- ALL file paths as keys (including subdirectories)
-- File content as string values
-- Escape special characters in strings
-- Include ALL necessary files
-- netlify.toml is REQUIRED
-- Environment variables list what's needed
+Generate code as a JSON object with files as keys and content as values.
 
 ═══════════════════════════════════════════════════════════════
 """
