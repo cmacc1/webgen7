@@ -86,7 +86,7 @@ class NetlifyGenerator:
 
 🔍 REQUIREMENTS TRACKING:
 The user has requested these specific items - YOU MUST INCLUDE ALL OF THEM:
-{requirements_json}
+""" + requirements_json + """
 
 Before you finish, verify you've implemented EVERY item in the requirements list above.
 
