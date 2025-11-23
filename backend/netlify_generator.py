@@ -183,6 +183,10 @@ KEY POINTS:
         needs_database = analysis.get("needs_database", False)
         framework = analysis.get("framework", "vanilla")
         
+        requirements_json = json.dumps(requirements, indent=2)
+        checklist = self._generate_requirement_checklist(requirements)
+        features_str = ', '.join(analysis.get('features', []))
+        
         user_prompt = f"""Generate a complete Netlify-deployable project for:
 
 "{prompt}"
@@ -192,16 +196,16 @@ PROJECT SPECIFICATIONS:
 - Framework: {framework}
 - Backend Required: {needs_backend}
 - Database Required: {needs_database}
-- Features: {', '.join(analysis.get('features', []))}
+- Features: {features_str}
 
 🚨 CRITICAL COMPLETENESS REQUIREMENTS:
 You MUST include EVERY item mentioned in the prompt above. Read it carefully:
 
 USER REQUESTED THESE SPECIFIC ITEMS:
-{json.dumps(requirements, indent=2)}
+{requirements_json}
 
 VERIFICATION CHECKLIST (Complete ALL items):
-{self._generate_requirement_checklist(requirements)}
+{checklist}
 
 GENERATE:
 1. Frontend files (HTML/CSS/JS or React)
