@@ -122,30 +122,43 @@ CRITICAL NETLIFY REQUIREMENTS
 OUTPUT FORMAT REQUIREMENTS - CRITICAL
 ═══════════════════════════════════════════════════════════════
 
-YOU MUST OUTPUT VALID JSON. Start your response with a JSON object like this:
+YOU MUST OUTPUT VALID JSON with BASE64 ENCODED FILE CONTENTS.
 
+Since HTML/CSS/JS contains quotes and special characters that break JSON, 
+you MUST base64-encode all file contents.
+
+OUTPUT FORMAT:
 {
   "files": {
-    "index.html": "your HTML code here as a string",
-    "styles.css": "your CSS code here as a string",
-    "app.js": "your JavaScript code here as a string",
-    "netlify.toml": "your netlify config here",
-    "README.md": "your readme here"
+    "index.html": "BASE64_ENCODED_HTML_HERE",
+    "styles.css": "BASE64_ENCODED_CSS_HERE",
+    "app.js": "BASE64_ENCODED_JS_HERE",
+    "netlify.toml": "BASE64_ENCODED_CONFIG_HERE"
   },
   "deploy_config": {
     "build_command": "",
     "publish_dir": ".",
-    "functions_dir": "netlify/functions",
-    "environment_variables": {}
+    "functions_dir": "netlify/functions"
   }
 }
 
-CRITICAL RULES:
-- Start response with { and end with }
-- All file content must be properly escaped strings
-- No markdown code blocks - just raw JSON
-- All file paths as keys under "files" object
-- Include netlify.toml file
+HOW TO ENCODE:
+1. Write your complete HTML/CSS/JS code
+2. Convert EACH file content to base64 encoding
+3. Put the base64 string as the value
+
+EXAMPLE:
+If your HTML is: <!DOCTYPE html><html><body>Hi</body></html>
+The base64 is: PCFET0NUWVBFIGh0bWw+PGh0bWw+PGJvZHk+SGk8L2JvZHk+PC9odG1sPg==
+
+Your JSON would be:
+{
+  "files": {
+    "index.html": "PCFET0NUWVBFIGh0bWw+PGh0bWw+PGJvZHk+SGk8L2JvZHk+PC9odG1sPg=="
+  }
+}
+
+CRITICAL: All file values MUST be base64 encoded strings!
 
 ═══════════════════════════════════════════════════════════════
 """
