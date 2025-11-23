@@ -717,8 +717,11 @@ Respond with JSON:
                             for pattern, filename in file_patterns:
                                 match = re.search(pattern, response, re.IGNORECASE)
                                 if match:
+                                    logger.info(f"Found pattern for {filename} at position {match.start()}")
                                     content_start = match.end()
                                     closing_pos = self._find_closing_quote(response, content_start)
+                                    
+                                    logger.info(f"Closing quote for {filename} at position {closing_pos}")
                                     
                                     if closing_pos > content_start:
                                         content = response[content_start:closing_pos]
@@ -728,9 +731,17 @@ Respond with JSON:
                                         content = content.replace('\\\\', '\\')
                                         content = content.replace('\\/', '/')
                                         
+                                        logger.info(f"Content length after unescape: {len(content)}")
+                                        
                                         if len(content) > 50:
                                             extracted_files[filename] = content
                                             logger.info(f"✅ Manually extracted {filename} ({len(content)} chars)")
+                                        else:
+                                            logger.warning(f"Content too short for {filename}: {len(content)} chars")
+                                    else:
+                                        logger.warning(f"Could not find closing quote for {filename} (start: {content_start}, close: {closing_pos})")
+                                else:
+                                    logger.warning(f"Pattern not found for {filename}")
                             
                             if extracted_files:
                                 logger.info(f"✅ Manual JSON extraction successful: {len(extracted_files)} files")
