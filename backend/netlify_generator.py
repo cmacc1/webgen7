@@ -119,6 +119,11 @@ class NetlifyGenerator:
     async def _create_netlify_project(self, prompt: str, provider: str, model: str, session_id: str) -> Dict[str, Any]:
         """Create a new Netlify project from scratch"""
         
+        # Health check before expensive operation
+        is_healthy = await self._check_api_health(provider, model)
+        if not is_healthy:
+            logger.warning("⚠️ API health check failed, but proceeding with retry logic...")
+        
         # Analyze user intent with detailed requirements extraction
         analysis = await self._analyze_project_requirements(prompt, provider, model, session_id)
         logger.info(f"📋 Project analysis: {json.dumps(analysis, indent=2)}")
