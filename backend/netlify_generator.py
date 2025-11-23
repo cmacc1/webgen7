@@ -296,20 +296,34 @@ Ensure the edited project remains Netlify-compatible!"""
             chat.with_model(provider, model)
             
             response = await chat.send_message(UserMessage(text=user_prompt))
-            logger.info(f"Edit response received: {len(response)} characters")
+            logger.info(f"✅ Edit response received: {len(response)} characters")
             
             # Parse edited project
             edited_project = self._parse_project_response(response)
             
             if not edited_project.get("files"):
-                logger.warning("Edit failed, returning original project")
-                return current_project
+                logger.warning("Could not parse edited project from response")
+                logger.info("Attempting alternative extraction...")
+                edited_project = self._extract_files_from_text(response)
+                
+                if not edited_project.get("files"):
+                    logger.error("❌ Edit failed - could not extract files")
+                    logger.warning("Returning original project unchanged")
+                    return current_project
+                else:
+                    logger.info(f"✅ Extracted {len(edited_project['files'])} files from text")
             
             logger.info(f"✅ Edit complete: {len(edited_project['files'])} files")
             return edited_project
             
         except Exception as e:
-            logger.error(f"Edit failed: {str(e)}")
+            error_msg = str(e).lower()
+            if "budget" in error_msg or "exceeded" in error_msg:
+                logger.error(f"❌ BUDGET ERROR during edit: {str(e)}")
+                raise HTTPException(status_code=402, detail=f"API budget exceeded: {str(e)}")
+            
+            logger.error(f"❌ Edit failed: {str(e)}")
+            logger.warning("Returning original project unchanged")
             return current_project
     
     async def _analyze_project_requirements(self, prompt: str, provider: str, model: str, session_id: str) -> Dict[str, Any]:
