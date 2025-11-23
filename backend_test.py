@@ -414,7 +414,7 @@ class NetlifyDeploymentTester:
         success = len(validation_errors) == 0
         
         logger.info("\n" + "="*80)
-        logger.info("NETLIFY GENERATION AND DEPLOYMENT TEST SUMMARY")
+        logger.info("MAX TOKENS FIX VERIFICATION - NETLIFY GENERATION TEST SUMMARY")
         logger.info("="*80)
         logger.info(f"Overall Result: {'✅ SUCCESS' if success else '❌ FAILED'}")
         logger.info(f"Total Time: {total_time:.2f}s")
