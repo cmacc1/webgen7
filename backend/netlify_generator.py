@@ -815,6 +815,92 @@ Respond with JSON:
         
         return validation_report
     
+    def _process_files(self, project_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process files - decode base64 if needed"""
+        if "files" not in project_data:
+            return project_data
+        
+        decoded_files = {}
+        for filepath, content in project_data["files"].items():
+            if isinstance(content, str):
+                # Try to decode from base64
+                try:
+                    import base64
+                    decoded_content = base64.b64decode(content).decode('utf-8')
+                    decoded_files[filepath] = decoded_content
+                    logger.info(f"✅ Decoded {filepath} from base64")
+                except Exception:
+                    # Not base64, use as-is
+                    decoded_files[filepath] = content
+            else:
+                decoded_files[filepath] = content
+        
+        project_data["files"] = decoded_files
+        return project_data
+    
+    def _extract_files_with_regex(self, response: str) -> Dict[str, str]:
+        """
+        Extract files using regex patterns when JSON parsing fails
+        Looks for patterns like "filename": "content"
+        """
+        files = {}
+        
+        try:
+            # Pattern to match file entries in JSON-like structure
+            # Handles: "index.html": "<!DOCTYPE...content..."
+            
+            # Find all "filename": pattern
+            import re
+            
+            # Match: "filename.ext": "content that may span lines"
+            # We'll extract between quotes, handling escaped quotes
+            
+            pattern = r'"([^"]+\.(html|css|js|toml|md|txt))"\s*:\s*"'
+            matches = re.finditer(pattern, response, re.IGNORECASE)
+            
+            for match in matches:
+                filename = match.group(1)
+                start_pos = match.end()  # Position after the opening quote of content
+                
+                # Find the closing quote (accounting for escaped quotes)
+                content_end = self._find_closing_quote(response, start_pos)
+                
+                if content_end > start_pos:
+                    raw_content = response[start_pos:content_end]
+                    
+                    # Unescape the content
+                    unescaped_content = raw_content.replace('\\n', '\n')
+                    unescaped_content = unescaped_content.replace('\\"', '"')
+                    unescaped_content = unescaped_content.replace('\\\\', '\\')
+                    unescaped_content = unescaped_content.replace('\\t', '\t')
+                    
+                    files[filename] = unescaped_content
+                    logger.info(f"✅ Extracted {filename} ({len(unescaped_content)} chars)")
+            
+        except Exception as e:
+            logger.error(f"Regex extraction error: {str(e)}")
+        
+        return files
+    
+    def _find_closing_quote(self, text: str, start_pos: int) -> int:
+        """Find the closing quote position, handling escaped quotes"""
+        i = start_pos
+        while i < len(text):
+            if text[i] == '"':
+                # Check if it's escaped
+                num_backslashes = 0
+                j = i - 1
+                while j >= start_pos and text[j] == '\\':
+                    num_backslashes += 1
+                    j -= 1
+                
+                # If even number of backslashes (or zero), this quote is not escaped
+                if num_backslashes % 2 == 0:
+                    return i
+            i += 1
+        
+        return -1
+    
     def _extract_files_from_text(self, response: str) -> Dict[str, Any]:
         """
         Extract files from text response when JSON parsing fails
