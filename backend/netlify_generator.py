@@ -582,7 +582,7 @@ Respond with JSON:
                                     decoded_content = base64.b64decode(content).decode('utf-8')
                                     decoded_files[filepath] = decoded_content
                                     logger.info(f"✅ Decoded {filepath} from base64")
-                                except:
+                                except Exception:
                                     # If not base64, use as-is (fallback for plain text)
                                     decoded_files[filepath] = content
                                     logger.warning(f"⚠️ {filepath} not base64 encoded, using as-is")
