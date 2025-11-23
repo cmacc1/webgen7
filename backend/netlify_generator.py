@@ -264,13 +264,29 @@ IMPORTANT RULES:
 - Use Netlify Functions for ALL backend logic
 - API endpoints accessible via `/.netlify/functions/[name]`
 - Include environment variable placeholders
-- Make it production-ready and beautiful
-- Use modern design patterns (gradients, shadows, animations)
-- Ensure mobile responsiveness
+- Make it production-ready and VISUALLY STUNNING
+- MUST use modern CSS frameworks (Tailwind, Bootstrap) OR comprehensive custom CSS
+- Use gradients, shadows, animations, hover effects
+- Professional color schemes and typography
+- Font Awesome icons (NOT emojis)
+- Generous spacing and proper layout
+- Ensure mobile responsiveness with media queries
+
+🎨 VISUAL DESIGN CHECKLIST (ALL MANDATORY):
+✅ Tailwind CSS OR Bootstrap CDN link in <head>
+✅ Font Awesome CDN link for professional icons
+✅ Google Fonts for modern typography
+✅ Proper color palette (not just black text on white)
+✅ Gradients and shadows for depth
+✅ Hover effects on interactive elements
+✅ Smooth transitions and animations
+✅ Responsive breakpoints
+✅ Professional spacing and layout
+✅ Modern component designs (cards, buttons, forms)
 
 ⚠️ BEFORE SUBMITTING YOUR CODE:
-Go through the verification checklist above and confirm EVERY item is present in your HTML.
-If ANY item is missing, ADD IT NOW before responding.
+Go through the verification checklist above and confirm EVERY item is present in your code.
+If ANY item is missing (especially design elements), ADD IT NOW before responding.
 
 🚨 OUTPUT FORMAT - EXTREMELY IMPORTANT:
 Respond with ONLY valid JSON. NO explanations before or after.
