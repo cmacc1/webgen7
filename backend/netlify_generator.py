@@ -595,6 +595,9 @@ Focus especially on the missing items, but don't remove anything you already had
             )
             chat.with_model(provider, model)
             
+            # Set max_tokens to allow complete responses
+            chat.with_params(max_tokens=16000)
+            
             response = await chat.send_message(UserMessage(text=enhanced_prompt))
             logger.info(f"✅ Retry response received: {len(response)} characters")
             
