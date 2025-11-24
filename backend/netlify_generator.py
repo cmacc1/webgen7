@@ -76,11 +76,14 @@ class NetlifyGenerator:
         """Map model ID to provider and model name"""
         model_map = {
             "claude-sonnet-4": ("anthropic", "claude-4-sonnet-20250514"),
-            "gpt-5": ("openai", "gpt-5"),
-            "gpt-5-mini": ("openai", "gpt-5-mini"),
+            "gpt-5": ("openai", "gpt-4o"),  # Map to actual working model
+            "gpt-5-mini": ("openai", "gpt-4o-mini"),  # Map to actual working model
+            "gpt-4o": ("openai", "gpt-4o"),
+            "gpt-4o-mini": ("openai", "gpt-4o-mini"),
+            "gpt-3.5-turbo": ("openai", "gpt-3.5-turbo"),
             "gemini-2.5-pro": ("gemini", "gemini-2.5-pro")
         }
-        return model_map.get(model, ("openai", "gpt-5"))
+        return model_map.get(model, ("openai", "gpt-4o"))  # Default to gpt-4o
     
     async def generate_netlify_project(self, prompt: str, model: str = "gpt-5", current_project: Optional[Dict] = None) -> Dict[str, Any]:
         """
