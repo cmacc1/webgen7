@@ -265,6 +265,7 @@ Generate complete JSON with all 3 files. Make it visually stunning!"""
                             timeout=60.0
                         )
                         logger.info(f"✅ AI Response received: {len(response)} characters from {try_provider}/{try_model}")
+                        logger.info(f"   Response preview: {response[:200]}...")
                         break  # Success! Exit retry loop
                         
                     except asyncio.TimeoutError:
