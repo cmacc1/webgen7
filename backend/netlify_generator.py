@@ -1515,13 +1515,29 @@ console.log('Environment:', window.location.hostname);
         elif any(word in prompt_lower for word in ["landing", "marketing", "agency"]):
             business_type = "landing"
         
-        # Extract business name if mentioned
-        business_name = "Your Business"
-        # Simple extraction - look for "for [name]" or "[name] website"
+        # Extract business name if mentioned - improved extraction
+        business_name = None
         import re
-        for_match = re.search(r'for (?:a |an |the )?([A-Z][A-Za-z\s&]+?)(?:\s+that|\s+with|\s*$)', prompt)
-        if for_match:
-            business_name = for_match.group(1).strip()
+        
+        # Try multiple patterns
+        patterns = [
+            r'called\s+"([^"]+)"',  # called "Name"
+            r'called\s+([A-Z][A-Za-z\s&]+?)(?:\s+with|\s+that|\s*$)',  # called Name
+            r'for\s+"([^"]+)"',  # for "Name"
+            r'for\s+(?:a\s+|an\s+|the\s+)?([A-Z][A-Za-z\s&]{2,30}?)(?:\s+that|\s+with|\s+and|\s*$)',  # for Name
+            r'business\s+to\s+"([^"]+)"',  # business to "Name"
+            r'"([A-Z][A-Za-z\s&]+?)"\s+(?:website|business)',  # "Name" website
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, prompt)
+            if match:
+                business_name = match.group(1).strip()
+                break
+        
+        # If no name found, use business type
+        if not business_name:
+            business_name = f"{business_type.title()} Business"
         
         # Detect required sections
         sections = []
