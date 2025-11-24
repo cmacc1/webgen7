@@ -1733,15 +1733,70 @@ console.log('Environment:', window.location.hostname);
                 {"icon": "fa-video", "title": "Video", "desc": "Video production"},
                 {"icon": "fa-pen-nib", "title": "Branding", "desc": "Brand identity"}
             ]
+        elif business_type == "ecommerce":
+            hero_title = f"{business_name}"
+            hero_subtitle = "Shop Quality Products Online"
+            services_list = [
+                {"icon": "fa-shopping-cart", "title": "Shop", "desc": "Browse our collection"},
+                {"icon": "fa-truck", "title": "Fast Shipping", "desc": "Quick delivery"},
+                {"icon": "fa-shield", "title": "Secure", "desc": "Safe payments"},
+                {"icon": "fa-headset", "title": "Support", "desc": "24/7 customer service"}
+            ]
+        elif business_type == "fitness":
+            hero_title = f"{business_name}"
+            hero_subtitle = "Transform Your Body & Mind"
+            services_list = [
+                {"icon": "fa-dumbbell", "title": "Training", "desc": "Personal training sessions"},
+                {"icon": "fa-heart-pulse", "title": "Cardio", "desc": "Cardio workouts"},
+                {"icon": "fa-spa", "title": "Wellness", "desc": "Mind & body wellness"},
+                {"icon": "fa-users", "title": "Classes", "desc": "Group fitness classes"}
+            ]
+        elif business_type == "blog":
+            hero_title = f"{business_name}"
+            hero_subtitle = "Stories, Insights & Ideas"
+            services_list = [
+                {"icon": "fa-newspaper", "title": "Articles", "desc": "Latest blog posts"},
+                {"icon": "fa-rss", "title": "Subscribe", "desc": "Get updates"},
+                {"icon": "fa-comments", "title": "Community", "desc": "Join discussions"},
+                {"icon": "fa-bookmark", "title": "Save", "desc": "Bookmark favorites"}
+            ]
+        elif business_type == "landing":
+            hero_title = f"{business_name}"
+            hero_subtitle = "Solutions That Drive Results"
+            services_list = [
+                {"icon": "fa-rocket", "title": "Fast", "desc": "Quick implementation"},
+                {"icon": "fa-chart-line", "title": "Growth", "desc": "Proven results"},
+                {"icon": "fa-shield", "title": "Secure", "desc": "Enterprise security"},
+                {"icon": "fa-headset", "title": "Support", "desc": "24/7 assistance"}
+            ]
         else:
+            # Extract key words from prompt for generic case
             hero_title = f"{business_name}"
             hero_subtitle = "Professional Services You Can Trust"
-            services_list = [
-                {"icon": "fa-star", "title": "Quality", "desc": "High-quality service"},
-                {"icon": "fa-users", "title": "Team", "desc": "Expert professionals"},
-                {"icon": "fa-clock", "title": "Fast", "desc": "Quick turnaround"},
-                {"icon": "fa-check", "title": "Reliable", "desc": "Dependable results"}
-            ]
+            
+            # Try to extract specific services from prompt
+            prompt_lower = prompt.lower()
+            detected_services = []
+            
+            if "website" in prompt_lower or "web" in prompt_lower:
+                detected_services.append({"icon": "fa-globe", "title": "Web Solutions", "desc": "Professional web services"})
+            if "design" in prompt_lower:
+                detected_services.append({"icon": "fa-palette", "title": "Design", "desc": "Creative design services"})
+            if "consulting" in prompt_lower or "advice" in prompt_lower:
+                detected_services.append({"icon": "fa-lightbulb", "title": "Consulting", "desc": "Expert consulting"})
+            if "marketing" in prompt_lower:
+                detected_services.append({"icon": "fa-bullhorn", "title": "Marketing", "desc": "Marketing solutions"})
+            
+            # Use detected services or defaults
+            if detected_services:
+                services_list = detected_services
+            else:
+                services_list = [
+                    {"icon": "fa-star", "title": "Quality", "desc": "High-quality service"},
+                    {"icon": "fa-users", "title": "Team", "desc": "Expert professionals"},
+                    {"icon": "fa-clock", "title": "Fast", "desc": "Quick turnaround"},
+                    {"icon": "fa-check", "title": "Reliable", "desc": "Dependable results"}
+                ]
         
         # Build services HTML
         services_html = ""
