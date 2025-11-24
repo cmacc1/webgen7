@@ -335,58 +335,49 @@ class BulletproofFailsafeTester:
         }
 
     async def check_backend_logs_for_failsafe(self) -> Dict[str, Any]:
-        """Check backend logs for deployment success messages and AI response details"""
+        """Check backend logs for failsafe system activation and layer usage"""
         try:
-            import subprocess
             result = subprocess.run(
-                ['tail', '-n', '500', '/var/log/supervisor/backend.out.log'],
+                ['tail', '-n', '1000', '/var/log/supervisor/backend.out.log'],
                 capture_output=True,
                 text=True
             )
             
             backend_logs = result.stdout
             
-            # Look for deployment success indicators
-            success_indicators = [
-                "🚀 Creating Netlify site" in backend_logs,
-                "✅ Site created" in backend_logs,
-                "✅ Deployment created" in backend_logs,
-                "✅ Build completed successfully!" in backend_logs,
-                "DEPLOYMENT SUCCESS" in backend_logs
-            ]
+            # Look for failsafe activation indicators
+            failsafe_indicators = {
+                "failsafe_activated": "🛡️ FAILSAFE ACTIVATED" in backend_logs,
+                "smart_fallback": "smart fallback:" in backend_logs,
+                "minimal_viable": "🆘 LAST RESORT: Generating minimal viable project" in backend_logs,
+                "ai_response_received": "AI Response received" in backend_logs,
+                "layer_1_success": "✅ AI Response received" in backend_logs,
+                "layer_2_activated": "FAILSAFE ACTIVATED: Using intelligent fallback" in backend_logs,
+                "layer_3_activated": "Generating minimal viable project" in backend_logs
+            }
             
-            # Look for error indicators
-            error_indicators = [
-                "text_unidecode" in backend_logs,
-                "ERROR" in backend_logs and "netlify" in backend_logs.lower(),
-                "DEPLOYMENT FAILED" in backend_logs,
-                "Budget has been exceeded" in backend_logs,
-                "encountered an error" in backend_logs,
-                "PARSING COMPLETELY FAILED" in backend_logs
-            ]
+            # Look for generation times and credit usage
+            generation_times = re.findall(r'completed in ([\d.]+)s', backend_logs)
+            credit_usage = re.findall(r'(\d+) credits?', backend_logs)
             
-            # Look for AI response character count (max_tokens fix verification)
-            ai_response_chars = None
-            import re
-            char_match = re.search(r'AI Response received: (\d+) characters', backend_logs)
-            if char_match:
-                ai_response_chars = int(char_match.group(1))
+            # Look for error patterns that should trigger failsafe
+            error_patterns = {
+                "budget_exceeded": "Budget has been exceeded" in backend_logs,
+                "502_errors": "502" in backend_logs or "BadGateway" in backend_logs,
+                "timeout_errors": "timeout" in backend_logs.lower(),
+                "parsing_errors": "PARSING COMPLETELY FAILED" in backend_logs
+            }
             
-            # Look for truncation errors
-            has_truncation_errors = any([
-                "truncated" in backend_logs.lower(),
-                "incomplete" in backend_logs.lower(),
-                "cut off" in backend_logs.lower()
-            ])
+            # Extract business type detection from smart fallback
+            business_type_matches = re.findall(r'smart fallback: (\w+)', backend_logs)
             
             return {
-                "success_indicators_found": sum(success_indicators),
-                "error_indicators_found": sum(error_indicators),
-                "has_deployment_success": any(success_indicators),
-                "has_deployment_errors": any(error_indicators),
-                "ai_response_chars": ai_response_chars,
-                "has_truncation_errors": has_truncation_errors,
-                "logs_preview": backend_logs[-1500:] if backend_logs else "No logs found"
+                "failsafe_indicators": failsafe_indicators,
+                "error_patterns": error_patterns,
+                "generation_times": [float(t) for t in generation_times],
+                "credit_usage": [int(c) for c in credit_usage],
+                "business_types_detected": business_type_matches,
+                "logs_preview": backend_logs[-2000:] if backend_logs else "No logs found"
             }
             
         except Exception as e:
