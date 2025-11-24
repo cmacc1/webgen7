@@ -31,7 +31,7 @@ class MaxTokensFixTester:
             logger.error(f"Could not read frontend .env: {e}")
         
         # Fallback
-        return "https://codeweaver-30.preview.emergentagent.com/api"
+        return "https://promptosite-7.preview.emergentagent.com/api"
     
     async def test_max_tokens_fix(self):
         """Test the exact scenario from review request to verify max_tokens fix"""

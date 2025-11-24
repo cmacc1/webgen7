@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 async def debug_generation():
     """Debug what's being generated"""
-    base_url = "https://codeweaver-30.preview.emergentagent.com/api"
+    base_url = "https://promptosite-7.preview.emergentagent.com/api"
     
     async with aiohttp.ClientSession() as session:
         # Create session
