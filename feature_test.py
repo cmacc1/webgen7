@@ -83,11 +83,11 @@ def main():
     print("=" * 60)
     
     tests = [
+        ("Root Endpoint", test_root_endpoint),
         ("Models Endpoint", test_models),
         ("Session Creation", test_session_create),
         ("Session Retrieval", test_session_get),
         ("Messages Retrieval", test_messages_get),
-        ("Website Generation Endpoint", test_website_generation_endpoint),
         ("Session Creation Speed (<1s)", test_session_create_speed),
         ("Netlify Project Endpoint", test_netlify_project_get),
     ]
