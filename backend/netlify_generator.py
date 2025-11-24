@@ -210,70 +210,50 @@ Generate complete JSON with all 3 files. Make it visually stunning!"""
             # Set max_tokens to allow complete responses
             chat.with_params(max_tokens=16000)
             
-            # Retry logic with exponential backoff and jitter for stability
-            max_retries = 5
-            base_delay = 3
+            # OPTIMIZED: Reduced retries to save credits and time
+            max_retries = 2  # Only retry once (2 total attempts)
             response = None
             last_error = None
             
             for attempt in range(max_retries):
                 try:
-                    # Rate limiting to avoid overwhelming the API
-                    import time
-                    current_time = time.time()
-                    time_since_last = current_time - self._last_request_time
-                    if time_since_last < self._min_request_interval:
-                        wait = self._min_request_interval - time_since_last
-                        logger.info(f"⏱️ Rate limiting: waiting {wait:.2f}s...")
-                        await asyncio.sleep(wait)
+                    logger.info(f"🔄 Generation attempt {attempt + 1}/{max_retries}")
                     
-                    # Use semaphore to limit concurrent requests
-                    async with self._request_semaphore:
-                        self._last_request_time = time.time()
-                        
-                        # Add timeout wrapper for stability
-                        response = await asyncio.wait_for(
-                            chat.send_message(UserMessage(text=user_prompt)),
-                            timeout=120.0  # 2 minute timeout per attempt
-                        )
-                        logger.info(f"✅ AI Response received: {len(response)} characters on attempt {attempt + 1}")
-                        break
+                    # Single streamlined request with 60s timeout
+                    response = await asyncio.wait_for(
+                        chat.send_message(UserMessage(text=user_prompt)),
+                        timeout=60.0  # Reduced to 60 seconds
+                    )
+                    logger.info(f"✅ AI Response received: {len(response)} characters")
+                    break
                     
                 except asyncio.TimeoutError:
-                    last_error = "Request timed out after 120 seconds"
+                    last_error = "Request timed out after 60 seconds"
                     logger.warning(f"⏱️ Timeout on attempt {attempt + 1}/{max_retries}")
                     if attempt < max_retries - 1:
-                        wait_time = base_delay * (2 ** attempt) + (attempt * 0.5)  # Add jitter
-                        logger.warning(f"   Retrying in {wait_time:.1f}s...")
-                        await asyncio.sleep(wait_time)
+                        logger.warning(f"   Retrying immediately...")
                         continue
                     
                 except Exception as e:
                     error_str = str(e)
                     last_error = error_str
+                    logger.error(f"❌ Error on attempt {attempt + 1}/{max_retries}: {error_str[:150]}")
                     
-                    # Check if error is retryable
-                    is_502 = '502' in error_str or 'BadGateway' in error_str.lower()
-                    is_503 = '503' in error_str or 'service unavailable' in error_str.lower()
-                    is_timeout = 'timeout' in error_str.lower() or 'timed out' in error_str.lower()
-                    is_connection = 'connection' in error_str.lower() or 'network' in error_str.lower()
+                    # Only retry once for 502/503 errors
+                    if attempt < max_retries - 1:
+                        is_502 = '502' in error_str or 'BadGateway' in error_str.lower()
+                        is_503 = '503' in error_str or 'service unavailable' in error_str.lower()
+                        
+                        if is_502 or is_503:
+                            logger.warning(f"   Retrying once after 2s delay...")
+                            await asyncio.sleep(2)
+                            continue
                     
-                    is_retryable = is_502 or is_503 or is_timeout or is_connection
-                    
-                    if is_retryable and attempt < max_retries - 1:
-                        # Exponential backoff with jitter to reduce load
-                        wait_time = base_delay * (2 ** attempt) + (attempt * 0.5)
-                        logger.warning(f"⚠️ Retryable error on attempt {attempt + 1}/{max_retries}")
-                        logger.warning(f"   Error: {error_str[:150]}")
-                        logger.warning(f"   Waiting {wait_time:.1f}s before retry...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    else:
-                        logger.error(f"❌ Non-retryable error or final attempt: {error_str[:200]}")
-                        raise
+                    # Don't retry for other errors
+                    raise
             
             if response is None:
-                error_msg = f"Failed to get response after {max_retries} attempts. Last error: {last_error}"
+                error_msg = f"Failed after {max_retries} attempts. Last error: {last_error}"
                 logger.error(f"❌ {error_msg}")
                 raise Exception(error_msg)
             
