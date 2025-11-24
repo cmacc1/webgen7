@@ -2443,7 +2443,7 @@ body {
                 html = html.replace('</body>', f'{scripts_html}</body>')
         else:
             # HTML is malformed - wrap it with proper structure
-            logger.warning("⚠️ HTML missing <head> tag - creating proper structure")
+            logger.warning("⚠️ HTML missing <head> tag - creating proper structure with ALL design libraries")
             html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2452,11 +2452,14 @@ body {
     <title>Website</title>
     {tailwind_cdn}
     {fontawesome_cdn}
+    {animate_css}
     {google_fonts}
+    {aos_css}
     {css_link}
 </head>
 <body>
 {html}
+    {aos_js}
     {js_link}
 </body>
 </html>"""
