@@ -237,50 +237,62 @@ Generate complete JSON with all 3 files. Make it visually stunning!"""
                 last_error = None
                 
                 for attempt in range(max_retries):
-                try:
-                    logger.info(f"🔄 Generation attempt {attempt + 1}/{max_retries}")
-                    
-                    # Request with 90s timeout for complex generations
-                    response = await asyncio.wait_for(
-                        chat.send_message(UserMessage(text=user_prompt)),
-                        timeout=90.0
-                    )
-                    logger.info(f"✅ AI Response received: {len(response)} characters")
+                    try:
+                        logger.info(f"🔄 Attempt {attempt + 1}/{max_retries} with {try_provider}/{try_model}")
+                        
+                        # Request with 90s timeout for complex generations
+                        response = await asyncio.wait_for(
+                            chat.send_message(UserMessage(text=user_prompt)),
+                            timeout=90.0
+                        )
+                        logger.info(f"✅ AI Response received: {len(response)} characters from {try_provider}/{try_model}")
+                        break  # Success! Exit retry loop
+                        
+                    except asyncio.TimeoutError:
+                        last_error = "Request timed out after 90 seconds"
+                        logger.warning(f"⏱️ Timeout on attempt {attempt + 1}/{max_retries}")
+                        if attempt < max_retries - 1:
+                            logger.warning(f"   Retrying after 3s...")
+                            await asyncio.sleep(3)
+                            continue
+                        
+                    except Exception as e:
+                        error_str = str(e)
+                        last_error = error_str
+                        logger.error(f"❌ Error: {error_str[:150]}")
+                        
+                        # Retry for 502/503 errors
+                        if attempt < max_retries - 1:
+                            is_502 = '502' in error_str or 'BadGateway' in error_str.lower()
+                            is_503 = '503' in error_str or 'service unavailable' in error_str.lower()
+                            
+                            if is_502 or is_503:
+                                logger.warning(f"   Retrying after 3s...")
+                                await asyncio.sleep(3)
+                                continue
+                        
+                        # Don't retry for other errors
+                        break
+                
+                # If we got a response, break out of model loop
+                if response is not None:
+                    logger.info(f"🎉 SUCCESS with {try_provider}/{try_model}!")
                     break
                     
-                except asyncio.TimeoutError:
-                    last_error = "Request timed out after 90 seconds"
-                    logger.warning(f"⏱️ Timeout on attempt {attempt + 1}/{max_retries}")
-                    if attempt < max_retries - 1:
-                        wait_time = min(3 * (attempt + 1), 10)  # 3s, 6s, 9s, max 10s
-                        logger.warning(f"   Retrying after {wait_time}s delay...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    
-                except Exception as e:
-                    error_str = str(e)
-                    last_error = error_str
-                    logger.error(f"❌ Error on attempt {attempt + 1}/{max_retries}: {error_str[:150]}")
-                    
-                    # Retry for 502/503 errors with exponential backoff
-                    if attempt < max_retries - 1:
-                        is_502 = '502' in error_str or 'BadGateway' in error_str.lower()
-                        is_503 = '503' in error_str or 'service unavailable' in error_str.lower()
-                        is_429 = '429' in error_str or 'rate limit' in error_str.lower()
-                        
-                        if is_502 or is_503 or is_429:
-                            wait_time = min(3 * (attempt + 1), 10)  # 3s, 6s, 9s, max 10s
-                            logger.warning(f"   Retrying after {wait_time}s delay...")
-                            await asyncio.sleep(wait_time)
-                            continue
-                    
-                    # Don't retry for other errors
-                    raise
-            
-            if response is None:
-                error_msg = f"Failed after {max_retries} attempts. Last error: {last_error}"
-                logger.error(f"❌ {error_msg}")
-                raise Exception(error_msg)
+                # Store this model's error and try next model
+                all_errors.append(f"{try_provider}/{try_model}: {last_error}")
+                logger.warning(f"❌ {try_provider}/{try_model} failed, trying next model...")
+                
+            except Exception as model_error:
+                all_errors.append(f"{try_provider}/{try_model}: {str(model_error)}")
+                logger.error(f"❌ Fatal error with {try_provider}/{try_model}: {str(model_error)[:100]}")
+                continue
+        
+        # Check if we got a response from any model
+        if response is None:
+            error_msg = f"All models failed. Errors: {'; '.join(all_errors)}"
+            logger.error(f"❌ {error_msg}")
+            raise Exception(error_msg)
             
             # Parse the JSON response
             project_data = self._parse_project_response(response)
