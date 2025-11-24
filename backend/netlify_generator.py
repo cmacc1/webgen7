@@ -2196,6 +2196,111 @@ body {
     }
 }'''
     
+    def _ensure_design_quality(self, project_data: Dict, prompt: str) -> Dict:
+        """
+        CRITICAL: Ensure generated HTML has proper design frameworks
+        Adds CDN links if missing, validates CSS exists and is substantial
+        """
+        files = project_data.get("files", {})
+        html = files.get("index.html", "")
+        css = files.get("styles.css", "")
+        js = files.get("app.js", "")
+        
+        logger.info("🎨 Validating design quality...")
+        
+        # Check if HTML has required CDN links
+        has_tailwind = "cdn.tailwindcss.com" in html
+        has_fontawesome = "font-awesome" in html
+        has_google_fonts = "fonts.googleapis.com" in html or "fonts.google.com" in html
+        has_css_link = 'href="styles.css"' in html or "href='styles.css'" in html
+        has_js_link = 'src="app.js"' in html or "src='app.js'" in html
+        
+        logger.info(f"   Tailwind CDN: {'✅' if has_tailwind else '❌'}")
+        logger.info(f"   Font Awesome: {'✅' if has_fontawesome else '❌'}")
+        logger.info(f"   Google Fonts: {'✅' if has_google_fonts else '❌'}")
+        logger.info(f"   CSS Link: {'✅' if has_css_link else '❌'}")
+        logger.info(f"   JS Link: {'✅' if has_js_link else '❌'}")
+        logger.info(f"   CSS Size: {len(css)} chars")
+        logger.info(f"   JS Size: {len(js)} chars")
+        
+        # If HTML is missing critical design frameworks, enhance it
+        if not has_tailwind or not has_fontawesome or not has_google_fonts or not has_css_link:
+            logger.warning("⚠️ HTML missing design frameworks - enhancing...")
+            html = self._enhance_html_with_frameworks(html)
+            files["index.html"] = html
+            logger.info("✅ Enhanced HTML with CDN links")
+        
+        # If CSS is too small or missing, generate proper CSS
+        if len(css) < 500:
+            logger.warning(f"⚠️ CSS too small ({len(css)} chars) - generating comprehensive CSS...")
+            css = self._generate_modern_css()
+            files["styles.css"] = css
+            logger.info(f"✅ Generated comprehensive CSS ({len(css)} chars)")
+        
+        # If JS is missing or too small, generate proper JS
+        if len(js) < 200:
+            logger.warning(f"⚠️ JS too small ({len(js)} chars) - generating interactive JS...")
+            js = self._generate_interactive_js()
+            files["app.js"] = js
+            logger.info(f"✅ Generated interactive JS ({len(js)} chars)")
+        
+        project_data["files"] = files
+        return project_data
+    
+    def _enhance_html_with_frameworks(self, html: str) -> str:
+        """Add missing CDN links and framework references to HTML"""
+        
+        # Define the CDN links that MUST be present
+        tailwind_cdn = '<script src="https://cdn.tailwindcss.com"></script>'
+        fontawesome_cdn = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">'
+        google_fonts = '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">'
+        css_link = '<link rel="stylesheet" href="styles.css">'
+        js_link = '<script src="app.js"></script>'
+        
+        # Find the </head> tag and add links before it
+        if '</head>' in html:
+            # Build the links to add
+            links_to_add = []
+            
+            if 'cdn.tailwindcss.com' not in html:
+                links_to_add.append(tailwind_cdn)
+            if 'font-awesome' not in html:
+                links_to_add.append(fontawesome_cdn)
+            if 'fonts.googleapis.com' not in html and 'fonts.google.com' not in html:
+                links_to_add.append(google_fonts)
+            if 'styles.css' not in html:
+                links_to_add.append(css_link)
+            
+            # Add all links before </head>
+            if links_to_add:
+                links_html = '\n    ' + '\n    '.join(links_to_add) + '\n    '
+                html = html.replace('</head>', f'{links_html}</head>')
+            
+            # Add JS before </body> if missing
+            if 'app.js' not in html and '</body>' in html:
+                html = html.replace('</body>', f'    {js_link}\n</body>')
+        else:
+            # HTML is malformed - wrap it with proper structure
+            logger.warning("⚠️ HTML missing <head> tag - creating proper structure")
+            html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website</title>
+    {tailwind_cdn}
+    {fontawesome_cdn}
+    {google_fonts}
+    {css_link}
+</head>
+<body>
+{html}
+    {js_link}
+</body>
+</html>"""
+        
+        return html
+    
     def _generate_interactive_js(self) -> str:
         """Generate interactive JavaScript"""
         return '''// Smooth scrolling for navigation links
