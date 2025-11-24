@@ -2359,20 +2359,24 @@ body {
         # Check if HTML has required CDN links
         has_tailwind = "cdn.tailwindcss.com" in html
         has_fontawesome = "font-awesome" in html
+        has_animate = "animate.css" in html
         has_google_fonts = "fonts.googleapis.com" in html or "fonts.google.com" in html
+        has_aos = "aos" in html.lower()
         has_css_link = 'href="styles.css"' in html or "href='styles.css'" in html
         has_js_link = 'src="app.js"' in html or "src='app.js'" in html
         
         logger.info(f"   Tailwind CDN: {'✅' if has_tailwind else '❌'}")
         logger.info(f"   Font Awesome: {'✅' if has_fontawesome else '❌'}")
+        logger.info(f"   Animate.css: {'✅' if has_animate else '❌'}")
         logger.info(f"   Google Fonts: {'✅' if has_google_fonts else '❌'}")
+        logger.info(f"   AOS Library: {'✅' if has_aos else '❌'}")
         logger.info(f"   CSS Link: {'✅' if has_css_link else '❌'}")
         logger.info(f"   JS Link: {'✅' if has_js_link else '❌'}")
         logger.info(f"   CSS Size: {len(css)} chars")
         logger.info(f"   JS Size: {len(js)} chars")
         
         # If HTML is missing critical design frameworks, enhance it
-        if not has_tailwind or not has_fontawesome or not has_google_fonts or not has_css_link:
+        if not has_tailwind or not has_fontawesome or not has_animate or not has_google_fonts or not has_aos or not has_css_link:
             logger.warning("⚠️ HTML missing design frameworks - enhancing...")
             html = self._enhance_html_with_frameworks(html)
             files["index.html"] = html
