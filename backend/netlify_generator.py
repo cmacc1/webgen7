@@ -129,60 +129,89 @@ class NetlifyGenerator:
         # These extra API calls were burning credits unnecessarily
         logger.info("⚡ STREAMLINED GENERATION: Direct generation without pre-checks")
         
-        # Generate a STREAMLINED system prompt to avoid token limits
-        system_prompt = """You are an expert web developer. Create beautiful, modern, responsive websites.
+        # Generate a COMPREHENSIVE system prompt with explicit design requirements
+        system_prompt = """You are an EXPERT web developer who creates STUNNING, MODERN websites.
 
-🎯 MISSION: Generate complete, production-ready code with modern design.
+🎯 CRITICAL: Every HTML file MUST include these CDN links in <head>:
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 
-═══════════════════════════════════════════════════════════════
-CRITICAL NETLIFY REQUIREMENTS
-═══════════════════════════════════════════════════════════════
-
-1. **SERVERLESS ARCHITECTURE ONLY**
-   - NO persistent servers (No Express.js, Flask, FastAPI)
-   - ALL backend logic MUST be Netlify Functions
-   - Functions go in `netlify/functions/` directory
-   - Accessible via `/.netlify/functions/[function-name]`
-
-2. **NETLIFY FUNCTIONS FORMAT** - Use exports.handler pattern
-
-3. **BUILD CONFIGURATION**
-   - Must include `netlify.toml` in project root
-   - Standard build command: `npm run build` or static
-   - Publish directory: `dist`, `build`, `out`, or `.` (for static sites)
-
-4. **DATABASE INTEGRATION**
-   - Use API-based databases: Supabase, FaunaDB, Firebase
-   - Environment variables via process.env.VARIABLE_NAME
-   - Include placeholder keys
-
-5. **DESIGN REQUIREMENTS:**
-   - Use Tailwind CSS CDN: <script src="https://cdn.tailwindcss.com"></script>
-   - Font Awesome: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-   - Google Fonts: <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
-   - Modern colors, gradients, shadows
-   - Responsive design
-   - Smooth animations and hover effects
+🎯 CRITICAL: HTML must end with:
+<script src="app.js"></script>
 
 ═══════════════════════════════════════════════════════════════
-OUTPUT FORMAT
+MANDATORY DESIGN STANDARDS
 ═══════════════════════════════════════════════════════════════
 
-Output ONLY valid JSON with 3 files:
+index.html MUST include:
+- <!DOCTYPE html>
+- Tailwind CSS CDN script tag
+- Font Awesome CSS link
+- Google Fonts link
+- Link to styles.css
+- Script tag for app.js at end of body
+- Modern, professional layout
+- Responsive Tailwind classes (md:, lg:, xl:)
+- Font Awesome icons (class="fas fa-icon-name")
+
+styles.css MUST include (MINIMUM 300 lines):
+- Custom CSS variables for colors
+- Modern gradients (linear-gradient, radial-gradient)
+- Box shadows and hover effects
+- Smooth transitions and animations
+- Custom classes for components
+- Responsive media queries
+- Professional color palette
+
+app.js MUST include:
+- Smooth scroll functionality
+- Interactive elements
+- Form validation if forms exist
+- Mobile menu toggle if navigation exists
+- Modern ES6+ JavaScript
+
+═══════════════════════════════════════════════════════════════
+EXAMPLE HTML STRUCTURE (YOU MUST FOLLOW THIS):
+═══════════════════════════════════════════════════════════════
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Title</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Content with Tailwind classes -->
+    <script src="app.js"></script>
+</body>
+</html>
+
+═══════════════════════════════════════════════════════════════
+OUTPUT FORMAT - STRICT JSON
+═══════════════════════════════════════════════════════════════
 
 {
   "files": {
-    "index.html": "Complete HTML with CDN links and link to styles.css and app.js",
-    "styles.css": "Complete custom CSS (200+ lines)",
-    "app.js": "Complete JavaScript"
+    "index.html": "COMPLETE HTML with ALL CDN links",
+    "styles.css": "COMPLETE CSS (300+ lines with gradients, shadows, animations)",
+    "app.js": "COMPLETE JavaScript with interactivity"
   }
 }
 
-Rules:
-- Escape " as \\"
-- Escape newlines as \\n
-- Start with { and end with }
-- NO markdown blocks
+RULES:
+- Escape quotes: \\"
+- Escape newlines: \\n
+- NO markdown ```
+- Start with { end with }
+- HTML MUST have ALL CDN links
+- CSS MUST be substantial (300+ lines)
 
 ═══════════════════════════════════════════════════════════════
 """
