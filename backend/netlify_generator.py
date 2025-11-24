@@ -122,38 +122,9 @@ class NetlifyGenerator:
     async def _create_netlify_project(self, prompt: str, provider: str, model: str, session_id: str) -> Dict[str, Any]:
         """Create a new Netlify project from scratch"""
         
-        # Health check before expensive operation
-        is_healthy = await self._check_api_health(provider, model)
-        if not is_healthy:
-            logger.warning("⚠️ API health check failed - skipping analysis to reduce load")
-            # Use fallback analysis to reduce API calls
-            analysis = {
-                "project_type": "web_app",
-                "framework": "vanilla",
-                "needs_backend": False,
-                "needs_database": False,
-                "features": [],
-                "database_type": "none"
-            }
-        else:
-            # Analyze user intent with detailed requirements extraction
-            try:
-                analysis = await self._analyze_project_requirements(prompt, provider, model, session_id)
-                logger.info(f"📋 Project analysis: {json.dumps(analysis, indent=2)}")
-            except Exception as e:
-                logger.warning(f"⚠️ Analysis failed: {str(e)[:100]} - using fallback")
-                analysis = {
-                    "project_type": "web_app",
-                    "framework": "vanilla",
-                    "needs_backend": False,
-                    "needs_database": False,
-                    "features": [],
-                    "database_type": "none"
-                }
-        
-        # Extract explicit requirements from prompt
-        requirements = self._extract_requirements(prompt)
-        logger.info(f"📝 Extracted requirements: {requirements}")
+        # REMOVED: Health check and analysis to save credits and time
+        # These extra API calls were burning credits unnecessarily
+        logger.info("⚡ STREAMLINED GENERATION: Direct generation without pre-checks")
         
         # Generate a STREAMLINED system prompt to avoid token limits
         system_prompt = """You are an expert web developer. Create beautiful, modern, responsive websites.
