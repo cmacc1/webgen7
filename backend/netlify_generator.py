@@ -316,9 +316,20 @@ Generate complete JSON with all 3 files. Make it visually stunning!"""
         
         # Check if we got a response from any model
         if response is None:
-            error_msg = f"All models failed. Errors: {'; '.join(all_errors)}"
-            logger.error(f"❌ {error_msg}")
-            raise Exception(error_msg)
+            # Check if it was a 502 error
+            has_502_error = any('502' in err or 'BadGateway' in err for err in all_errors)
+            
+            if has_502_error:
+                logger.warning(f"🚨 AI SERVICE UNAVAILABLE (502 errors detected)")
+                logger.warning(f"🛡️ IMMEDIATELY triggering failsafe - user will get a working website")
+                logger.warning(f"   Credit waste prevented by stopping at {total_attempts} attempts")
+                # Don't raise exception - let the failsafe handle it below
+            else:
+                error_msg = f"All models failed. Errors: {'; '.join(all_errors)}"
+                logger.error(f"❌ {error_msg}")
+            
+            # Trigger failsafe by raising exception (will be caught below)
+            raise Exception(f"AI generation failed after {total_attempts} attempts")
         
         # Parse the JSON response
         try:
