@@ -2417,8 +2417,12 @@ body {
                 links_to_add.append(tailwind_cdn)
             if 'font-awesome' not in html:
                 links_to_add.append(fontawesome_cdn)
+            if 'animate.css' not in html:
+                links_to_add.append(animate_css)
             if 'fonts.googleapis.com' not in html and 'fonts.google.com' not in html:
                 links_to_add.append(google_fonts)
+            if 'aos' not in html.lower() and 'aos.css' not in html:
+                links_to_add.append(aos_css)
             if 'styles.css' not in html:
                 links_to_add.append(css_link)
             
@@ -2427,9 +2431,16 @@ body {
                 links_html = '\n    ' + '\n    '.join(links_to_add) + '\n    '
                 html = html.replace('</head>', f'{links_html}</head>')
             
-            # Add JS before </body> if missing
-            if 'app.js' not in html and '</body>' in html:
-                html = html.replace('</body>', f'    {js_link}\n</body>')
+            # Add JS libraries before </body> if missing
+            scripts_to_add = []
+            if 'aos.js' not in html.lower() and 'aos' not in html.lower():
+                scripts_to_add.append(aos_js)
+            if 'app.js' not in html:
+                scripts_to_add.append(js_link)
+            
+            if scripts_to_add and '</body>' in html:
+                scripts_html = '\n    ' + '\n    '.join(scripts_to_add) + '\n'
+                html = html.replace('</body>', f'{scripts_html}</body>')
         else:
             # HTML is malformed - wrap it with proper structure
             logger.warning("⚠️ HTML missing <head> tag - creating proper structure")
