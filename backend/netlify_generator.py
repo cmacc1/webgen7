@@ -1571,69 +1571,99 @@ console.log('Environment:', window.location.hostname);
         """Analyze prompt to determine what type of website to generate as fallback"""
         prompt_lower = prompt.lower()
         
-        # Detect business type
+        # Detect business type with MORE specificity
         business_type = "general"
-        if any(word in prompt_lower for word in ["restaurant", "cafe", "coffee", "food", "dining"]):
+        if any(word in prompt_lower for word in ["restaurant", "cafe", "coffee", "food", "dining", "bar", "bistro"]):
             business_type = "restaurant"
-        elif any(word in prompt_lower for word in ["renovation", "construction", "remodeling", "contractor", "builder"]):
+        elif any(word in prompt_lower for word in ["renovation", "construction", "remodeling", "contractor", "builder", "flooring", "roofing"]):
             business_type = "renovation"
-        elif any(word in prompt_lower for word in ["portfolio", "designer", "photographer", "artist", "creative"]):
+        elif any(word in prompt_lower for word in ["portfolio", "designer", "photographer", "artist", "creative", "gallery"]):
             business_type = "portfolio"
-        elif any(word in prompt_lower for word in ["shop", "store", "ecommerce", "product", "buy", "sell"]):
+        elif any(word in prompt_lower for word in ["shop", "store", "ecommerce", "e-commerce", "product", "buy", "sell", "cart"]):
             business_type = "ecommerce"
-        elif any(word in prompt_lower for word in ["tech", "software", "saas", "app", "startup"]):
+        elif any(word in prompt_lower for word in ["tech", "software", "saas", "app", "startup", "platform", "api"]):
             business_type = "tech"
-        elif any(word in prompt_lower for word in ["landing", "marketing", "agency"]):
+        elif any(word in prompt_lower for word in ["landing", "marketing", "agency", "consulting"]):
             business_type = "landing"
+        elif any(word in prompt_lower for word in ["blog", "article", "news", "magazine"]):
+            business_type = "blog"
+        elif any(word in prompt_lower for word in ["fitness", "gym", "health", "wellness", "yoga"]):
+            business_type = "fitness"
         
-        # Extract business name if mentioned - improved extraction
+        # Extract business name if mentioned - ENHANCED extraction
         business_name = None
         import re
         
-        # Try multiple patterns
+        # Try multiple patterns in order of specificity
         patterns = [
             r'called\s+"([^"]+)"',  # called "Name"
-            r'called\s+([A-Z][A-Za-z\s&]+?)(?:\s+with|\s+that|\s*$)',  # called Name
+            r'named\s+"([^"]+)"',  # named "Name"
             r'for\s+"([^"]+)"',  # for "Name"
-            r'for\s+(?:a\s+|an\s+|the\s+)?([A-Z][A-Za-z\s&]{2,30}?)(?:\s+that|\s+with|\s+and|\s*$)',  # for Name
-            r'business\s+to\s+"([^"]+)"',  # business to "Name"
-            r'"([A-Z][A-Za-z\s&]+?)"\s+(?:website|business)',  # "Name" website
+            r'"([A-Z][A-Za-z0-9\s&\'-]{2,40}?)"\s*(?:website|business|company|platform)',  # "Name" website
+            r'(?:create|build|make|generate).*?(?:for|called|named)\s+([A-Z][A-Za-z0-9\s&\'-]{2,40}?)(?:\s+that|\s+with|\s+which|\s*[,.])',  # create for Name
+            r'website.*?(?:for|called|named)\s+([A-Z][A-Za-z0-9\s&\'-]{2,40}?)(?:\s+that|\s+with|\s+which|\s*[,.])',  # website for Name
         ]
         
         for pattern in patterns:
             match = re.search(pattern, prompt)
             if match:
                 business_name = match.group(1).strip()
+                # Clean up common artifacts
+                business_name = business_name.rstrip(',. ')
                 break
         
-        # If no name found, use business type
+        # If no name found, extract from context or use business type
         if not business_name:
-            business_name = f"{business_type.title()} Business"
+            # Try to find ANY capitalized words that might be a name
+            cap_words = re.findall(r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\b', prompt)
+            if cap_words and len(cap_words[0]) > 2:
+                business_name = cap_words[0]
+            else:
+                business_name = f"Professional {business_type.title()}"
         
-        # Detect required sections
+        # Detect required sections with MORE keywords
         sections = []
-        if "about" in prompt_lower:
+        if any(word in prompt_lower for word in ["about", "who we are", "our story"]):
             sections.append("about")
-        if "service" in prompt_lower or "what we do" in prompt_lower:
+        if any(word in prompt_lower for word in ["service", "what we do", "offerings", "solutions"]):
             sections.append("services")
-        if "contact" in prompt_lower or "get in touch" in prompt_lower:
+        if any(word in prompt_lower for word in ["contact", "get in touch", "reach us", "email", "phone"]):
             sections.append("contact")
-        if "portfolio" in prompt_lower or "work" in prompt_lower or "projects" in prompt_lower:
+        if any(word in prompt_lower for word in ["portfolio", "work", "projects", "gallery", "showcase"]):
             sections.append("portfolio")
-        if "team" in prompt_lower or "our team" in prompt_lower:
+        if any(word in prompt_lower for word in ["team", "our team", "staff", "people"]):
             sections.append("team")
-        if "testimonial" in prompt_lower or "review" in prompt_lower:
+        if any(word in prompt_lower for word in ["testimonial", "review", "feedback", "client"]):
             sections.append("testimonials")
+        if any(word in prompt_lower for word in ["pricing", "price", "plans", "packages"]):
+            sections.append("pricing")
+        if any(word in prompt_lower for word in ["blog", "news", "articles"]):
+            sections.append("blog")
         
         # Default sections if none detected
         if not sections:
             sections = ["about", "services", "contact"]
         
+        # Extract color preferences if mentioned
+        colors = []
+        if "blue" in prompt_lower:
+            colors.append("blue")
+        if "green" in prompt_lower:
+            colors.append("green")
+        if "red" in prompt_lower:
+            colors.append("red")
+        if "purple" in prompt_lower:
+            colors.append("purple")
+        if "modern" in prompt_lower or "contemporary" in prompt_lower:
+            colors.append("modern")
+        
         return {
             "business_type": business_type,
             "business_name": business_name,
             "sections": sections,
-            "style": "modern"
+            "style": "modern",
+            "colors": colors,
+            "full_prompt": prompt  # Keep full prompt for reference
         }
     
     def _generate_smart_fallback(self, prompt: str, analysis: Dict) -> Dict[str, Any]:
