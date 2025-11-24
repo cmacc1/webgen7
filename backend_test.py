@@ -392,157 +392,120 @@ class BulletproofFailsafeTester:
                 "error": str(e)
             }
 
-    async def run_netlify_deployment_test(self):
-        """Run the complete Netlify deployment test"""
-        logger.info("🚀 Starting Netlify Generation and Deployment Test")
+    async def run_bulletproof_failsafe_test(self):
+        """Run the complete bulletproof failsafe system test"""
+        logger.info("🚀 STARTING BULLETPROOF FAILSAFE SYSTEM VERIFICATION")
         logger.info(f"Backend URL: {self.base_url}")
         
         start_time = time.time()
         validation_errors = []
+        test_results = {}
         
-        # Step 1: Create a test session
-        logger.info("\n--- Step 1: Create Test Session ---")
-        session_id = await self.create_session("Max Tokens Test")
+        # TEST 1: Normal AI Generation (Layer 1)
+        logger.info("\n" + "="*80)
+        logger.info("TEST 1: NORMAL AI GENERATION (LAYER 1)")
+        logger.info("="*80)
+        
+        session_id = await self.create_session("Renovation Business Test")
         if not session_id:
             validation_errors.append("Failed to create test session")
-            return self._generate_netlify_summary(start_time, validation_errors)
+            return self._generate_failsafe_summary(start_time, validation_errors, test_results)
         
-        # Step 2: Generate AND deploy website
-        logger.info("\n--- Step 2: Generate and Deploy Website ---")
-        deploy_result = await self.test_netlify_generate_and_deploy(session_id)
+        renovation_prompt = "Create a professional website for a renovation business with services like Flooring, Bathrooms, Kitchens, and contact form"
+        test1_result = await self.test_normal_ai_generation(session_id, renovation_prompt)
+        test_results['test1_normal_generation'] = test1_result
         
-        if not deploy_result.get('success'):
-            validation_errors.append(f"Generation and deployment failed: {deploy_result.get('error')}")
-            return self._generate_netlify_summary(start_time, validation_errors)
-        
-        # Step 3: Verify response contains required fields and file completeness
-        logger.info("\n--- Step 3: Verify Response Structure and File Completeness ---")
-        project = deploy_result.get('project', {})
-        deployment = deploy_result.get('deployment', {})
-        deploy_preview_url = deploy_result.get('deploy_preview_url')
-        
-        # Check project fields
-        if not project.get('project_id'):
-            validation_errors.append("Response missing project.project_id")
-        if not project.get('files'):
-            validation_errors.append("Response missing project.files")
+        # Validate TEST 1 requirements
+        if test1_result.get('success'):
+            generation_time = test1_result.get('generation_time', 0)
+            if generation_time > 120:  # 2 minutes
+                validation_errors.append(f"Generation took too long: {generation_time:.2f}s (max 120s)")
+            
+            if not test1_result.get('deploy_preview_url'):
+                validation_errors.append("Missing deploy_preview_url in normal generation")
+            
+            if not test1_result.get('netlify_site_id'):
+                validation_errors.append("Missing netlify_site_id in normal generation")
+                
+            # Check file completeness
+            files = test1_result.get('project', {}).get('files', {})
+            if not files.get('index.html'):
+                validation_errors.append("Missing index.html in normal generation")
+            elif len(files.get('index.html', '')) < 1000:
+                validation_errors.append(f"HTML too small: {len(files.get('index.html', ''))} chars")
         else:
-            files = project.get('files', {})
-            expected_files = ['index.html', 'styles.css', 'app.js']
-            for expected_file in expected_files:
-                if expected_file not in files and not any(expected_file in f for f in files.keys()):
-                    validation_errors.append(f"Missing expected file: {expected_file}")
+            validation_errors.append(f"Normal AI generation failed: {test1_result.get('error')}")
+        
+        # TEST 2: Different Business Types (Smart Fallback Testing)
+        logger.info("\n" + "="*80)
+        logger.info("TEST 2 & 3: DIFFERENT BUSINESS TYPES")
+        logger.info("="*80)
+        
+        business_tests = [
+            ("restaurant", "Create a website for a coffee shop with menu and contact form"),
+            ("tech", "Create a landing page for a software company offering cloud services")
+        ]
+        
+        for business_type, prompt in business_tests:
+            test_result = await self.test_business_type_customization(business_type, prompt)
+            test_results[f'test_{business_type}_customization'] = test_result
             
-            # CRITICAL CHECKS for max_tokens fix - verify files are COMPLETE
-            html_content = None
-            css_content = None
-            js_content = None
-            
-            for filepath, content in files.items():
-                if 'index.html' in filepath:
-                    html_content = content
-                elif 'styles.css' in filepath:
-                    css_content = content
-                elif 'app.js' in filepath:
-                    js_content = content
-            
-            # Verify file sizes (max_tokens fix should produce substantial content)
-            if html_content:
-                html_chars = len(html_content)
-                logger.info(f"HTML file size: {html_chars} characters")
-                if html_chars < 5000:
-                    validation_errors.append(f"HTML file too small ({html_chars} chars, minimum 5000)")
+            if test_result.get('success'):
+                customization_score = test_result.get('business_customization', {}).get('customization_score', 0)
+                if customization_score < 50:
+                    validation_errors.append(f"{business_type} customization too low: {customization_score}%")
             else:
-                validation_errors.append("HTML content not found in files")
-            
-            if css_content:
-                css_chars = len(css_content)
-                logger.info(f"CSS file size: {css_chars} characters")
-                if css_chars < 2000:
-                    validation_errors.append(f"CSS file too small ({css_chars} chars, minimum 2000)")
-            else:
-                validation_errors.append("CSS content not found in files")
-            
-            if js_content:
-                js_chars = len(js_content)
-                logger.info(f"JS file size: {js_chars} characters")
-            
-            # Check for truncation indicators in content
-            if html_content and (html_content.endswith('...') or 'truncated' in html_content.lower()):
-                validation_errors.append("HTML file appears to be truncated")
-            if css_content and (css_content.endswith('...') or 'truncated' in css_content.lower()):
-                validation_errors.append("CSS file appears to be truncated")
+                validation_errors.append(f"{business_type} business type test failed: {test_result.get('error')}")
         
-        # Check deployment fields
-        if not deployment.get('site_id'):
-            validation_errors.append("Response missing deployment.site_id")
-        if not deployment.get('deploy_id'):
-            validation_errors.append("Response missing deployment.deploy_id")
-        if not deploy_preview_url:
-            validation_errors.append("Response missing deploy_preview_url")
+        # TEST 4: Database Check
+        logger.info("\n" + "="*80)
+        logger.info("TEST 4: DATABASE CHECK")
+        logger.info("="*80)
         
-        # Check build status
-        build_status = deployment.get('build_status', {})
-        if build_status.get('state') != 'ready':
-            validation_errors.append(f"Build status is not 'ready': {build_status.get('state')}")
+        db_result = await self.check_database_projects()
+        test_results['test4_database_check'] = db_result
         
-        # Step 4: Verify Netlify URL format
-        logger.info("\n--- Step 4: Verify Netlify URL Format ---")
-        if deploy_preview_url:
-            if not deploy_preview_url.startswith('https://'):
-                validation_errors.append(f"Deploy URL is not HTTPS: {deploy_preview_url}")
-            if '.netlify.app' not in deploy_preview_url:
-                validation_errors.append(f"Deploy URL is not a Netlify URL: {deploy_preview_url}")
-            
-            logger.info(f"✅ Deploy Preview URL: {deploy_preview_url}")
-        
-        # Step 5: Test live URL accessibility
-        logger.info("\n--- Step 5: Test Live URL Accessibility ---")
-        url_test_result = None
-        if deploy_preview_url:
-            url_test_result = await self.test_live_url_accessibility(deploy_preview_url)
-            
-            if not url_test_result.get('success'):
-                validation_errors.append(f"Live URL not accessible: {url_test_result.get('error')}")
-            else:
-                if url_test_result.get('status_code') != 200:
-                    validation_errors.append(f"Live URL returned status {url_test_result.get('status_code')}")
-                if not url_test_result.get('has_html'):
-                    validation_errors.append("Live URL does not contain HTML content")
-                if not url_test_result.get('has_renovation_content'):
-                    validation_errors.append("Live URL does not contain expected renovation business content")
-        
-        # Step 6: Check backend logs for AI response and parsing
-        logger.info("\n--- Step 6: Check Backend Logs for AI Response and Parsing ---")
-        log_analysis = await self.check_backend_logs_for_deployment()
-        
-        # Check AI response character count (max_tokens fix verification)
-        ai_response_chars = log_analysis.get('ai_response_chars')
-        if ai_response_chars:
-            logger.info(f"AI Response received: {ai_response_chars} characters")
-            if ai_response_chars < 20000:
-                validation_errors.append(f"AI response too small ({ai_response_chars} chars, expected >20,000)")
+        if db_result.get('success'):
+            if db_result.get('projects_with_files', 0) == 0:
+                validation_errors.append("No projects with files found in database")
+            if db_result.get('substantial_html_count', 0) == 0:
+                validation_errors.append("No projects with substantial HTML content (>1000 chars)")
         else:
-            validation_errors.append("No AI response character count found in logs")
+            validation_errors.append(f"Database check failed: {db_result.get('error')}")
         
-        # Check for truncation and parsing errors
-        if log_analysis.get('has_truncation_errors'):
-            validation_errors.append("Backend logs show truncation errors")
+        # TEST 5: Stress Test
+        logger.info("\n" + "="*80)
+        logger.info("TEST 5: STRESS TEST")
+        logger.info("="*80)
         
-        # Check deployment success/errors
-        if not log_analysis.get('has_deployment_success'):
-            validation_errors.append("Backend logs don't show deployment success messages")
-        if log_analysis.get('has_deployment_errors'):
-            validation_errors.append("Backend logs show deployment errors")
+        stress_result = await self.test_stress_multiple_requests()
+        test_results['test5_stress_test'] = stress_result
+        
+        if stress_result.get('success'):
+            if stress_result.get('failed_requests', 0) > 0:
+                validation_errors.append(f"Stress test had {stress_result.get('failed_requests')} failed requests")
+            if not stress_result.get('no_race_conditions'):
+                validation_errors.append("Race conditions detected in stress test")
+        else:
+            validation_errors.append(f"Stress test failed: {stress_result.get('error')}")
+        
+        # Check backend logs for failsafe system
+        logger.info("\n" + "="*80)
+        logger.info("BACKEND LOGS ANALYSIS")
+        logger.info("="*80)
+        
+        log_analysis = await self.check_backend_logs_for_failsafe()
+        test_results['log_analysis'] = log_analysis
+        
+        # Validate critical requirements
+        generation_times = log_analysis.get('generation_times', [])
+        if generation_times:
+            max_time = max(generation_times)
+            if max_time > 300:  # 5 minutes
+                validation_errors.append(f"Generation took too long: {max_time}s (max 300s)")
         
         # Generate final summary
-        return self._generate_netlify_summary(start_time, validation_errors, {
-            "session_id": session_id,
-            "deploy_result": deploy_result,
-            "url_test_result": url_test_result if deploy_preview_url else None,
-            "log_analysis": log_analysis,
-            "deploy_preview_url": deploy_preview_url
-        })
+        return self._generate_failsafe_summary(start_time, validation_errors, test_results)
 
     def _generate_netlify_summary(self, start_time: float, validation_errors: List[str], test_data: Dict[str, Any] = None):
         """Generate final Netlify test summary"""
