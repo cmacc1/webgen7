@@ -507,71 +507,115 @@ class BulletproofFailsafeTester:
         # Generate final summary
         return self._generate_failsafe_summary(start_time, validation_errors, test_results)
 
-    def _generate_netlify_summary(self, start_time: float, validation_errors: List[str], test_data: Dict[str, Any] = None):
-        """Generate final Netlify test summary"""
+    def _generate_failsafe_summary(self, start_time: float, validation_errors: List[str], test_results: Dict[str, Any] = None):
+        """Generate final bulletproof failsafe system test summary"""
         total_time = time.time() - start_time
         success = len(validation_errors) == 0
         
         logger.info("\n" + "="*80)
-        logger.info("MAX TOKENS FIX VERIFICATION - NETLIFY GENERATION TEST SUMMARY")
+        logger.info("BULLETPROOF FAILSAFE SYSTEM VERIFICATION - FINAL SUMMARY")
         logger.info("="*80)
-        logger.info(f"Overall Result: {'✅ SUCCESS' if success else '❌ FAILED'}")
-        logger.info(f"Total Time: {total_time:.2f}s")
-        logger.info(f"Validation Errors: {len(validation_errors)}")
+        logger.info(f"Overall Result: {'✅ SUCCESS - NEVER FAILS!' if success else '❌ FAILED'}")
+        logger.info(f"Total Test Time: {total_time:.2f}s")
+        logger.info(f"Critical Issues: {len(validation_errors)}")
         
-        if test_data:
-            logger.info(f"Session ID: {test_data.get('session_id')}")
-            logger.info(f"Deploy Preview URL: {test_data.get('deploy_preview_url', 'N/A')}")
+        if test_results:
+            # TEST 1: Normal AI Generation
+            test1 = test_results.get('test1_normal_generation', {})
+            if test1.get('success'):
+                logger.info(f"\n✅ TEST 1 - NORMAL AI GENERATION (LAYER 1): PASSED")
+                logger.info(f"   Generation Time: {test1.get('generation_time', 0):.2f}s")
+                logger.info(f"   Layer Used: {test1.get('layer_used', 'Unknown')}")
+                logger.info(f"   Deploy URL: {test1.get('deploy_preview_url', 'N/A')}")
+                
+                files = test1.get('project', {}).get('files', {})
+                for filename, content in files.items():
+                    if filename in ['index.html', 'styles.css', 'app.js']:
+                        logger.info(f"   {filename}: {len(content)} characters")
+            else:
+                logger.info(f"\n❌ TEST 1 - NORMAL AI GENERATION: FAILED")
+                logger.info(f"   Error: {test1.get('error', 'Unknown')}")
             
-            deploy_result = test_data.get('deploy_result', {})
-            if deploy_result.get('success'):
-                logger.info(f"Generation Time: {deploy_result.get('generation_time', 0):.2f}s")
-                project = deploy_result.get('project', {})
-                deployment = deploy_result.get('deployment', {})
-                logger.info(f"Project ID: {project.get('project_id', 'N/A')}")
-                logger.info(f"Site ID: {deployment.get('site_id', 'N/A')}")
-                logger.info(f"Deploy ID: {deployment.get('deploy_id', 'N/A')}")
-                logger.info(f"Build Status: {deployment.get('build_status', {}).get('state', 'N/A')}")
-                
-                # MAX TOKENS FIX VERIFICATION DETAILS
-                files = project.get('files', {})
-                for filepath, content in files.items():
-                    if 'index.html' in filepath:
-                        logger.info(f"HTML File Size: {len(content)} characters")
-                    elif 'styles.css' in filepath:
-                        logger.info(f"CSS File Size: {len(content)} characters")
-                    elif 'app.js' in filepath:
-                        logger.info(f"JS File Size: {len(content)} characters")
-                
-                log_analysis = test_data.get('log_analysis', {})
-                ai_chars = log_analysis.get('ai_response_chars')
-                if ai_chars:
-                    logger.info(f"AI Response Size: {ai_chars} characters")
-                    logger.info(f"Max Tokens Fix: {'✅ WORKING' if ai_chars > 20000 else '❌ INSUFFICIENT'}")
+            # Business Type Tests
+            for business_type in ['restaurant', 'tech']:
+                test_key = f'test_{business_type}_customization'
+                test_result = test_results.get(test_key, {})
+                if test_result.get('success'):
+                    customization = test_result.get('business_customization', {})
+                    score = customization.get('customization_score', 0)
+                    logger.info(f"\n✅ TEST 3 - {business_type.upper()} CUSTOMIZATION: PASSED")
+                    logger.info(f"   Customization Score: {score:.1f}%")
+                    logger.info(f"   Found Keywords: {customization.get('found_keywords', [])}")
+                else:
+                    logger.info(f"\n❌ TEST 3 - {business_type.upper()} CUSTOMIZATION: FAILED")
+            
+            # Database Check
+            db_test = test_results.get('test4_database_check', {})
+            if db_test.get('success'):
+                logger.info(f"\n✅ TEST 4 - DATABASE CHECK: PASSED")
+                logger.info(f"   Projects with Files: {db_test.get('projects_with_files', 0)}")
+                logger.info(f"   Projects with Site ID: {db_test.get('projects_with_site_id', 0)}")
+                logger.info(f"   Projects with Deploy URL: {db_test.get('projects_with_deploy_url', 0)}")
+                logger.info(f"   Substantial HTML Count: {db_test.get('substantial_html_count', 0)}")
+            else:
+                logger.info(f"\n❌ TEST 4 - DATABASE CHECK: FAILED")
+            
+            # Stress Test
+            stress_test = test_results.get('test5_stress_test', {})
+            if stress_test.get('success'):
+                logger.info(f"\n✅ TEST 5 - STRESS TEST: PASSED")
+                logger.info(f"   Total Requests: {stress_test.get('total_requests', 0)}")
+                logger.info(f"   Successful: {stress_test.get('successful_requests', 0)}")
+                logger.info(f"   Failed: {stress_test.get('failed_requests', 0)}")
+                logger.info(f"   Unique Websites: {stress_test.get('unique_websites', 0)}")
+                logger.info(f"   No Race Conditions: {stress_test.get('no_race_conditions', False)}")
+            else:
+                logger.info(f"\n❌ TEST 5 - STRESS TEST: FAILED")
+            
+            # Log Analysis
+            log_analysis = test_results.get('log_analysis', {})
+            failsafe_indicators = log_analysis.get('failsafe_indicators', {})
+            error_patterns = log_analysis.get('error_patterns', {})
+            
+            logger.info(f"\n📊 FAILSAFE SYSTEM ANALYSIS:")
+            logger.info(f"   AI Response Received: {failsafe_indicators.get('ai_response_received', False)}")
+            logger.info(f"   Failsafe Activated: {failsafe_indicators.get('failsafe_activated', False)}")
+            logger.info(f"   Smart Fallback Used: {failsafe_indicators.get('smart_fallback', False)}")
+            logger.info(f"   Minimal Viable Used: {failsafe_indicators.get('minimal_viable', False)}")
+            
+            generation_times = log_analysis.get('generation_times', [])
+            if generation_times:
+                avg_time = sum(generation_times) / len(generation_times)
+                max_time = max(generation_times)
+                logger.info(f"   Average Generation Time: {avg_time:.2f}s")
+                logger.info(f"   Maximum Generation Time: {max_time:.2f}s")
+            
+            business_types = log_analysis.get('business_types_detected', [])
+            if business_types:
+                logger.info(f"   Business Types Detected: {business_types}")
         
+        # Critical Validation Results
         if validation_errors:
-            logger.info("\nVALIDATION ERRORS:")
+            logger.info(f"\n🚨 CRITICAL VALIDATION ERRORS:")
             for error in validation_errors:
                 logger.error(f"❌ {error}")
         else:
-            logger.info("\n✅ All validation criteria passed - MAX TOKENS FIX VERIFIED!")
-            logger.info("   - Session created successfully")
-            logger.info("   - Website generated WITHOUT errors (no 'encountered an error' message)")
-            logger.info("   - Response contains project.files with index.html, styles.css, app.js")
-            logger.info("   - Files are COMPLETE (not truncated mid-sentence)")
-            logger.info("   - HTML file is substantial (>5000 chars minimum)")
-            logger.info("   - CSS file is substantial (>2000 chars minimum)")
-            logger.info("   - deployment.deploy_preview_url is returned")
-            logger.info("   - Live URL is accessible and contains complete content")
-            logger.info("   - AI response was complete (>20,000 chars ideally)")
-            logger.info("   - No truncation errors in logs")
-            logger.info("   - No 'PARSING COMPLETELY FAILED' errors")
+            logger.info(f"\n🎉 ALL CRITICAL VALIDATIONS PASSED!")
+            logger.info("   ✅ System NEVER returns 500 error to user")
+            logger.info("   ✅ System NEVER takes more than 5 minutes")
+            logger.info("   ✅ System NEVER burns more than 5 credits per generation")
+            logger.info("   ✅ System ALWAYS returns a complete website")
+            logger.info("   ✅ System ALWAYS customizes to prompt")
+            logger.info("   ✅ 3-Layer failsafe system is operational")
+            logger.info("   ✅ Database stores complete project data")
+            logger.info("   ✅ No race conditions in concurrent requests")
+            logger.info("   ✅ Business-specific customization working")
         
         return {
             "success": success,
             "total_time": total_time,
             "validation_errors": validation_errors,
-            "test_data": test_data or {}
+            "test_results": test_results or {}
         }
 
 async def main():
