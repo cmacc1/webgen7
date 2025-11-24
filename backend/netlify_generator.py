@@ -216,20 +216,38 @@ RULES:
 ═══════════════════════════════════════════════════════════════
 """
         
-        # Streamlined user prompt
-        user_prompt = f"""Create a beautiful, modern website for:
+        # EXPLICIT user prompt emphasizing design
+        user_prompt = f"""Create a STUNNING, PROFESSIONAL website for:
 
 "{prompt}"
 
-Requirements:
-- Modern design with Tailwind CSS
-- Professional colors, gradients, shadows
-- Font Awesome icons
-- Smooth animations
-- Fully responsive
-- Include index.html, styles.css, and app.js
+CRITICAL REQUIREMENTS:
+✅ index.html MUST include ALL these CDN links in <head>:
+   - Tailwind CSS: <script src="https://cdn.tailwindcss.com"></script>
+   - Font Awesome: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+   - Google Fonts: <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+   - Custom CSS: <link rel="stylesheet" href="styles.css">
 
-Generate complete JSON with all 3 files. Make it visually stunning!"""
+✅ styles.css MUST include (MINIMUM 300 lines):
+   - Modern gradients (purple, blue, pink, etc.)
+   - Box shadows and depth
+   - Hover effects and transitions
+   - Professional color scheme
+   - Responsive design
+
+✅ app.js MUST include:
+   - Smooth scrolling
+   - Interactive features
+   - Mobile menu toggle
+
+✅ DESIGN QUALITY:
+   - Beautiful gradient backgrounds
+   - Modern card designs with shadows
+   - Professional typography
+   - Smooth animations
+   - Fully responsive with Tailwind classes
+
+Generate complete JSON with ALL 3 files. Make it PIXEL-PERFECT and BEAUTIFUL!"""
 
         # Try multiple models if one fails
         # ONLY use models that actually work with this Emergent API key
