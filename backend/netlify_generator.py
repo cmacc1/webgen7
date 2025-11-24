@@ -321,17 +321,21 @@ Generate complete JSON with all 3 files. Make it visually stunning!"""
             # Check if it was a 502 error
             has_502_error = any('502' in err or 'BadGateway' in err for err in all_errors)
             
+            logger.error(f"❌ ALL MODELS FAILED - {len(unique_models)} models tried, {total_attempts} total attempts")
+            logger.error(f"   Models attempted: {[f'{p}/{m}' for p, m in unique_models]}")
+            logger.error(f"   Errors encountered:")
+            for i, err in enumerate(all_errors, 1):
+                logger.error(f"      {i}. {err[:200]}")
+            
             if has_502_error:
-                logger.warning(f"🚨 AI SERVICE UNAVAILABLE (502 errors detected)")
-                logger.warning(f"🛡️ IMMEDIATELY triggering failsafe - user will get a working website")
-                logger.warning(f"   Credit waste prevented by stopping at {total_attempts} attempts")
-                # Don't raise exception - let the failsafe handle it below
+                logger.warning(f"🚨 AI SERVICE UNAVAILABLE - 502 errors detected across all models")
+                logger.warning(f"🛡️ Triggering smart failsafe - user will get customized website based on prompt")
             else:
-                error_msg = f"All models failed. Errors: {'; '.join(all_errors)}"
-                logger.error(f"❌ {error_msg}")
+                logger.error(f"🚨 GENERATION FAILED - Non-502 errors")
+                logger.warning(f"🛡️ Triggering smart failsafe - user will get customized website")
             
             # Trigger failsafe by raising exception (will be caught below)
-            raise Exception(f"AI generation failed after {total_attempts} attempts")
+            raise Exception(f"AI generation failed after {total_attempts} attempts with {len(unique_models)} models")
         
         # Parse the JSON response
         try:
