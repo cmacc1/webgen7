@@ -63,33 +63,32 @@ class BulletproofFailsafeTester:
                 logger.error(f"❌ Session creation error: {e}")
                 return None
     
-    async def test_netlify_generate_and_deploy(self, session_id: str) -> Dict[str, Any]:
-        """Test the complete Netlify generation and deployment flow with the EXACT prompt from review request"""
+    async def test_normal_ai_generation(self, session_id: str, prompt: str, model: str = "claude-sonnet-4") -> Dict[str, Any]:
+        """TEST 1: Normal AI Generation (Layer 1) - Should complete in under 2 minutes"""
         logger.info("\n" + "="*80)
-        logger.info("CRITICAL TEST - MAX TOKENS FIX VERIFICATION")
+        logger.info("TEST 1: NORMAL AI GENERATION (LAYER 1)")
         logger.info("="*80)
         
         async with aiohttp.ClientSession() as session:
             try:
                 start_time = time.time()
                 
-                # EXACT prompt from review request
                 payload = {
                     "session_id": session_id,
-                    "prompt": "make me a modern website for a renovation business, the home page background should have high quality images and the tab bar should be designed well along with the buttons that take you to different sections on the site such as services and the contact form. the renovation business's services are as follows: Flooring including epoxy flooring, Bathrooms, Kitchens, Full house, etc.. make it look good",
-                    "model": "gpt-5",
-                    "edit_mode": False
+                    "prompt": prompt,
+                    "model": model
                 }
                 
-                logger.info(f"🚀 Generating AND deploying website to Netlify...")
+                logger.info(f"🚀 Testing normal AI generation...")
                 logger.info(f"   Session ID: {session_id}")
-                logger.info(f"   Prompt: {payload['prompt']}")
+                logger.info(f"   Model: {model}")
+                logger.info(f"   Prompt: {prompt}")
                 
                 async with session.post(
                     f"{self.base_url}/netlify/generate-and-deploy",
                     json=payload,
                     headers={"Content-Type": "application/json"},
-                    timeout=aiohttp.ClientTimeout(total=300)  # 5 minute timeout
+                    timeout=aiohttp.ClientTimeout(total=180)  # 3 minute timeout
                 ) as response:
                     generation_time = time.time() - start_time
                     
@@ -98,44 +97,90 @@ class BulletproofFailsafeTester:
                         
                         result = {
                             "success": True,
+                            "layer_used": "AI_GENERATION",
                             "session_id": session_id,
                             "generation_time": generation_time,
                             "response_data": data,
                             "project": data.get('project', {}),
                             "deployment": data.get('deployment', {}),
                             "deploy_preview_url": data.get('deploy_preview_url'),
-                            "instant_url": data.get('instant_url')
+                            "netlify_site_id": data.get('deployment', {}).get('site_id')
                         }
                         
-                        logger.info(f"✅ Netlify generation and deployment completed in {generation_time:.2f}s")
+                        logger.info(f"✅ Normal AI generation completed in {generation_time:.2f}s")
                         logger.info(f"   Project ID: {result['project'].get('project_id')}")
                         logger.info(f"   Deploy Preview URL: {result['deploy_preview_url']}")
+                        logger.info(f"   Netlify Site ID: {result['netlify_site_id']}")
                         
                         return result
                     else:
                         error_text = await response.text()
-                        logger.error(f"❌ Netlify generation and deployment failed: {response.status} - {error_text}")
+                        logger.error(f"❌ Normal AI generation failed: {response.status} - {error_text}")
                         return {
                             "success": False,
+                            "layer_used": "FAILED",
                             "session_id": session_id,
                             "generation_time": generation_time,
                             "error": f"HTTP {response.status}: {error_text}"
                         }
                         
             except asyncio.TimeoutError:
-                logger.error(f"❌ Netlify generation and deployment timed out after 5 minutes")
+                generation_time = time.time() - start_time
+                logger.error(f"❌ Normal AI generation timed out after {generation_time:.2f}s")
                 return {
                     "success": False,
+                    "layer_used": "TIMEOUT",
                     "session_id": session_id,
-                    "error": "Generation and deployment timed out"
+                    "generation_time": generation_time,
+                    "error": "Generation timed out"
                 }
             except Exception as e:
-                logger.error(f"❌ Netlify generation and deployment error: {e}")
+                generation_time = time.time() - start_time
+                logger.error(f"❌ Normal AI generation error: {e}")
                 return {
                     "success": False,
+                    "layer_used": "ERROR",
                     "session_id": session_id,
+                    "generation_time": generation_time,
                     "error": str(e)
                 }
+
+    async def test_business_type_customization(self, business_type: str, prompt: str) -> Dict[str, Any]:
+        """TEST 3: Different Business Types - Test intelligent fallback customization"""
+        logger.info(f"\n--- TEST 3: {business_type.upper()} BUSINESS TYPE ---")
+        
+        session_id = await self.create_session(f"Test {business_type.title()}")
+        if not session_id:
+            return {"success": False, "error": "Failed to create session"}
+        
+        result = await self.test_normal_ai_generation(session_id, prompt)
+        
+        if result.get('success'):
+            # Analyze the generated content for business-specific customization
+            project = result.get('project', {})
+            files = project.get('files', {})
+            html_content = files.get('index.html', '')
+            
+            # Check for business-specific content
+            business_keywords = {
+                'renovation': ['flooring', 'bathroom', 'kitchen', 'renovation', 'remodeling'],
+                'restaurant': ['menu', 'dining', 'food', 'restaurant', 'beverages'],
+                'tech': ['software', 'development', 'cloud', 'technology', 'services']
+            }
+            
+            keywords = business_keywords.get(business_type, [])
+            found_keywords = [kw for kw in keywords if kw.lower() in html_content.lower()]
+            
+            result['business_customization'] = {
+                'expected_keywords': keywords,
+                'found_keywords': found_keywords,
+                'customization_score': len(found_keywords) / len(keywords) * 100 if keywords else 0
+            }
+            
+            logger.info(f"   Business customization: {result['business_customization']['customization_score']:.1f}%")
+            logger.info(f"   Found keywords: {found_keywords}")
+        
+        return result
 
     async def test_live_url_accessibility(self, url: str) -> Dict[str, Any]:
         """Test if the live Netlify URL is accessible and contains expected content"""
