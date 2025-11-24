@@ -199,11 +199,12 @@ Requirements:
 
 Generate complete JSON with all 3 files. Make it visually stunning!"""
 
-        # Try multiple models if one fails
+        # Try multiple models if one fails - use ACTUAL model names that work
         models_to_try = [
             (provider, model),  # Try requested model first
-            ("openai", "gpt-5"),  # Fallback to GPT-5
-            ("openai", "gpt-5-mini"),  # Fallback to GPT-5 Mini
+            ("openai", "gpt-4o"),  # Fallback to GPT-4o (reliable)
+            ("openai", "gpt-4o-mini"),  # Fallback to GPT-4o mini
+            ("openai", "gpt-3.5-turbo"),  # Last resort - fastest
         ]
         
         # Remove duplicates while preserving order
