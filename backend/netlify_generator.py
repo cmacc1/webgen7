@@ -2009,9 +2009,14 @@ console.log('Environment:', window.location.hostname);
         </div>
     </nav>
 
-    <header class="hero" style="background-image: url('{hero_image}'); background-size: cover; background-position: center;">
-        <div class="hero-overlay"></div>
+    <header class="hero" style="{hero_bg['css']}">
+        <div class="hero-icon-bg">
+            <i class="fas {hero_bg['icon']}"></i>
+        </div>
         <div class="hero-content">
+            <div class="hero-icon-main">
+                <i class="fas {hero_bg['icon']}"></i>
+            </div>
             <h1 class="hero-title">{hero_title}</h1>
             <p class="hero-subtitle">{hero_subtitle}</p>
             <button class="cta-button" onclick="document.getElementById('services').scrollIntoView({{behavior:'smooth'}})">Get Started</button>
