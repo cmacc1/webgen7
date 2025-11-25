@@ -1948,7 +1948,7 @@ console.log('Environment:', window.location.hostname);
         sections_html = ""
         
         if "about" in sections:
-            about_img = section_images[0] if section_images else ""
+            about_bg = section_bgs[0] if section_bgs else {"gradient": "linear-gradient(135deg, #667eea, #764ba2)", "icon": "fa-star"}
             sections_html += f'''
         <section id="about" class="section">
             <div class="container">
@@ -1957,8 +1957,8 @@ console.log('Environment:', window.location.hostname);
                     <div>
                         <p class="section-text">We are dedicated professionals committed to delivering exceptional results. Our team brings years of experience and expertise to every project.</p>
                     </div>
-                    <div>
-                        <img src="{about_img}" alt="About {business_name}" style="width: 100%; height: 400px; object-fit: cover; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);" loading="lazy">
+                    <div style="{about_bg['css']} border-radius: 20px; padding: 4rem; display: flex; align-items: center; justify-center; min-height: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);">
+                        <i class="fas {about_bg['icon']}" style="font-size: 12rem; color: white; opacity: 0.9;"></i>
                     </div>
                 </div>
             </div>
