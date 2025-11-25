@@ -329,19 +329,51 @@ ABOUT SECTION (WITH REAL IMAGE):
     </div>
 </section>
 
-FEATURES SECTION (3-4 CARDS):
+FEATURES SECTION (3-4 CARDS - EACH WITH UNIQUE IMAGE):
 <section class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-6xl font-black text-center mb-16">{{Section Title}}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {f'''
+            <!-- Feature Card 1 - Use Image {section_images[0] if section_images else ''} -->
             <div class="bg-white rounded-3xl shadow-2xl hover:-translate-y-2 hover:shadow-3xl transition-all duration-300 overflow-hidden">
-                {('<img src="'+section_images[1]+'" alt="Feature" class="w-full h-64 object-cover">') if len(section_images) > 1 else '<div class="w-full h-64 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center"><i class="fas fa-star text-6xl text-white"></i></div>'}
+                <img src="{section_images[0]}" alt="Feature 1" class="w-full h-64 object-cover">
                 <div class="p-8">
-                    <h3 class="text-2xl font-bold mb-4">{{Feature}}</h3>
-                    <p class="text-gray-600">{{Description}}</p>
+                    <h3 class="text-2xl font-bold mb-4">{{Feature 1}}</h3>
+                    <p class="text-gray-600">{{Description 1}}</p>
                 </div>
             </div>
-            <!-- Repeat with different images -->
+            
+            <!-- Feature Card 2 - Use DIFFERENT Image {section_images[1] if len(section_images) > 1 else ''} -->
+            <div class="bg-white rounded-3xl shadow-2xl hover:-translate-y-2 hover:shadow-3xl transition-all duration-300 overflow-hidden">
+                <img src="{section_images[1]}" alt="Feature 2" class="w-full h-64 object-cover">
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-4">{{Feature 2}}</h3>
+                    <p class="text-gray-600">{{Description 2}}</p>
+                </div>
+            </div>
+            
+            <!-- Feature Card 3 - Use ANOTHER DIFFERENT Image {section_images[2] if len(section_images) > 2 else ''} -->
+            <div class="bg-white rounded-3xl shadow-2xl hover:-translate-y-2 hover:shadow-3xl transition-all duration-300 overflow-hidden">
+                <img src="{section_images[2]}" alt="Feature 3" class="w-full h-64 object-cover">
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-4">{{Feature 3}}</h3>
+                    <p class="text-gray-600">{{Description 3}}</p>
+                </div>
+            </div>
+            ''' if section_images and len(section_images) >= 3 else '<!-- Use gradient backgrounds if no images -->'}
+        </div>
+    </div>
+</section>
+
+GALLERY SECTION (OPTIONAL - ALL UNIQUE IMAGES):
+<section class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-5xl font-black text-center mb-16">Gallery</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {f'''
+            {''.join([f'<img src="{img}" alt="Gallery" class="w-full h-64 object-cover rounded-2xl shadow-lg hover:scale-105 transition-transform">' for img in gallery_images[:6]])}
+            ''' if gallery_images else '<!-- No gallery images -->'}
         </div>
     </div>
 </section>
