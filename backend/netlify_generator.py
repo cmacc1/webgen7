@@ -150,10 +150,34 @@ class NetlifyGenerator:
         image_provider = ImageProvider()
         pexels = PexelsImageService()
         
-        # MINIMAL IMAGE USAGE - Hero only, rest is icons and design
+        # HYPER-SPECIFIC IMAGE - Extract exact keywords from prompt for Pexels
         try:
-            hero_image_data = await pexels.get_hero_image(website_type, prompt)
-            hero_image = hero_image_data["url"] if hero_image_data else None
+            # Extract specific keywords from prompt for hyper-specific image search
+            import re
+            keywords = []
+            
+            # Extract quoted phrases or specific nouns
+            quoted = re.findall(r'"([^"]+)"', prompt)
+            keywords.extend(quoted)
+            
+            # Extract key nouns (simple approach)
+            words = prompt.lower().split()
+            important_words = [w for w in words if len(w) > 4 and w not in ['website', 'create', 'build', 'make', 'page', 'please', 'called', 'named']]
+            keywords.extend(important_words[:3])
+            
+            # Create hyper-specific search query
+            specific_query = ' '.join(keywords[:4]) if keywords else website_type.replace('_', ' ')
+            
+            logger.info(f"🔍 Hyper-specific Pexels search: '{specific_query}'")
+            
+            # Search with specific query, fallback to website type
+            hero_image_data = await pexels.search_images(specific_query, per_page=5)
+            if not hero_image_data:
+                # Fallback to website type
+                hero_image_data = await pexels.get_hero_image(website_type, prompt)
+                hero_image = hero_image_data["url"] if hero_image_data else None
+            else:
+                hero_image = hero_image_data[0]["url"] if hero_image_data else None
             
             logger.info(f"🖼️ Hero image from Pexels: {hero_image[:50] if hero_image else 'Using gradient'}...")
         except Exception as e:
