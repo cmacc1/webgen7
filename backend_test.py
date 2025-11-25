@@ -611,63 +611,22 @@ class DesignVarietyPexelsTester:
             "detailed_results": all_results
         }
 
-    async def check_backend_logs_for_failsafe(self) -> Dict[str, Any]:
-        """Check backend logs for failsafe system activation and layer usage"""
-        try:
-            result = subprocess.run(
-                ['tail', '-n', '1000', '/var/log/supervisor/backend.out.log'],
-                capture_output=True,
-                text=True
-            )
-            
-            backend_logs = result.stdout
-            
-            # Look for failsafe activation indicators
-            failsafe_indicators = {
-                "failsafe_activated": "🛡️ FAILSAFE ACTIVATED" in backend_logs,
-                "smart_fallback": "smart fallback:" in backend_logs,
-                "minimal_viable": "🆘 LAST RESORT: Generating minimal viable project" in backend_logs,
-                "ai_response_received": "AI Response received" in backend_logs,
-                "layer_1_success": "✅ AI Response received" in backend_logs,
-                "layer_2_activated": "FAILSAFE ACTIVATED: Using intelligent fallback" in backend_logs,
-                "layer_3_activated": "Generating minimal viable project" in backend_logs
-            }
-            
-            # Look for generation times and credit usage
-            generation_times = re.findall(r'completed in ([\d.]+)s', backend_logs)
-            credit_usage = re.findall(r'(\d+) credits?', backend_logs)
-            
-            # Look for error patterns that should trigger failsafe
-            error_patterns = {
-                "budget_exceeded": "Budget has been exceeded" in backend_logs,
-                "502_errors": "502" in backend_logs or "BadGateway" in backend_logs,
-                "timeout_errors": "timeout" in backend_logs.lower(),
-                "parsing_errors": "PARSING COMPLETELY FAILED" in backend_logs
-            }
-            
-            # Extract business type detection from smart fallback
-            business_type_matches = re.findall(r'smart fallback: (\w+)', backend_logs)
-            
-            return {
-                "failsafe_indicators": failsafe_indicators,
-                "error_patterns": error_patterns,
-                "generation_times": [float(t) for t in generation_times],
-                "credit_usage": [int(c) for c in credit_usage],
-                "business_types_detected": business_type_matches,
-                "logs_preview": backend_logs[-2000:] if backend_logs else "No logs found"
-            }
-            
-        except Exception as e:
-            logger.error(f"Could not check backend logs: {e}")
-            return {
-                "success_indicators_found": 0,
-                "error_indicators_found": 0,
-                "has_deployment_success": False,
-                "has_deployment_errors": False,
-                "ai_response_chars": None,
-                "has_truncation_errors": False,
-                "error": str(e)
-            }
+async def main():
+    """Main test runner for Design Variety & Pexels Integration"""
+    tester = DesignVarietyPexelsTester()
+    results = await tester.run_comprehensive_test()
+    
+    # Return exit code based on results
+    if results['overall_success']:
+        logger.info("🎉 DESIGN VARIETY & PEXELS INTEGRATION VERIFIED!")
+        return 0
+    else:
+        logger.error(f"💥 Tests failed with {len(results['critical_issues'])} critical issues!")
+        return 1
+
+if __name__ == "__main__":
+    exit_code = asyncio.run(main())
+    exit(exit_code)
 
     async def run_bulletproof_failsafe_test(self):
         """Run the complete bulletproof failsafe system test"""
