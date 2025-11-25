@@ -241,12 +241,15 @@ REQUIRED SECTIONS (industry-specific): {section_hints}
    - Scroll indicator: animate-bounce
 
 2. INFO SECTIONS (3-4 sections, HIGHEST QUALITY):
+   - About/Services section: USE PROVIDED SECTION IMAGES
+   - Example: <img src="{section_images[0] if section_images else ''}" alt="About us" class="w-full h-96 object-cover rounded-2xl shadow-xl">
    - Features/Services grid (3-4 cards)
    - Each card: shadow-2xl rounded-3xl p-10 bg-white hover:-translate-y-2
    - Icon: w-16 h-16 bg-gradient-to-br rounded-2xl text-4xl centered
    - Title: text-2xl font-bold mb-4
    - Description: text-gray-600 leading-relaxed
    - Grid: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
+   - Gallery section: Use thumbnail images in grid layout
 
 3. INDUSTRY-SPECIFIC COMPONENTS:
    {self._get_industry_hints(website_type)}
