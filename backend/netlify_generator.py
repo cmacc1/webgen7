@@ -136,13 +136,25 @@ class NetlifyGenerator:
         from image_provider import ImageProvider
         import random
         
-        # Detect website type from prompt FIRST
+        # Detect website type using comprehensive system (100+ types)
+        from website_types_comprehensive import detect_website_type, get_templates_for_type
+        from template_definitions import get_template_definition, select_best_template
+        from website_type_detector import WebsiteTypeDetector
+        
+        # Use new comprehensive detection
+        website_type = detect_website_type(prompt)
+        available_templates = get_templates_for_type(website_type)
+        best_template = select_best_template(website_type, prompt, available_templates)
+        template_def = get_template_definition(best_template)
+        
+        # Get business details from old detector
         detector = WebsiteTypeDetector()
-        website_type, confidence = detector.detect_type(prompt)
         business_details = detector.extract_business_details(prompt)
         
-        logger.info(f"🎯 Detected website type: {website_type} (confidence: {confidence:.2f})")
-        logger.info(f"📋 Business details: {business_details}")
+        logger.info(f"🎯 Website Type: {website_type}")
+        logger.info(f"📋 Business: {business_details.get('name', 'N/A')}")
+        logger.info(f"🎨 Template: {template_def['name']}")
+        logger.info(f"📐 Layout: {template_def['layout'][:60]}...")
         
         # Get HERO IMAGE ONLY from Pexels (not cluttered with images everywhere)
         from pexels_service import PexelsImageService
