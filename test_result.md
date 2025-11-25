@@ -300,6 +300,18 @@ backend:
         agent: "testing"
         comment: "✅ FILE-BASED PREVIEW SYSTEM FULLY OPERATIONAL! Comprehensive testing completed successfully. VALIDATION RESULTS: 1) Website Generation: ✅ PASS - Generated 5,725 char HTML in 118s with proper structure, 2) File Structure: ✅ PASS - All files created on disk at /app/backend/generated_projects/{session_id}/ with correct structure (index.html, static/styles.css, static/app.js, backend/server.py, requirements.txt), 3) HTML Linking: ✅ PASS - HTML properly contains <link rel='stylesheet' href='static/styles.css'> and <script src='static/app.js'></script>, 4) Preview Endpoints: ✅ PASS - All endpoints return 200 OK with correct content-types (HTML: text/html, CSS: text/css, JS: application/javascript), 5) ProjectManager Logs: ✅ PASS - Backend logs confirm 'Created project structure', 'Saved index.html', 'Saved styles.css', 'Saved app.js' etc. The professional file-based architecture is working perfectly - files are saved to disk, HTML properly links external resources, and preview endpoints serve files correctly instead of using srcDoc."
 
+  - task: "Media Search Integration - Images/GIFs/Videos"
+    implemented: "partial"
+    working: "needs_testing"
+    file: "/app/backend/image_search_service.py, /app/backend/netlify_generator.py"
+    stuck_count: 0
+    priority: "P0"
+    needs_retesting: true
+    status_history:
+      - working: "needs_testing"
+        agent: "main"
+        comment: "IMAGE SEARCH PARTIALLY IMPLEMENTED - User requested ability to search for and include 'images / gifs / videos' in generated websites. CURRENT STATUS: 1) ✅ IMAGE SEARCH IMPLEMENTED: Created new ImageSearchService class using Unsplash Source API (no auth required), 2) ✅ SERVICE INTEGRATED: netlify_generator.py now calls image_search_service.search_contextual_images(prompt) at line 135, 3) ✅ KEYWORD EXTRACTION: Service extracts relevant keywords from user prompts, 4) ✅ HERO & SECTION IMAGES: Searches for hero image (1920x1080) and section images (1600x900, 4 images), 5) ✅ PROMPT ENHANCEMENT: Image URLs are injected into AI generation prompts with clear instructions to USE them, 6) ✅ DEPENDENCY INSTALLED: httpx==0.28.1 installed for API calls, 7) ✅ BACKEND RESTARTED: All services running successfully. LIMITATIONS: ❌ GIF SEARCH NOT IMPLEMENTED: User requested GIFs but only images implemented, ❌ VIDEO SEARCH NOT IMPLEMENTED: User requested videos but only images implemented. The previous agent received integration playbooks for Giphy (GIFs) and Pexels (Videos) but didn't implement them. TESTING REQUIRED: Test backend generation with prompts that would benefit from images (e.g., 'website for a pet grooming salon', 'fitness gym website', 'restaurant site') and verify: 1) ImageSearchService logs show images being fetched, 2) Generated index.html contains <img> tags with URLs from images.unsplash.com, 3) Images are properly displayed in the final deployed website. NEXT STEPS: After testing image search, implement GIF search (Giphy API) and video search (Pexels API) to complete the user's request."
+
 frontend:
   - task: "Preview Panel - File-Based Loading"
     implemented: true
