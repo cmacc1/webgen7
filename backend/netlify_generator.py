@@ -230,24 +230,32 @@ DESIGN STANDARDS (ULTRA-MODERN):
 📱 Grids: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
 🌈 Gradients: bg-gradient-to-br from-purple-600 to-pink-600
 
-SECTIONS REQUIRED (3-4 minimum):
-1. HERO - Full screen with gradient background, huge icon, headline, 2 CTA buttons
-2. FEATURES/SERVICES - Grid of 3-4 cards with icons, each with different gradient
-3. ABOUT - Text + large decorative icon or gradient card
-4. CONTACT - Form with gradient submit button
+SECTIONS REQUIRED (3-4 minimum with REAL IMAGES):
+1. HERO - Full screen with REAL IMAGE background: {hero_img_html}
+   Plus overlay for text readability, huge icon, headline, 2 CTA buttons
+2. FEATURES/SERVICES - Grid of 3-4 cards, optionally with REAL images from: {', '.join(section_images[:2]) if section_images else 'gradients'}
+3. ABOUT - Text + REAL IMAGE or gradient card with decorative icon
+4. GALLERY (optional) - Grid showcase using provided Pexels images
+5. CONTACT - Form with inline validation, input masks, gradient submit button
 
-CRITICAL CSS FILE:
-- styles.css MUST have 400+ lines of custom CSS
-- Include animations (@keyframes fadeInUp, slideIn, etc.)
-- Custom classes for advanced effects
-- Responsive breakpoints
-- Smooth transitions
+CRITICAL CSS FILE (500+ lines):
+- @keyframes fadeInUp, slideIn, scaleIn, glowPulse
+- .fade-in-up, .fade-in-left, .fade-in-right, .scale-in animation classes
+- .hover-lift, .hover-glow, .hover-scale hover effects
+- Custom accordion, modal, toast notification styles
+- Responsive breakpoints (@media queries)
+- Smooth transitions on all interactive elements
 
-CRITICAL JS FILE:
-- app.js MUST have smooth scroll, animations, interactions
-- Intersection Observer for scroll animations
+CRITICAL JS FILE (COMPREHENSIVE):
+- Intersection Observer for scroll reveal animations
+- Modal functions: openModal(id), closeModal(id), ESC key listener
+- Toast notifications: showToast(message, type)
+- Accordion toggle: toggleAccordion(id)
+- Form validation: validateEmail(), validatePhone(), inline feedback
+- Smooth scroll to anchor links
 - Mobile menu toggle
-- Form validation
+- Progress bar updates
+- Input mask formatters
 
 NO ALERTS: Use smooth scrolling onclick="document.getElementById('id').scrollIntoView({{behavior:'smooth'}})"
 
