@@ -155,9 +155,6 @@ class NetlifyGenerator:
         logger.info(f"   Sections: {len(section_images)} images")
         logger.info(f"   Thumbnails: {len(thumbnails)} images")
         
-        logger.info(f"🎯 Detected website type: {website_type} (confidence: {confidence:.2f})")
-        logger.info(f"📋 Business details: {business_details}")
-        
         # Get type-specific design if available
         type_config = WEBSITE_TYPES.get(website_type, {})
         
