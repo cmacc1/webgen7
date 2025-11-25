@@ -1,53 +1,81 @@
 """
-Image/Video Search Service using reliable placeholder image services
+Image/Video Search Service using reliable placeholder and free stock photo services
 """
 import httpx
 import logging
 from typing import List, Dict, Optional
 import asyncio
 import hashlib
+import random
 
 logger = logging.getLogger(__name__)
 
 class ImageSearchService:
-    """Service to search for images using multiple free, reliable sources"""
+    """Service to provide high-quality images using multiple free, reliable sources"""
+    
+    # Color schemes for contextual images
+    COLOR_SCHEMES = {
+        'restaurant': ['FF6B35', 'F7931E', 'FDC830'],
+        'fitness': ['FF6B6B', '4ECDC4', '45B7D1'],
+        'business': ['2C3E50', '3498DB', '95A5A6'],
+        'tech': ['667EEA', '764BA2', 'F093FB'],
+        'health': ['4FACFE', '00F2FE', '43E97B'],
+        'education': ['FA709A', 'FEE140', '30CFD0'],
+        'travel': ['38EF7D', '11998E', '0ABFBC'],
+        'portfolio': ['833AB4', 'FD1D1D', 'FCB045'],
+        'ecommerce': ['F857A6', 'FF5858', 'FCFCFC'],
+        'default': ['667EEA', 'F093FB', '4FACFE']
+    }
     
     def __init__(self):
         self.timeout = 10
     
-    def _get_image_id_from_keyword(self, keyword: str, index: int = 0) -> int:
-        """Generate a consistent image ID from keyword for reproducible images"""
-        # Create hash from keyword + index for variety
-        hash_input = f"{keyword}_{index}".encode('utf-8')
-        hash_value = int(hashlib.md5(hash_input).hexdigest()[:8], 16)
-        # Use modulo to get IDs in range 1-1000 (Lorem Picsum has 1000+ images)
-        return (hash_value % 1000) + 1
+    def _detect_category(self, prompt: str) -> str:
+        """Detect the category of website from the prompt"""
+        prompt_lower = prompt.lower()
+        for category in self.COLOR_SCHEMES.keys():
+            if category in prompt_lower:
+                return category
+        return 'default'
+    
+    def _get_color_from_seed(self, seed: str, index: int = 0) -> str:
+        """Generate a consistent color hex from seed"""
+        hash_input = f"{seed}_{index}".encode('utf-8')
+        hash_value = hashlib.md5(hash_input).hexdigest()[:6]
+        return hash_value.upper()
     
     async def search_images(self, query: str, count: int = 4) -> List[Dict[str, str]]:
         """
-        Search for images based on query
+        Generate contextual placeholder images based on query
         Returns list of image URLs with metadata
-        Uses Lorem Picsum API - reliable, free, no auth needed
+        Uses placehold.co - reliable, free, professional-looking placeholders
         """
         try:
             images = []
             
-            # Clean query for ID generation
-            clean_query = query.replace('+', '_').replace(' ', '_').lower()
+            # Detect category for better color scheme
+            category = self._detect_category(query)
+            colors = self.COLOR_SCHEMES.get(category, self.COLOR_SCHEMES['default'])
             
-            # Generate multiple image URLs with different IDs for variety
+            # Clean query for display
+            clean_query = query.replace('+', ' ').replace('_', ' ').title()
+            
+            # Generate multiple image URLs with different colors for variety
             for i in range(count):
-                image_id = self._get_image_id_from_keyword(clean_query, i)
-                # Using Lorem Picsum with specific image IDs (format: /id/width/height)
-                url = f"https://picsum.photos/id/{image_id}/1600/900"
+                # Cycle through colors
+                bg_color = colors[i % len(colors)]
+                text_color = 'FFFFFF' if i % 2 == 0 else '000000'
+                
+                # Using placehold.co with custom colors and text
+                url = f"https://placehold.co/1600x900/{bg_color}/{text_color}/png?text={clean_query}+{i+1}"
                 images.append({
                     "url": url,
-                    "description": f"{query} image {i+1}",
-                    "source": "picsum",
-                    "image_id": image_id
+                    "description": f"{clean_query} image {i+1}",
+                    "source": "placehold.co",
+                    "bg_color": bg_color
                 })
             
-            logger.info(f"✅ Generated {len(images)} images for query: {query} (IDs: {[img['image_id'] for img in images]})")
+            logger.info(f"✅ Generated {len(images)} images for query: {query} (category: {category})")
             return images
             
         except Exception as e:
@@ -58,19 +86,27 @@ class ImageSearchService:
     async def get_hero_image(self, keywords: List[str]) -> Optional[str]:
         """
         Get a hero image based on keywords
-        Returns single high-quality image URL
+        Returns single high-quality image URL with gradient background
         """
         try:
             # Use first keyword for hero
             main_keyword = keywords[0] if keywords else "modern"
             
-            # Generate ID from keyword for consistent hero image
-            image_id = self._get_image_id_from_keyword(main_keyword, 999)  # Use 999 for hero to differ from section images
+            # Detect category
+            category = self._detect_category(main_keyword)
+            colors = self.COLOR_SCHEMES.get(category, self.COLOR_SCHEMES['default'])
             
-            # Get high-res image from Lorem Picsum
-            url = f"https://picsum.photos/id/{image_id}/1920/1080"
+            # Use first color from scheme
+            bg_color = colors[0]
+            text_color = 'FFFFFF'
             
-            logger.info(f"✅ Generated hero image for: {main_keyword} (ID: {image_id})")
+            # Create hero text
+            hero_text = main_keyword.replace('_', ' ').replace('+', ' ').title()
+            
+            # Get high-res hero image
+            url = f"https://placehold.co/1920x1080/{bg_color}/{text_color}/png?text={hero_text}"
+            
+            logger.info(f"✅ Generated hero image for: {main_keyword} (category: {category}, color: {bg_color})")
             return url
             
         except Exception as e:
