@@ -144,15 +144,34 @@ class NetlifyGenerator:
         logger.info(f"🎯 Detected website type: {website_type} (confidence: {confidence:.2f})")
         logger.info(f"📋 Business details: {business_details}")
         
-        # Get contextual visual backgrounds (gradients + icons) - ALWAYS loads, ALWAYS relevant
+        # Get REAL images from Pexels + contextual visual backgrounds as fallback
+        from pexels_service import PexelsImageService
         image_provider = ImageProvider()
+        pexels = PexelsImageService()
+        
+        # Try to get real images from Pexels (async)
+        try:
+            hero_image = await pexels.get_hero_image(website_type, prompt)
+            section_images = await pexels.get_section_images(website_type, count=4)
+            gallery_images = await pexels.get_gallery_images(website_type, count=6)
+            
+            logger.info(f"🖼️ Pexels images retrieved:")
+            logger.info(f"   Hero: {hero_image[:50] if hero_image else 'None'}...")
+            logger.info(f"   Sections: {len(section_images)} images")
+            logger.info(f"   Gallery: {len(gallery_images)} images")
+        except Exception as e:
+            logger.error(f"❌ Pexels failed: {str(e)}")
+            hero_image = None
+            section_images = []
+            gallery_images = []
+        
+        # Get gradient backgrounds as fallback/complement
         hero_bg = image_provider.get_hero_background(website_type)
         section_bgs = image_provider.get_section_backgrounds(website_type, count=4)
         
-        logger.info(f"🎨 Generated contextual visuals:")
+        logger.info(f"🎨 Fallback gradients ready:")
         logger.info(f"   Hero gradient: {hero_bg['gradient']}")
         logger.info(f"   Hero icon: {hero_bg['icon']}")
-        logger.info(f"   Section backgrounds: {len(section_bgs)} variations")
         
         # Get type-specific design if available
         type_config = WEBSITE_TYPES.get(website_type, {})
