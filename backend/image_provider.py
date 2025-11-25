@@ -111,70 +111,74 @@ class ImageProvider:
             }
         }
     
-    def get_hero_image(self, website_type: str, seed: str = None) -> str:
-        """Get a hero image URL (1920x1080)"""
-        category = self.category_map.get(website_type, "business")
-        image_id = self._get_image_id(category, seed, 0)
+    def get_hero_background(self, website_type: str) -> Dict[str, str]:
+        """Get hero background - gradient with contextual icon"""
+        theme = self.visual_themes.get(website_type, self.visual_themes["default"])
         
-        # Use specific image ID for reliability
-        return f"{self.picsum_base}/id/{image_id}/1920/1080"
+        return {
+            "gradient": theme["gradients"][0],
+            "icon": theme["icon"],
+            "css": f"""background: {theme["gradients"][0]};
+position: relative;"""
+        }
     
-    def get_section_images(self, website_type: str, count: int = 4, seed: str = None) -> List[str]:
-        """Get section images (1200x800)"""
-        category = self.category_map.get(website_type, "business")
-        images = []
+    def get_section_backgrounds(self, website_type: str, count: int = 4) -> List[Dict[str, str]]:
+        """Get section backgrounds - different gradient variations"""
+        theme = self.visual_themes.get(website_type, self.visual_themes["default"])
+        backgrounds = []
         
         for i in range(count):
-            image_id = self._get_image_id(category, seed, i + 1)
-            url = f"{self.picsum_base}/id/{image_id}/1200/800"
-            images.append(url)
+            gradient = theme["gradients"][i % len(theme["gradients"])]
+            backgrounds.append({
+                "gradient": gradient,
+                "icon": theme["icon"],
+                "css": f"background: {gradient};"
+            })
         
-        return images
+        return backgrounds
     
-    def get_thumbnail_images(self, website_type: str, count: int = 6, seed: str = None) -> List[str]:
-        """Get smaller thumbnail images (600x400)"""
-        category = self.category_map.get(website_type, "business")
-        images = []
+    def get_hero_html(self, website_type: str, title: str, subtitle: str) -> str:
+        """Generate complete hero section HTML with gradient and icon"""
+        theme = self.visual_themes.get(website_type, self.visual_themes["default"])
+        gradient = theme["gradients"][0]
+        icon = theme["icon"]
         
-        for i in range(count):
-            image_id = self._get_image_id(category, seed, i + 10)
-            url = f"{self.picsum_base}/id/{image_id}/600/400"
-            images.append(url)
-        
-        return images
+        return f'''<section class="relative min-h-screen flex items-center justify-center overflow-hidden" style="background: {gradient};">
+    <div class="absolute inset-0 opacity-10">
+        <i class="fas {icon} absolute text-[40rem] text-white" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+    </div>
+    <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        <div class="mb-6">
+            <i class="fas {icon} text-9xl text-white opacity-90"></i>
+        </div>
+        <h1 class="text-7xl md:text-9xl font-black text-white mb-6 leading-tight">
+            {title}
+        </h1>
+        <p class="text-2xl md:text-3xl text-white mb-12 opacity-90">
+            {subtitle}
+        </p>
+        <div class="flex gap-6 justify-center flex-wrap">
+            <button onclick="document.getElementById('services').scrollIntoView({{behavior:'smooth'}})" class="px-12 py-5 bg-white text-gray-900 rounded-full text-xl font-bold hover:scale-110 transition-transform duration-300 shadow-2xl">
+                Get Started
+            </button>
+            <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="px-12 py-5 bg-white bg-opacity-20 backdrop-blur-md text-white border-3 border-white rounded-full text-xl font-bold hover:bg-opacity-30 transition-all">
+                Learn More
+            </button>
+        </div>
+    </div>
+</section>'''
     
-    def _get_image_id(self, category: str, seed: str, index: int) -> int:
-        """Get a specific image ID from category"""
-        ids = self.curated_ids.get(category, self.curated_ids["business"])
+    def get_section_card_html(self, website_type: str, icon: str, title: str, description: str, index: int = 0) -> str:
+        """Generate a section card with gradient background"""
+        theme = self.visual_themes.get(website_type, self.visual_themes["default"])
+        gradient = theme["gradients"][index % len(theme["gradients"])]
         
-        if seed:
-            # Use seed to pick a consistent starting point
-            hash_val = int(hashlib.md5(f"{seed}_{index}".encode()).hexdigest()[:8], 16)
-            base_index = hash_val % len(ids)
-        else:
-            base_index = index % len(ids)
-        
-        return ids[base_index]
-    
-    def get_css_gradient_fallback(self, colors: List[str]) -> str:
-        """Generate CSS gradient as image fallback"""
-        if len(colors) >= 2:
-            return f"background: linear-gradient(135deg, {colors[0]}, {colors[1]});"
-        return "background: linear-gradient(135deg, #667eea, #764ba2);"
-    
-    def generate_image_markup(self, url: str, alt: str, classes: str = "") -> str:
-        """Generate proper img tag with fallback"""
-        return f'''<img src="{url}" alt="{alt}" class="{classes} object-cover" loading="lazy" onerror="this.style.display='none'; this.parentElement.classList.add('bg-gradient-to-br', 'from-purple-600', 'to-pink-600');">'''
-    
-    def get_icon_backgrounds(self, count: int = 4) -> List[Dict[str, str]]:
-        """Get gradient backgrounds for icon containers (no images)"""
-        gradients = [
-            {"from": "#667eea", "to": "#764ba2"},
-            {"from": "#f093fb", "to": "#f5576c"},
-            {"from": "#4facfe", "to": "#00f2fe"},
-            {"from": "#43e97b", "to": "#38f9d7"},
-            {"from": "#fa709a", "to": "#fee140"},
-            {"from": "#30cfd0", "to": "#330867"},
-        ]
-        
-        return [gradients[i % len(gradients)] for i in range(count)]
+        return f'''<div class="relative group overflow-hidden rounded-3xl shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300" style="background: {gradient};">
+    <div class="p-10 h-full">
+        <div class="w-20 h-20 bg-white bg-opacity-20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <i class="fas {icon} text-5xl text-white"></i>
+        </div>
+        <h3 class="text-3xl font-bold text-white mb-4">{title}</h3>
+        <p class="text-white text-lg opacity-90 leading-relaxed">{description}</p>
+    </div>
+</div>'''
