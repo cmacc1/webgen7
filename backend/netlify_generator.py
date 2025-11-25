@@ -351,39 +351,70 @@ ABOUT SECTION (WITH REAL IMAGE):
     </div>
 </section>
 
-FEATURES SECTION (3-4 CARDS - EACH WITH UNIQUE IMAGE):
+FEATURES/SERVICES SECTION (USE ICONS - NO IMAGES):
+<section class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-5xl font-black text-center mb-4">Our Services</h2>
+        <p class="text-xl text-gray-600 text-center mb-16">Everything you need</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature Card with ICON -->
+            <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-[RELEVANT-ICON] fa-3x text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3">Feature Name</h3>
+                <p class="text-gray-600 leading-relaxed">Feature description here</p>
+            </div>
+            <!-- Repeat for each service/feature - each with DIFFERENT relevant icon -->
+        </div>
+    </div>
+</section>
+
+PRICING/PLANS SECTION (IF MENTIONED IN PROMPT):
 <section class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-6">
-        <h2 class="text-6xl font-black text-center mb-16">{{Section Title}}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {f'''
-            <!-- Feature Card 1 - Use Image {section_images[0] if section_images else ''} -->
-            <div class="bg-white rounded-3xl shadow-2xl hover:-translate-y-2 hover:shadow-3xl transition-all duration-300 overflow-hidden">
-                <img src="{section_images[0]}" alt="Feature 1" class="w-full h-64 object-cover">
-                <div class="p-8">
-                    <h3 class="text-2xl font-bold mb-4">{{Feature 1}}</h3>
-                    <p class="text-gray-600">{{Description 1}}</p>
+        <h2 class="text-5xl font-black text-center mb-16">Choose Your Plan</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Basic Plan -->
+            <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-purple-500 transition-all">
+                <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-cube fa-2x text-gray-600"></i>
                 </div>
+                <h3 class="text-2xl font-bold mb-2">Basic</h3>
+                <p class="text-4xl font-black mb-6">$29<span class="text-lg font-normal text-gray-500">/mo</span></p>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> Feature 1</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> Feature 2</li>
+                </ul>
+                <button class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition-all">Get Started</button>
             </div>
-            
-            <!-- Feature Card 2 - Use DIFFERENT Image {section_images[1] if len(section_images) > 1 else ''} -->
-            <div class="bg-white rounded-3xl shadow-2xl hover:-translate-y-2 hover:shadow-3xl transition-all duration-300 overflow-hidden">
-                <img src="{section_images[1]}" alt="Feature 2" class="w-full h-64 object-cover">
-                <div class="p-8">
-                    <h3 class="text-2xl font-bold mb-4">{{Feature 2}}</h3>
-                    <p class="text-gray-600">{{Description 2}}</p>
+            <!-- Pro Plan (Highlighted) -->
+            <div class="bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-2xl p-8 transform scale-105 shadow-2xl">
+                <div class="w-16 h-16 bg-white bg-opacity-20 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-crown fa-2x text-white"></i>
                 </div>
+                <h3 class="text-2xl font-bold mb-2">Pro</h3>
+                <p class="text-4xl font-black mb-6">$99<span class="text-lg font-normal opacity-80">/mo</span></p>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check"></i> Everything in Basic</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check"></i> Pro Feature 1</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check"></i> Pro Feature 2</li>
+                </ul>
+                <button class="w-full py-3 bg-white text-purple-600 rounded-xl font-bold hover:bg-opacity-90 transition-all">Get Started</button>
             </div>
-            
-            <!-- Feature Card 3 - Use ANOTHER DIFFERENT Image {section_images[2] if len(section_images) > 2 else ''} -->
-            <div class="bg-white rounded-3xl shadow-2xl hover:-translate-y-2 hover:shadow-3xl transition-all duration-300 overflow-hidden">
-                <img src="{section_images[2]}" alt="Feature 3" class="w-full h-64 object-cover">
-                <div class="p-8">
-                    <h3 class="text-2xl font-bold mb-4">{{Feature 3}}</h3>
-                    <p class="text-gray-600">{{Description 3}}</p>
+            <!-- Enterprise Plan -->
+            <div class="bg-white border-2 border-gray-200 rounded-2xl p-8 hover:border-purple-500 transition-all">
+                <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-building fa-2x text-gray-600"></i>
                 </div>
+                <h3 class="text-2xl font-bold mb-2">Enterprise</h3>
+                <p class="text-4xl font-black mb-6">Custom</p>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> Everything in Pro</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> Custom Solutions</li>
+                </ul>
+                <button class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition-all">Contact Sales</button>
             </div>
-            ''' if section_images and len(section_images) >= 3 else '<!-- Use gradient backgrounds if no images -->'}
         </div>
     </div>
 </section>
