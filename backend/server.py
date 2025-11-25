@@ -807,6 +807,71 @@ async def stop_project_backend(session_id: str):
     return result
 
 # Include router
+
+@api_router.post("/netlify/cleanup")
+async def cleanup_old_netlify_sites(keep_count: int = 5):
+    """
+    Manually cleanup old Netlify sites to free up space
+    Keeps the most recent {keep_count} sites and deletes the rest
+    """
+    logger.info(f"🧹 Starting Netlify cleanup - keeping {keep_count} most recent sites")
+    
+    # Get all deployed projects sorted by creation date
+    all_projects = await db.netlify_projects.find(
+        {"netlify_site_id": {"$exists": True}},
+        {"_id": 0, "project_id": 1, "netlify_site_id": 1, "created_at": 1, "prompt": 1}
+    ).sort("created_at", -1).to_list(None)
+    
+    total_sites = len(all_projects)
+    
+    if total_sites <= keep_count:
+        return {
+            "message": f"No cleanup needed. Currently {total_sites} sites, keeping {keep_count}",
+            "total_sites": total_sites,
+            "deleted": 0
+        }
+    
+    # Keep the most recent ones, delete the rest
+    sites_to_keep = all_projects[:keep_count]
+    sites_to_delete = all_projects[keep_count:]
+    
+    deleted_count = 0
+    errors = []
+    
+    for proj in sites_to_delete:
+        try:
+            site_id = proj.get("netlify_site_id")
+            if site_id:
+                logger.info(f"🗑️  Deleting old site: {site_id} (from {proj.get('created_at')})")
+                success = await netlify_deploy_service.delete_site(site_id)
+                
+                if success:
+                    # Remove deployment info from database
+                    await db.netlify_projects.update_one(
+                        {"project_id": proj["project_id"]},
+                        {"$unset": {
+                            "netlify_site_id": "",
+                            "netlify_deploy_id": "",
+                            "deploy_url": "",
+                            "deploy_preview_url": ""
+                        }}
+                    )
+                    deleted_count += 1
+                    logger.info(f"✅ Deleted site {site_id}")
+        except Exception as e:
+            error_msg = f"Failed to delete {site_id}: {str(e)}"
+            logger.error(error_msg)
+            errors.append(error_msg)
+    
+    return {
+        "message": f"Cleanup complete. Deleted {deleted_count} old sites",
+        "total_sites": total_sites,
+        "kept": len(sites_to_keep),
+        "deleted": deleted_count,
+        "errors": errors if errors else None
+    }
+
+
 app.include_router(api_router)
 
 # CORS
