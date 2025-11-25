@@ -1708,7 +1708,26 @@ console.log('Environment:', window.location.hostname);
         }
     
     def _generate_customized_html(self, business_type: str, business_name: str, sections: List[str], prompt: str) -> str:
-        """Generate customized HTML based on business type"""
+        """Generate customized HTML based on business type using advanced design library"""
+        from advanced_design_library import COLOR_SCHEMES, ICON_LIBRARY
+        import random
+        
+        # Select premium color scheme based on business type
+        color_map = {
+            "fitness": "health_wellness",
+            "restaurant": "creative_vibrant", 
+            "tech": "modern_tech",
+            "business": "business_professional",
+            "portfolio": "creative_vibrant",
+            "renovation": "business_professional",
+        }
+        color_category = color_map.get(business_type, "modern_tech")
+        colors = random.choice(COLOR_SCHEMES.get(color_category, COLOR_SCHEMES["modern_tech"]))
+        primary_color = colors["colors"][0]
+        secondary_color = colors["colors"][1]
+        
+        # Get contextual icons
+        icons = ICON_LIBRARY.get(business_type, ICON_LIBRARY["business"])
         
         # Business-specific content
         if business_type == "renovation":
