@@ -1,47 +1,54 @@
 """
-Image/Video Search Service using Unsplash and Pexels APIs
-Free, no authentication required for basic usage
+Image/Video Search Service using Picsum Photos (free, reliable, no auth needed)
 """
 import httpx
 import logging
 from typing import List, Dict, Optional
 import asyncio
+import hashlib
 
 logger = logging.getLogger(__name__)
 
 class ImageSearchService:
     """Service to search for images and videos from free APIs"""
     
-    # Using Unsplash Source API (no auth needed for basic usage)
-    UNSPLASH_SOURCE_URL = "https://source.unsplash.com"
-    UNSPLASH_API_URL = "https://api.unsplash.com"
-    
-    # Pexels API
-    PEXELS_API_URL = "https://api.pexels.com/v1"
+    # Using Picsum Photos - reliable, free, no auth needed
+    PICSUM_BASE_URL = "https://picsum.photos"
     
     def __init__(self):
         self.timeout = 10
+    
+    def _get_seed_from_keyword(self, keyword: str, index: int = 0) -> str:
+        """Generate a consistent seed from keyword for reproducible random images"""
+        # Create hash from keyword + index for variety
+        hash_input = f"{keyword}_{index}".encode('utf-8')
+        hash_value = hashlib.md5(hash_input).hexdigest()[:8]
+        return hash_value
     
     async def search_images(self, query: str, count: int = 4) -> List[Dict[str, str]]:
         """
         Search for images based on query
         Returns list of image URLs with metadata
+        Uses Picsum Photos with seeded random for consistent, high-quality images
         """
         try:
-            # Use Unsplash Source API (no auth needed)
             images = []
             
-            # Generate multiple image URLs with random seeds for variety
+            # Clean query for seed
+            clean_query = query.replace('+', '_').replace(' ', '_').lower()
+            
+            # Generate multiple image URLs with different seeds for variety
             for i in range(count):
-                # Using Unsplash Source API with query
-                url = f"{self.UNSPLASH_SOURCE_URL}/1600x900/?{query}&sig={i}"
+                seed = self._get_seed_from_keyword(clean_query, i)
+                # Using Picsum Photos with seed for consistent random images
+                url = f"{self.PICSUM_BASE_URL}/seed/{seed}/1600/900"
                 images.append({
                     "url": url,
                     "description": f"{query} image {i+1}",
-                    "source": "unsplash"
+                    "source": "picsum"
                 })
             
-            logger.info(f"✅ Found {len(images)} images for query: {query}")
+            logger.info(f"✅ Generated {len(images)} images for query: {query}")
             return images
             
         except Exception as e:
@@ -58,10 +65,13 @@ class ImageSearchService:
             # Use first keyword for hero
             main_keyword = keywords[0] if keywords else "modern"
             
-            # Get high-res image from Unsplash
-            url = f"{self.UNSPLASH_SOURCE_URL}/1920x1080/?{main_keyword}"
+            # Generate seed from keyword for consistent hero image
+            seed = self._get_seed_from_keyword(main_keyword, 99)  # Use 99 for hero to differ from section images
             
-            logger.info(f"✅ Generated hero image for: {main_keyword}")
+            # Get high-res image from Picsum Photos
+            url = f"{self.PICSUM_BASE_URL}/seed/{seed}/1920/1080"
+            
+            logger.info(f"✅ Generated hero image for: {main_keyword} (seed: {seed})")
             return url
             
         except Exception as e:
