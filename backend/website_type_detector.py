@@ -167,7 +167,7 @@ class WebsiteTypeDetector:
         
         # Try to find business name (often in quotes or after "for")
         name_patterns = [
-            r'["']([^"']+)["']',
+            r'''["']([^"']+)["']''',
             r'(?:for|called|named)\s+([A-Z][A-Za-z0-9\s&]+)',
         ]
         
