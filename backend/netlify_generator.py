@@ -347,20 +347,66 @@ CRITICAL CSS FILE (500+ lines):
 - Responsive breakpoints (@media queries)
 - Smooth transitions on all interactive elements
 
-CRITICAL JS FILE (COMPREHENSIVE):
-- Intersection Observer for scroll reveal animations
-- Modal functions: openModal(id), closeModal(id), ESC key listener
-- Toast notifications: showToast(message, type)
-- Accordion toggle: toggleAccordion(id)
-- Form validation: validateEmail(), validatePhone(), inline feedback
-- Smooth scroll to anchor links
-- Mobile menu toggle
-- Progress bar updates
-- Input mask formatters
+CRITICAL JS FILE (MUST INCLUDE ALL THESE FUNCTIONS):
+```javascript
+// Smooth scroll for all anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {{
+    anchor.addEventListener('click', function (e) {{
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+    }});
+}});
 
-NO ALERTS: Use smooth scrolling onclick="document.getElementById('id').scrollIntoView({{behavior:'smooth'}})"
+// Mobile menu toggle
+function toggleMobileMenu() {{
+    const menu = document.getElementById('mobile-menu');
+    if (menu) menu.classList.toggle('hidden');
+}}
 
-OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "400+ LINES CSS", "app.js": "INTERACTIVE JS"}}}}"""
+// Form submission handler
+function handleFormSubmit(event) {{
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    // Show success message
+    alert('Thank you! We will contact you soon.');
+    form.reset();
+    return false;
+}}
+
+// Scroll reveal animations
+const observerOptions = {{ threshold: 0.1, rootMargin: '0px 0px -100px 0px' }};
+const observer = new IntersectionObserver((entries) => {{
+    entries.forEach(entry => {{
+        if (entry.isIntersecting) {{
+            entry.target.classList.add('animate-fade-in-up');
+            observer.unobserve(entry.target);
+        }}
+    }});
+}}, observerOptions);
+document.querySelectorAll('.fade-on-scroll').forEach(el => observer.observe(el));
+
+// Navbar scroll effect
+window.addEventListener('scroll', () => {{
+    const navbar = document.getElementById('navbar');
+    if (navbar) {{
+        if (window.scrollY > 50) navbar.classList.add('scrolled');
+        else navbar.classList.remove('scrolled');
+    }}
+}});
+```
+
+7️⃣ FUNCTIONALITY CHECKLIST (ALL MUST WORK):
+✅ All navigation links scroll smoothly to sections
+✅ Mobile menu toggles open/close
+✅ Contact form submits and shows confirmation
+✅ Hover states on all buttons
+✅ Scroll animations trigger on view
+✅ All buttons have proper onclick handlers
+✅ Responsive layout works on all screen sizes
+
+OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "500+ LINES CSS", "app.js": "INTERACTIVE JS WITH ALL FUNCTIONS"}}}}"""
         
         # Industry-specific sections
         recommended_sections = detector.get_recommended_sections(website_type)
