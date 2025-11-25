@@ -391,7 +391,11 @@ APP.JS (INTERACTIVE):
 - Mobile menu toggle
 - Form validation
 
-USE TAILWIND CLASSES EVERYWHERE! Make it VISUALLY STUNNING with gradients, large icons ({hero_bg['icon']}), smooth animations!"""
+CRITICAL REMINDERS:
+✅ NO duplicate image URLs - each <img> tag must use a DIFFERENT URL
+✅ Features get sequential images: Feature 1 uses section_images[0], Feature 2 uses section_images[1], etc.
+✅ Gallery uses completely separate gallery_images array (already unique)
+✅ Make it industry-appropriate, visually STUNNING, with smooth animations!"""
 
         # Try multiple models if one fails
         # ONLY use models that actually work with this Emergent API key
