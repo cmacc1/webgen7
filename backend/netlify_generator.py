@@ -2170,13 +2170,32 @@ h3 { font-size: clamp(1.5rem, 4vw, 3rem); }
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
-.hero-overlay {
+.hero-icon-bg {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.1;
     z-index: 1;
+}
+
+.hero-icon-bg i {
+    font-size: 40rem;
+    color: white;
+}
+
+.hero-icon-main {
+    margin-bottom: 2rem;
+}
+
+.hero-icon-main i {
+    font-size: 8rem;
+    color: white;
+    opacity: 0.9;
 }
 
 .hero-content {
