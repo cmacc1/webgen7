@@ -209,13 +209,13 @@ INFO SECTIONS - HIGHEST QUALITY (CRITICAL):
 - Perfect contrast: dark bg = text-white, light bg = text-gray-900
 - Generous spacing: mb-6 for titles, mb-4 for subtitles, leading-relaxed for text
 
-🖼️ IMAGE USAGE (MANDATORY):
-- Hero background: Use {hero_image} in style="background-image: url('{hero_image}')" or as <img>
-- Section images: Use provided section image URLs in <img src="{section_images[0] if section_images else ''}" class="w-full h-64 object-cover rounded-xl">
-- Gallery/thumbnails: Use thumbnail URLs in grid layouts
-- ALWAYS include alt text describing the image
-- Add loading="lazy" for performance
-- Use object-cover class for proper sizing
+🎨 VISUAL DESIGN (MANDATORY - NO IMAGES):
+- Hero: style="background: {hero_bg['gradient']};" with LARGE icon <i class="fas {hero_bg['icon']} text-9xl"></i>
+- Section cards: Use gradient backgrounds with icon containers
+- NO img tags, NO background-image URLs - USE CSS GRADIENTS ONLY
+- Large contextual icons (text-6xl to text-9xl) throughout
+- Gradient backgrounds make sections visually stunning
+- Icons are ALWAYS relevant to {website_type}
 
 NO ALERTS: onclick="document.getElementById('id').scrollIntoView({{behavior:'smooth'}})"
 
