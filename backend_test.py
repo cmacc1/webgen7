@@ -447,50 +447,41 @@ class DesignVarietyPexelsTester:
                 "error": str(e)
             }
 
-    async def check_database_projects(self) -> Dict[str, Any]:
-        """TEST 4: Database Check - Verify projects are saved with complete data"""
-        logger.info("\n--- TEST 4: DATABASE CHECK ---")
+    async def run_comprehensive_test(self):
+        """Run the complete design variety and Pexels integration test"""
+        logger.info("🚀 STARTING DESIGN VARIETY & PEXELS INTEGRATION TESTING")
+        logger.info(f"Backend URL: {self.base_url}")
         
-        try:
-            # Use MongoDB command to check projects
-            result = subprocess.run([
-                'mongo', 'code_weaver_db', '--eval',
-                'db.netlify_projects.find({}, {session_id:1, "files.index.html":1, netlify_site_id:1, deploy_preview_url:1}).limit(5).forEach(printjson)'
-            ], capture_output=True, text=True, timeout=30)
-            
-            if result.returncode == 0:
-                output = result.stdout
-                
-                # Count projects with complete data
-                projects_with_files = output.count('"index.html"')
-                projects_with_site_id = output.count('netlify_site_id')
-                projects_with_deploy_url = output.count('deploy_preview_url')
-                
-                # Check for substantial HTML content (>1000 chars)
-                html_size_matches = re.findall(r'"index\.html"\s*:\s*"[^"]{1000,}', output)
-                substantial_html_count = len(html_size_matches)
-                
-                return {
-                    "success": True,
-                    "projects_with_files": projects_with_files,
-                    "projects_with_site_id": projects_with_site_id,
-                    "projects_with_deploy_url": projects_with_deploy_url,
-                    "substantial_html_count": substantial_html_count,
-                    "database_output": output[:1000] + "..." if len(output) > 1000 else output
-                }
-            else:
-                logger.error(f"MongoDB query failed: {result.stderr}")
-                return {
-                    "success": False,
-                    "error": f"MongoDB error: {result.stderr}"
-                }
-                
-        except Exception as e:
-            logger.error(f"Database check failed: {e}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
+        start_time = time.time()
+        all_results = {}
+        
+        # TEST 1: Design Variety System (HIGHEST PRIORITY)
+        logger.info("\n" + "🎨" * 40)
+        logger.info("TESTING DESIGN VARIETY SYSTEM")
+        logger.info("🎨" * 40)
+        
+        design_variety_results = await self.test_design_variety_system()
+        all_results['design_variety'] = design_variety_results
+        
+        # TEST 2: Pexels Image Integration
+        logger.info("\n" + "🖼️" * 40)
+        logger.info("TESTING PEXELS IMAGE INTEGRATION")
+        logger.info("🖼️" * 40)
+        
+        pexels_results = await self.test_pexels_image_integration()
+        all_results['pexels_integration'] = pexels_results
+        
+        # TEST 3: API Health Check
+        logger.info("\n" + "🏥" * 40)
+        logger.info("TESTING API HEALTH")
+        logger.info("🏥" * 40)
+        
+        health_results = await self.test_api_health_check()
+        all_results['api_health'] = health_results
+        
+        # Generate final summary
+        total_time = time.time() - start_time
+        return self._generate_final_summary(all_results, total_time)
 
     async def test_stress_multiple_requests(self) -> Dict[str, Any]:
         """TEST 5: Stress Test - Multiple rapid requests to verify no conflicts"""
