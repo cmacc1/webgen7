@@ -1,5 +1,5 @@
 """
-Image/Video Search Service using Picsum Photos (free, reliable, no auth needed)
+Image/Video Search Service using reliable placeholder image services
 """
 import httpx
 import logging
@@ -10,45 +10,44 @@ import hashlib
 logger = logging.getLogger(__name__)
 
 class ImageSearchService:
-    """Service to search for images and videos from free APIs"""
-    
-    # Using Picsum Photos - reliable, free, no auth needed
-    PICSUM_BASE_URL = "https://picsum.photos"
+    """Service to search for images using multiple free, reliable sources"""
     
     def __init__(self):
         self.timeout = 10
     
-    def _get_seed_from_keyword(self, keyword: str, index: int = 0) -> str:
-        """Generate a consistent seed from keyword for reproducible random images"""
+    def _get_image_id_from_keyword(self, keyword: str, index: int = 0) -> int:
+        """Generate a consistent image ID from keyword for reproducible images"""
         # Create hash from keyword + index for variety
         hash_input = f"{keyword}_{index}".encode('utf-8')
-        hash_value = hashlib.md5(hash_input).hexdigest()[:8]
-        return hash_value
+        hash_value = int(hashlib.md5(hash_input).hexdigest()[:8], 16)
+        # Use modulo to get IDs in range 1-1000 (Lorem Picsum has 1000+ images)
+        return (hash_value % 1000) + 1
     
     async def search_images(self, query: str, count: int = 4) -> List[Dict[str, str]]:
         """
         Search for images based on query
         Returns list of image URLs with metadata
-        Uses Picsum Photos with seeded random for consistent, high-quality images
+        Uses Lorem Picsum API - reliable, free, no auth needed
         """
         try:
             images = []
             
-            # Clean query for seed
+            # Clean query for ID generation
             clean_query = query.replace('+', '_').replace(' ', '_').lower()
             
-            # Generate multiple image URLs with different seeds for variety
+            # Generate multiple image URLs with different IDs for variety
             for i in range(count):
-                seed = self._get_seed_from_keyword(clean_query, i)
-                # Using Picsum Photos with seed for consistent random images
-                url = f"{self.PICSUM_BASE_URL}/seed/{seed}/1600/900"
+                image_id = self._get_image_id_from_keyword(clean_query, i)
+                # Using Lorem Picsum with specific image IDs (format: /id/width/height)
+                url = f"https://picsum.photos/id/{image_id}/1600/900"
                 images.append({
                     "url": url,
                     "description": f"{query} image {i+1}",
-                    "source": "picsum"
+                    "source": "picsum",
+                    "image_id": image_id
                 })
             
-            logger.info(f"✅ Generated {len(images)} images for query: {query}")
+            logger.info(f"✅ Generated {len(images)} images for query: {query} (IDs: {[img['image_id'] for img in images]})")
             return images
             
         except Exception as e:
@@ -65,13 +64,13 @@ class ImageSearchService:
             # Use first keyword for hero
             main_keyword = keywords[0] if keywords else "modern"
             
-            # Generate seed from keyword for consistent hero image
-            seed = self._get_seed_from_keyword(main_keyword, 99)  # Use 99 for hero to differ from section images
+            # Generate ID from keyword for consistent hero image
+            image_id = self._get_image_id_from_keyword(main_keyword, 999)  # Use 999 for hero to differ from section images
             
-            # Get high-res image from Picsum Photos
-            url = f"{self.PICSUM_BASE_URL}/seed/{seed}/1920/1080"
+            # Get high-res image from Lorem Picsum
+            url = f"https://picsum.photos/id/{image_id}/1920/1080"
             
-            logger.info(f"✅ Generated hero image for: {main_keyword} (seed: {seed})")
+            logger.info(f"✅ Generated hero image for: {main_keyword} (ID: {image_id})")
             return url
             
         except Exception as e:
