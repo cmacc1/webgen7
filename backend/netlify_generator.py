@@ -208,31 +208,18 @@ class NetlifyGenerator:
         logger.info(f"   Hero gradient: {hero_bg['gradient']}")
         logger.info(f"   Hero icon: {hero_bg['icon']}")
         
-        # RANDOMIZE COMPLETE TEMPLATE - Different ARCHITECTURE for EVERY generation!
+        # Use the selected template definition
+        logger.info(f"✅ Using template: {template_def['name']}")
+        logger.info(f"   Best for: {template_def['best_for']}")
+        logger.info(f"   Features: {', '.join(template_def['features'][:3])}...")
+        
+        # Get design randomization for additional variety
         from design_randomizer import DesignRandomizer
-        from template_library import get_random_template, get_template_specific_instructions
-        
-        # Get a completely random template structure
-        template_config = get_random_template()
-        template_instructions = get_template_specific_instructions(template_config)
-        
-        # Also get design randomization for additional variety
         randomizer = DesignRandomizer()
         design_system = randomizer.get_random_design_system()
-        variety_instructions = randomizer.generate_variety_instructions(design_system)
         
-        logger.info(f"🎲 TEMPLATE RANDOMIZATION:")
-        logger.info(f"   Template: {template_config['template']['name']}")
-        logger.info(f"   Template ID: {template_config['template_id']}")
-        logger.info(f"   Navigation: {template_config['template']['navigation'][:50]}...")
-        logger.info(f"   Color Scheme: {template_config['colors']['name']}")
-        logger.info(f"   Typography: {template_config['typography']['name']}")
-        
-        # Get type-specific design if available (for fallback)
-        type_config = WEBSITE_TYPES.get(website_type, {})
-        
-        # Use template colors
-        colors = template_config['colors']
+        # Use randomized colors
+        colors = design_system['colors']
         
         # Build image URLs for prompt
         hero_gradient = hero_bg.get('gradient', 'linear-gradient(135deg, #667eea, #764ba2)')
