@@ -360,58 +360,92 @@ class DesignVarietyPexelsTester:
         
         return urls
 
-    async def test_live_url_accessibility(self, url: str) -> Dict[str, Any]:
-        """Test if the live Netlify URL is accessible and contains expected content"""
-        logger.info(f"🌐 Testing live URL accessibility: {url}")
-        
-        async with aiohttp.ClientSession() as session:
-            try:
-                async with session.get(url, timeout=aiohttp.ClientTimeout(total=30)) as response:
-                    if response.status == 200:
-                        content = await response.text()
-                        
-                        # Check if it contains HTML content
-                        has_html = '<html' in content.lower() or '<!doctype html' in content.lower()
-                        has_renovation_content = any([
-                            'renovation' in content.lower(),
-                            'flooring' in content.lower(),
-                            'bathroom' in content.lower(),
-                            'kitchen' in content.lower(),
-                            'epoxy' in content.lower(),
-                            'services' in content.lower(),
-                            'contact' in content.lower()
-                        ])
-                        
-                        result = {
-                            "success": True,
-                            "status_code": response.status,
-                            "content_length": len(content),
-                            "has_html": has_html,
-                            "has_renovation_content": has_renovation_content,
-                            "content_preview": content[:500] + "..." if len(content) > 500 else content
-                        }
-                        
-                        logger.info(f"✅ Live URL is accessible")
-                        logger.info(f"   Status: {response.status}")
-                        logger.info(f"   Content Length: {len(content)} chars")
-                        logger.info(f"   Contains HTML: {has_html}")
-                        logger.info(f"   Contains Renovation Content: {has_renovation_content}")
-                        
-                        return result
-                    else:
-                        logger.error(f"❌ Live URL returned status {response.status}")
-                        return {
-                            "success": False,
-                            "status_code": response.status,
-                            "error": f"HTTP {response.status}"
-                        }
-                        
-            except Exception as e:
-                logger.error(f"❌ Error accessing live URL: {e}")
-                return {
-                    "success": False,
-                    "error": str(e)
-                }
+    async def _check_backend_logs_for_design_variety(self) -> Dict[str, Any]:
+        """Check backend logs for design randomization activity"""
+        try:
+            result = subprocess.run(
+                ['tail', '-n', '500', '/var/log/supervisor/backend.out.log'],
+                capture_output=True,
+                text=True
+            )
+            
+            backend_logs = result.stdout
+            
+            # Look for design variety indicators
+            variety_indicators = {
+                "randomization_found": "🎲 Randomized design system" in backend_logs,
+                "design_variety_logs": "DESIGN VARIETY" in backend_logs,
+                "layout_pattern_logs": "Layout:" in backend_logs,
+                "hero_style_logs": "Hero:" in backend_logs,
+                "colors_logs": "Colors:" in backend_logs,
+                "design_id_logs": "design_id" in backend_logs
+            }
+            
+            # Extract design IDs if found
+            design_id_matches = re.findall(r'design_id[:\s]+([^\s,\]]+)', backend_logs)
+            layout_matches = re.findall(r'Layout[:\s]+([^\s,\]]+)', backend_logs)
+            hero_matches = re.findall(r'Hero[:\s]+([^\n]+)', backend_logs)
+            color_matches = re.findall(r'Colors[:\s]+([^\n]+)', backend_logs)
+            
+            return {
+                "variety_indicators": variety_indicators,
+                "design_ids_found": design_id_matches,
+                "layouts_found": layout_matches,
+                "hero_styles_found": hero_matches,
+                "colors_found": color_matches,
+                "randomization_found": variety_indicators["randomization_found"],
+                "logs_preview": backend_logs[-1000:] if backend_logs else "No logs found"
+            }
+            
+        except Exception as e:
+            logger.error(f"Could not check backend logs: {e}")
+            return {
+                "variety_indicators": {},
+                "design_ids_found": [],
+                "randomization_found": False,
+                "error": str(e)
+            }
+
+    async def _check_backend_logs_for_pexels(self) -> Dict[str, Any]:
+        """Check backend logs for Pexels API activity"""
+        try:
+            result = subprocess.run(
+                ['tail', '-n', '500', '/var/log/supervisor/backend.out.log'],
+                capture_output=True,
+                text=True
+            )
+            
+            backend_logs = result.stdout
+            
+            # Look for Pexels activity indicators
+            pexels_indicators = {
+                "pexels_found_logs": "✅ Pexels: Found" in backend_logs,
+                "pexels_search_logs": "🔍 Searching for feature-specific image" in backend_logs,
+                "unique_images_logs": "UNIQUE section images" in backend_logs,
+                "pexels_api_calls": "Pexels" in backend_logs,
+                "image_retrieval_logs": "Retrieved" in backend_logs and "images" in backend_logs
+            }
+            
+            # Extract specific search queries
+            search_matches = re.findall(r'Found (\d+) images for [\'"]([^\'"]+)[\'"]', backend_logs)
+            unique_matches = re.findall(r'Retrieved (\d+) UNIQUE.*images', backend_logs)
+            
+            return {
+                "pexels_indicators": pexels_indicators,
+                "image_searches": search_matches,
+                "unique_image_counts": unique_matches,
+                "pexels_activity_found": any(pexels_indicators.values()),
+                "logs_preview": backend_logs[-1000:] if backend_logs else "No logs found"
+            }
+            
+        except Exception as e:
+            logger.error(f"Could not check backend logs: {e}")
+            return {
+                "pexels_indicators": {},
+                "image_searches": [],
+                "pexels_activity_found": False,
+                "error": str(e)
+            }
 
     async def check_database_projects(self) -> Dict[str, Any]:
         """TEST 4: Database Check - Verify projects are saved with complete data"""
