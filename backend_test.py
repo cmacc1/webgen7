@@ -65,87 +65,273 @@ class DesignVarietyPexelsTester:
                 logger.error(f"❌ Session creation error: {e}")
                 return None
     
-    async def test_normal_ai_generation(self, session_id: str, prompt: str, model: str = "claude-sonnet-4") -> Dict[str, Any]:
-        """TEST 1: Normal AI Generation (Layer 1) - Should complete in under 2 minutes"""
+    async def test_api_health_check(self) -> Dict[str, Any]:
+        """TEST 3: API Health Check - Basic verification"""
         logger.info("\n" + "="*80)
-        logger.info("TEST 1: NORMAL AI GENERATION (LAYER 1)")
+        logger.info("TEST 3: API HEALTH CHECK")
         logger.info("="*80)
         
-        async with aiohttp.ClientSession() as session:
+        results = {}
+        
+        # Test 1: POST /api/session/create
+        try:
+            session_id = await self.create_session("Health Check Test")
+            results['session_create'] = {
+                'success': session_id is not None,
+                'session_id': session_id
+            }
+            logger.info(f"✅ Session creation: {'PASS' if session_id else 'FAIL'}")
+        except Exception as e:
+            results['session_create'] = {'success': False, 'error': str(e)}
+            logger.error(f"❌ Session creation: FAIL - {e}")
+        
+        # Test 2: GET /api/models
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"{self.base_url}/models") as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        models = data.get('models', [])
+                        results['models'] = {
+                            'success': True,
+                            'count': len(models),
+                            'models': [m.get('id') for m in models]
+                        }
+                        logger.info(f"✅ Models endpoint: PASS - {len(models)} models available")
+                    else:
+                        results['models'] = {'success': False, 'status': response.status}
+                        logger.error(f"❌ Models endpoint: FAIL - {response.status}")
+        except Exception as e:
+            results['models'] = {'success': False, 'error': str(e)}
+            logger.error(f"❌ Models endpoint: FAIL - {e}")
+        
+        # Test 3: GET /api/ (root endpoint)
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"{self.base_url}/") as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        results['root'] = {
+                            'success': True,
+                            'message': data.get('message'),
+                            'status': data.get('status')
+                        }
+                        logger.info(f"✅ Root endpoint: PASS - {data.get('message')}")
+                    else:
+                        results['root'] = {'success': False, 'status': response.status}
+                        logger.error(f"❌ Root endpoint: FAIL - {response.status}")
+        except Exception as e:
+            results['root'] = {'success': False, 'error': str(e)}
+            logger.error(f"❌ Root endpoint: FAIL - {e}")
+        
+        return results
+
+    async def test_design_variety_system(self) -> Dict[str, Any]:
+        """TEST 1: Design Variety System (HIGHEST PRIORITY) - Verify unique outputs"""
+        logger.info("\n" + "="*80)
+        logger.info("TEST 1: DESIGN VARIETY SYSTEM (HIGHEST PRIORITY)")
+        logger.info("="*80)
+        
+        prompt = "Create a fitness gym website called Iron Temple"
+        results = {
+            'prompt': prompt,
+            'generations': [],
+            'variety_verified': False,
+            'design_ids_different': False,
+            'logs_show_randomization': False
+        }
+        
+        # Generate website twice with same prompt
+        for attempt in range(1, 3):
+            logger.info(f"\n--- GENERATION ATTEMPT {attempt} ---")
+            
+            session_id = await self.create_session(f"Design Variety Test {attempt}")
+            if not session_id:
+                results['generations'].append({'success': False, 'error': 'Failed to create session'})
+                continue
+            
             try:
                 start_time = time.time()
                 
                 payload = {
                     "session_id": session_id,
                     "prompt": prompt,
-                    "model": model
+                    "model": "gpt-5"
                 }
                 
-                logger.info(f"🚀 Testing normal AI generation...")
-                logger.info(f"   Session ID: {session_id}")
-                logger.info(f"   Model: {model}")
-                logger.info(f"   Prompt: {prompt}")
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(
+                        f"{self.base_url}/netlify/generate-and-deploy",
+                        json=payload,
+                        headers={"Content-Type": "application/json"},
+                        timeout=aiohttp.ClientTimeout(total=300)  # 5 minute timeout
+                    ) as response:
+                        generation_time = time.time() - start_time
+                        
+                        if response.status == 200:
+                            data = await response.json()
+                            
+                            generation_result = {
+                                'success': True,
+                                'attempt': attempt,
+                                'session_id': session_id,
+                                'generation_time': generation_time,
+                                'project_id': data.get('project', {}).get('project_id'),
+                                'files': data.get('project', {}).get('files', {}),
+                                'deploy_url': data.get('deploy_preview_url'),
+                                'html_length': len(data.get('project', {}).get('files', {}).get('index.html', '')),
+                                'css_length': len(data.get('project', {}).get('files', {}).get('styles.css', '')),
+                                'js_length': len(data.get('project', {}).get('files', {}).get('app.js', ''))
+                            }
+                            
+                            results['generations'].append(generation_result)
+                            
+                            logger.info(f"✅ Generation {attempt} completed in {generation_time:.2f}s")
+                            logger.info(f"   Project ID: {generation_result['project_id']}")
+                            logger.info(f"   HTML: {generation_result['html_length']} chars")
+                            logger.info(f"   CSS: {generation_result['css_length']} chars")
+                            logger.info(f"   JS: {generation_result['js_length']} chars")
+                            
+                        else:
+                            error_text = await response.text()
+                            results['generations'].append({
+                                'success': False,
+                                'attempt': attempt,
+                                'session_id': session_id,
+                                'generation_time': generation_time,
+                                'error': f"HTTP {response.status}: {error_text}"
+                            })
+                            logger.error(f"❌ Generation {attempt} failed: {response.status} - {error_text}")
+                            
+            except Exception as e:
+                generation_time = time.time() - start_time
+                results['generations'].append({
+                    'success': False,
+                    'attempt': attempt,
+                    'session_id': session_id,
+                    'generation_time': generation_time,
+                    'error': str(e)
+                })
+                logger.error(f"❌ Generation {attempt} error: {e}")
+        
+        # Analyze results for variety
+        successful_generations = [g for g in results['generations'] if g.get('success')]
+        
+        if len(successful_generations) >= 2:
+            gen1 = successful_generations[0]
+            gen2 = successful_generations[1]
+            
+            # Check if HTML content is different
+            html1 = gen1.get('files', {}).get('index.html', '')
+            html2 = gen2.get('files', {}).get('index.html', '')
+            
+            if html1 and html2:
+                # Simple difference check - if content is significantly different
+                similarity = self._calculate_similarity(html1, html2)
+                results['content_similarity'] = similarity
+                results['variety_verified'] = similarity < 0.8  # Less than 80% similar = good variety
                 
+                logger.info(f"📊 Content similarity: {similarity:.2f} ({'GOOD VARIETY' if similarity < 0.8 else 'TOO SIMILAR'})")
+            
+            # Check if project IDs are different
+            id1 = gen1.get('project_id')
+            id2 = gen2.get('project_id')
+            results['design_ids_different'] = id1 != id2 and id1 and id2
+            
+            logger.info(f"🆔 Project IDs different: {results['design_ids_different']}")
+        
+        # Check backend logs for design randomization
+        log_analysis = await self._check_backend_logs_for_design_variety()
+        results['log_analysis'] = log_analysis
+        results['logs_show_randomization'] = log_analysis.get('randomization_found', False)
+        
+        return results
+
+    async def test_pexels_image_integration(self) -> Dict[str, Any]:
+        """TEST 2: Pexels Image Integration - Verify real images are fetched"""
+        logger.info("\n" + "="*80)
+        logger.info("TEST 2: PEXELS IMAGE INTEGRATION")
+        logger.info("="*80)
+        
+        prompt = "Create a renovation company website with kitchen, bathroom, and deck services"
+        results = {
+            'prompt': prompt,
+            'generation_success': False,
+            'pexels_logs_found': False,
+            'unique_image_urls': [],
+            'contextual_relevance': False,
+            'image_searches': []
+        }
+        
+        session_id = await self.create_session("Pexels Integration Test")
+        if not session_id:
+            results['error'] = 'Failed to create session'
+            return results
+        
+        try:
+            start_time = time.time()
+            
+            payload = {
+                "session_id": session_id,
+                "prompt": prompt,
+                "model": "gpt-5"
+            }
+            
+            async with aiohttp.ClientSession() as session:
                 async with session.post(
                     f"{self.base_url}/netlify/generate-and-deploy",
                     json=payload,
                     headers={"Content-Type": "application/json"},
-                    timeout=aiohttp.ClientTimeout(total=180)  # 3 minute timeout
+                    timeout=aiohttp.ClientTimeout(total=300)  # 5 minute timeout
                 ) as response:
                     generation_time = time.time() - start_time
                     
                     if response.status == 200:
                         data = await response.json()
+                        results['generation_success'] = True
+                        results['generation_time'] = generation_time
+                        results['project_id'] = data.get('project', {}).get('project_id')
                         
-                        result = {
-                            "success": True,
-                            "layer_used": "AI_GENERATION",
-                            "session_id": session_id,
-                            "generation_time": generation_time,
-                            "response_data": data,
-                            "project": data.get('project', {}),
-                            "deployment": data.get('deployment', {}),
-                            "deploy_preview_url": data.get('deploy_preview_url'),
-                            "netlify_site_id": data.get('deployment', {}).get('site_id')
-                        }
+                        # Extract HTML content to check for images
+                        html_content = data.get('project', {}).get('files', {}).get('index.html', '')
+                        results['html_length'] = len(html_content)
                         
-                        logger.info(f"✅ Normal AI generation completed in {generation_time:.2f}s")
-                        logger.info(f"   Project ID: {result['project'].get('project_id')}")
-                        logger.info(f"   Deploy Preview URL: {result['deploy_preview_url']}")
-                        logger.info(f"   Netlify Site ID: {result['netlify_site_id']}")
+                        # Look for Pexels image URLs in HTML
+                        pexels_urls = self._extract_pexels_urls(html_content)
+                        results['pexels_urls'] = pexels_urls
+                        results['unique_image_urls'] = list(set(pexels_urls))  # Remove duplicates
+                        results['images_are_unique'] = len(pexels_urls) == len(set(pexels_urls))
                         
-                        return result
+                        logger.info(f"✅ Generation completed in {generation_time:.2f}s")
+                        logger.info(f"   HTML length: {len(html_content)} chars")
+                        logger.info(f"   Pexels URLs found: {len(pexels_urls)}")
+                        logger.info(f"   Unique URLs: {len(set(pexels_urls))}")
+                        
+                        # Check for contextual relevance
+                        renovation_keywords = ['kitchen', 'bathroom', 'deck', 'renovation', 'remodeling']
+                        html_lower = html_content.lower()
+                        found_keywords = [kw for kw in renovation_keywords if kw in html_lower]
+                        results['contextual_keywords'] = found_keywords
+                        results['contextual_relevance'] = len(found_keywords) >= 2
+                        
+                        logger.info(f"   Contextual keywords found: {found_keywords}")
+                        
                     else:
                         error_text = await response.text()
-                        logger.error(f"❌ Normal AI generation failed: {response.status} - {error_text}")
-                        return {
-                            "success": False,
-                            "layer_used": "FAILED",
-                            "session_id": session_id,
-                            "generation_time": generation_time,
-                            "error": f"HTTP {response.status}: {error_text}"
-                        }
+                        results['error'] = f"HTTP {response.status}: {error_text}"
+                        logger.error(f"❌ Generation failed: {response.status} - {error_text}")
                         
-            except asyncio.TimeoutError:
-                generation_time = time.time() - start_time
-                logger.error(f"❌ Normal AI generation timed out after {generation_time:.2f}s")
-                return {
-                    "success": False,
-                    "layer_used": "TIMEOUT",
-                    "session_id": session_id,
-                    "generation_time": generation_time,
-                    "error": "Generation timed out"
-                }
-            except Exception as e:
-                generation_time = time.time() - start_time
-                logger.error(f"❌ Normal AI generation error: {e}")
-                return {
-                    "success": False,
-                    "layer_used": "ERROR",
-                    "session_id": session_id,
-                    "generation_time": generation_time,
-                    "error": str(e)
-                }
+        except Exception as e:
+            results['error'] = str(e)
+            logger.error(f"❌ Generation error: {e}")
+        
+        # Check backend logs for Pexels activity
+        log_analysis = await self._check_backend_logs_for_pexels()
+        results['log_analysis'] = log_analysis
+        results['pexels_logs_found'] = log_analysis.get('pexels_activity_found', False)
+        results['image_searches'] = log_analysis.get('image_searches', [])
+        
+        return results
 
     async def test_business_type_customization(self, business_type: str, prompt: str) -> Dict[str, Any]:
         """TEST 3: Different Business Types - Test intelligent fallback customization"""
