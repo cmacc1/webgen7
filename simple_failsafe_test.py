@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 async def test_failsafe_system():
     """Test the failsafe system with a simple request"""
-    base_url = "https://promptosite-7.preview.emergentagent.com/api"
+    base_url = "https://bug-journey.preview.emergentagent.com/api"
     
     logger.info("🚀 Testing Bulletproof Failsafe System")
     

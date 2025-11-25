@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 async def test_single_generation():
     """Test a single generation to verify budget fix"""
-    base_url = "https://promptosite-7.preview.emergentagent.com/api"
+    base_url = "https://bug-journey.preview.emergentagent.com/api"
     
     # Create session
     async with aiohttp.ClientSession() as session:

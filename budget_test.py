@@ -33,7 +33,7 @@ class BudgetTester:
             logger.error(f"Could not read frontend .env: {e}")
         
         # Fallback
-        return "https://promptosite-7.preview.emergentagent.com/api"
+        return "https://bug-journey.preview.emergentagent.com/api"
     
     async def create_session(self, project_name: str = "Budget Test") -> str:
         """Create a new session and return session_id"""
