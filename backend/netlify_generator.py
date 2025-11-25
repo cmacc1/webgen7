@@ -133,43 +133,76 @@ class NetlifyGenerator:
         # The base64 encoded images are too large for the AI context window
         logger.info("⚠️ Image generation disabled to prevent context window errors")
         
-        # COMPACT system prompt to avoid context window issues
-        system_prompt = """You are an expert web developer. Create stunning, modern websites using Tailwind CSS.
+        # ENHANCED system prompt with design library knowledge
+        from advanced_design_library import COLOR_SCHEMES, BUTTON_STYLES, BACKGROUND_PATTERNS
+        import random
+        
+        # Pick random high-quality design elements
+        color_category = random.choice(list(COLOR_SCHEMES.keys()))
+        colors = random.choice(COLOR_SCHEMES[color_category])
+        button_style = random.choice(BUTTON_STYLES["modern_gradient"])
+        bg_pattern = random.choice(list(BACKGROUND_PATTERNS.values()))
+        
+        system_prompt = f"""You are an ELITE web designer creating STUNNING, PROFESSIONAL websites.
+
+CRITICAL REQUIREMENTS:
+✅ Use Tailwind CSS CDN: <script src="https://cdn.tailwindcss.com"></script>
+✅ Include Font Awesome 6: <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+✅ Include Google Fonts: <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+✅ Link files: <link href="styles.css" rel="stylesheet"> and <script src="app.js"></script>
+
+HIGH-QUALITY DESIGN STANDARDS:
+🎨 Colors: Use this premium palette - {colors['colors']}
+🎯 Buttons: Modern gradient styles with hover effects and shadows
+📐 Layout: Full-screen hero (min-h-screen), sections with py-20 or py-24
+🖼️ Backgrounds: Vibrant gradients, patterns, or solid colors
+✨ Animations: Smooth transitions, hover effects, scroll reveals
+📱 Responsive: Mobile-first design with proper breakpoints
+🔤 Typography: Bold headlines (text-6xl to text-8xl), readable body text
+🎭 Icons: Font Awesome 6 icons (fas fa-*), large sizes (text-5xl+)
+💫 Effects: Box shadows, rounded corners, opacity, transforms
+
+INFO SECTIONS (CRITICAL - HIGHEST QUALITY):
+- Use cards with shadow-2xl and rounded-3xl
+- Add hover effects: hover:-translate-y-2 hover:shadow-3xl
+- Include gradient icon backgrounds
+- Readable text with proper contrast
+- Generous padding (p-8 to p-12)
+- Grid layouts: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+- Animated transitions on all interactive elements
+
+NO ALERTS: Use smooth scrolling: onclick="document.getElementById('section').scrollIntoView({{behavior:'smooth'}})"
+
+OUTPUT JSON ONLY:
+{{"files": {{"index.html": "...", "styles.css": "...", "app.js": "..."}}}}"""
+        
+        # ENHANCED user prompt
+        user_prompt = f"""Create a PREMIUM website for: "{prompt}"
 
 REQUIREMENTS:
-- Use Tailwind CSS via CDN: <script src="https://cdn.tailwindcss.com"></script>
-- Include Font Awesome: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-- Link external files: <link rel="stylesheet" href="styles.css"> and <script src="app.js"></script>
-- NO alert() popups - use smooth scrolling or inline messages
-- High contrast text (dark bg = light text, light bg = dark text)
-- Centered, symmetrical layouts
-- Vibrant gradients and professional colors
-- Large, bold typography
-- Generous spacing and padding
+1. HERO SECTION (full-screen, min-h-screen):
+   - Massive headline (text-7xl md:text-8xl lg:text-9xl)
+   - Gradient background using colors: {colors['colors'][:2]}
+   - 2 CTA buttons with different styles
+   - Animated scroll indicator
 
-OUTPUT FORMAT (JSON):
-{
-  "files": {
-    "index.html": "Full HTML with Tailwind classes",
-    "styles.css": "Additional custom CSS",
-    "app.js": "Interactive JavaScript"
-  }
-}"""
-        
-        # MINIMAL user prompt to avoid context window errors
-        user_prompt = f"""Create a premium, modern website for: "{prompt}"
+2. INFO SECTIONS (3-4 sections, HIGHEST QUALITY):
+   - Features section with 3-4 cards in grid
+   - Each card: gradient icon, bold title, description
+   - Beautiful backgrounds and animations
+   - Perfect typography and spacing
+   
+3. PRICING/MEMBERSHIP (if applicable):
+   - Clear pricing cards with features
+   - Highlighted recommended plan
+   - Buy buttons with gradient styles
 
-Requirements:
-- Full-screen hero with gradient background and large headline
-- 3-4 content sections (About, Features, Services, Contact)
-- Use Tailwind utility classes extensively
-- Include Font Awesome icons
-- No alert() popups - use smooth scrolling
-- High contrast, readable text
-- Centered, balanced layouts
-- Vibrant colors and professional design
+4. CONTACT FORM:
+   - Modern input styling
+   - Gradient submit button
+   - Proper validation
 
-Return JSON with index.html, styles.css, and app.js files."""
+Make it VISUALLY STUNNING with smooth animations, perfect colors, and professional design!"""
 
         # Try multiple models if one fails
         # ONLY use models that actually work with this Emergent API key
