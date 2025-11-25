@@ -2003,11 +2003,12 @@ console.log('Environment:', window.location.hostname);
         </div>
     </nav>
 
-    <header class="hero">
+    <header class="hero" style="background-image: url('{hero_image}'); background-size: cover; background-position: center;">
+        <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1 class="hero-title">{hero_title}</h1>
             <p class="hero-subtitle">{hero_subtitle}</p>
-            <button class="cta-button">Get Started</button>
+            <button class="cta-button" onclick="document.getElementById('services').scrollIntoView({{behavior:'smooth'}})">Get Started</button>
         </div>
     </header>
 
