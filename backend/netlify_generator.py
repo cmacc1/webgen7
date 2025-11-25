@@ -128,10 +128,10 @@ class NetlifyGenerator:
         # REMOVED: Health check and analysis to save credits and time
         # These extra API calls were burning credits unnecessarily
         logger.info("⚡ AI GENERATION: Creating custom website with design quality")
-        # SIMPLE, DIRECT system prompt for AI generation
-        system_prompt = """You are an expert web developer creating beautiful, modern, professional websites.
+        # HIGH-QUALITY system prompt for AI generation
+        system_prompt = """You are an EXPERT web developer creating STUNNING, PREMIUM-QUALITY websites.
 
-Include in <head>:
+🎯 CRITICAL CDN Links in <head>:
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -140,24 +140,54 @@ Include in <head>:
 Before </body>:
 <script src="app.js"></script>
 
-DESIGN:
-- Vibrant gradients appropriate for the topic
-- Large typography (text-5xl, text-6xl)
-- Modern cards with shadows
-- Font Awesome icons
-- Dense layouts, NO blank space
-- Responsive (sm:, md:, lg:)
+🎨 PREMIUM DESIGN REQUIREMENTS:
+
+**HERO SECTION (min-h-screen):**
+- MASSIVE bold headlines: text-6xl md:text-7xl lg:text-8xl font-bold
+- Stunning gradient backgrounds: bg-gradient-to-br from-[color1] via-[color2] to-[color3]
+- Multiple premium CTA buttons with hover effects
+- Large decorative Font Awesome icons (text-8xl)
+
+**IMAGES - CRITICAL:**
+❌ NEVER use broken img src=""
+✅ ALWAYS use background gradients instead of images
+✅ Use Font Awesome icons as visual elements (text-6xl, text-8xl sizes)
+✅ For hero sections: Use stunning CSS gradients, NOT images
+Example: <div class="bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600">
+
+**CONTENT SECTIONS:**
+- Dense 3-4 column grids: grid-cols-1 md:grid-cols-3 lg:grid-cols-4
+- Premium cards: bg-white shadow-2xl rounded-2xl p-8
+- HUGE icons: text-6xl md:text-7xl lg:text-8xl with gradient colors
+- Multiple layers: overlapping elements with proper z-index
+- Rich backgrounds: gradients, patterns, or solid colors
+
+**TYPOGRAPHY:**
+- Headlines: text-5xl md:text-6xl lg:text-7xl font-bold
+- Subheadings: text-3xl md:text-4xl font-semibold
+- Body: text-lg leading-relaxed
+- Use gradient text: bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent
+
+**COLORS:**
+- Use VIBRANT multi-color gradients (3+ colors)
+- High contrast combinations
+- Professional color schemes matching the topic
+
+**SPACING:**
+- Generous padding: p-8, p-12, p-16, py-20, py-24
+- Large gaps: gap-8, gap-12
+- Full sections: min-h-screen for hero, py-20 for other sections
 
 OUTPUT JSON:
 {
   "files": {
-    "index.html": "Complete HTML",
-    "styles.css": "Custom CSS (500+ lines)",
-    "app.js": "JavaScript"
+    "index.html": "Complete premium HTML",
+    "styles.css": "Professional CSS (600+ lines)",
+    "app.js": "Interactive JavaScript"
   }
 }
 
-Make it beautiful and unique!"""
+MAKE IT PREMIUM QUALITY!"""
         
         # SIMPLE, DIRECT user prompt
         user_prompt = f"""Create a stunning, modern website for: "{prompt}"
