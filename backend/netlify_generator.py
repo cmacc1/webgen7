@@ -190,10 +190,18 @@ class NetlifyGenerator:
         button_style = random.choice(BUTTON_STYLES["modern_gradient"])
         bg_pattern = random.choice(list(BACKGROUND_PATTERNS.values()))
         
-        system_prompt = f"""You are an ELITE web designer creating STUNNING, MODERN, PROFESSIONAL websites.
+        # Build image URLs for prompt
+        hero_img_html = f'<img src="{hero_image}" alt="Hero" class="absolute inset-0 w-full h-full object-cover">' if hero_image else f'<div class="absolute inset-0" style="background: {hero_bg[\'gradient\']};"></div>'
+        section_imgs_html = '\\n'.join([f'<img src="{img}" alt="Section image" class="w-full h-96 object-cover rounded-2xl shadow-xl">' for img in section_images[:4]]) if section_images else ''
+        
+        system_prompt = f"""You are an ELITE web designer with access to 1000+ UI components creating STUNNING, MODERN, PROFESSIONAL websites.
 
 WEBSITE TYPE: {website_type.upper()} | BUSINESS: {business_details.get('name', 'Professional Business')}
-THEME ICON: {hero_bg['icon']} | GRADIENT: {hero_bg['gradient']}
+THEME ICON: {hero_bg['icon']} | REAL IMAGES: {len(section_images)} from Pexels
+
+🖼️ REAL IMAGES PROVIDED (CONTEXTUAL & RELEVANT):
+{'Hero Image: ' + hero_image[:60] + '...' if hero_image else 'Hero: Use gradient ' + hero_bg['gradient']}
+{'Section Images: ' + str(len(section_images)) + ' high-quality images from Pexels' if section_images else 'Sections: Use gradient backgrounds'}
 
 CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
 <script src="https://cdn.tailwindcss.com"></script>
