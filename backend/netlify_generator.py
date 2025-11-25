@@ -129,16 +129,9 @@ class NetlifyGenerator:
         # These extra API calls were burning credits unnecessarily
         logger.info("⚡ AI GENERATION: Creating custom website with design quality")
         
-        # Search for relevant images based on prompt
-        from image_search_service import ImageSearchService
-        image_service = ImageSearchService()
-        image_data = await image_service.search_contextual_images(prompt)
-        
-        hero_image_url = image_data.get("hero_image")
-        section_images = image_data.get("section_images", [])
-        
-        logger.info(f"🖼️ Found hero image: {bool(hero_image_url)}")
-        logger.info(f"🖼️ Found {len(section_images)} section images")
+        # DISABLED: Image generation causes context window exceeded errors
+        # The base64 encoded images are too large for the AI context window
+        logger.info("⚠️ Image generation disabled to prevent context window errors")
         
         # HIGH-QUALITY system prompt for AI generation
         system_prompt = """You are an EXPERT web developer creating STUNNING, PREMIUM-QUALITY websites.
