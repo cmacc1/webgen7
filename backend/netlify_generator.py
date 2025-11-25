@@ -162,27 +162,16 @@ class NetlifyGenerator:
         image_provider = ImageProvider()
         pexels = PexelsImageService()
         
-        # MULTI-SOURCE HIGH-QUALITY IMAGE - Unsplash > Pixabay > Pexels
+        # BUSINESS-SPECIFIC HIGH-QUALITY IMAGE - Ultra-relevant to business type
         from multi_image_service import MultiImageService
+        from business_image_mapper import get_hero_image_query, get_alternative_queries
         
         try:
-            # Extract specific keywords from prompt for hyper-specific image search
-            import re
-            keywords = []
+            # Get highly specific image query for this business type
+            specific_query = get_hero_image_query(website_type, prompt)
             
-            # Extract quoted phrases or specific nouns
-            quoted = re.findall(r'"([^"]+)"', prompt)
-            keywords.extend(quoted)
-            
-            # Extract key nouns (simple approach)
-            words = prompt.lower().split()
-            important_words = [w for w in words if len(w) > 4 and w not in ['website', 'create', 'build', 'make', 'page', 'please', 'called', 'named']]
-            keywords.extend(important_words[:3])
-            
-            # Create hyper-specific search query
-            specific_query = ' '.join(keywords[:4]) if keywords else website_type.replace('_', ' ')
-            
-            logger.info(f"🔍 Hyper-specific image search: '{specific_query}'")
+            logger.info(f"🔍 BUSINESS-SPECIFIC image search: '{specific_query}'")
+            logger.info(f"   Business type: {website_type}")
             
             # Use multi-source service (tries Unsplash, Pixabay, Pexels in order)
             multi_image = MultiImageService()
@@ -192,13 +181,28 @@ class NetlifyGenerator:
                 hero_image = hero_image_data["url"]
                 hero_photographer = hero_image_data.get("photographer", "Unknown")
                 hero_source = hero_image_data.get("source", "unknown")
-                logger.info(f"✅ Hero image from {hero_source.upper()}: {hero_image[:50]}...")
+                logger.info(f"✅ Hero image from {hero_source.upper()}: {hero_image[:60]}...")
+                logger.info(f"   Query used: {specific_query}")
                 logger.info(f"   Photographer: {hero_photographer}")
             else:
-                # Final fallback to website type search
-                hero_image_data = await multi_image.search_with_fallback(website_type.replace('_', ' '), orientation="landscape")
-                hero_image = hero_image_data["url"] if hero_image_data else None
-                logger.info(f"🖼️ Hero image (fallback): {hero_image[:50] if hero_image else 'Using gradient'}...")
+                # Try alternative queries
+                alternatives = get_alternative_queries(website_type)
+                logger.info(f"⚠️ Primary query failed, trying {len(alternatives)} alternatives...")
+                
+                for alt_query in alternatives:
+                    hero_image_data = await multi_image.search_with_fallback(alt_query, orientation="landscape")
+                    if hero_image_data:
+                        hero_image = hero_image_data["url"]
+                        hero_photographer = hero_image_data.get("photographer", "Unknown")
+                        hero_source = hero_image_data.get("source", "unknown")
+                        logger.info(f"✅ Found with alternative: '{alt_query}'")
+                        break
+                
+                if not hero_image_data:
+                    hero_image = None
+                    hero_photographer = None
+                    hero_source = None
+                    logger.warning(f"❌ No images found after trying all queries")
                 
         except Exception as e:
             logger.error(f"❌ Image search failed: {str(e)}")
