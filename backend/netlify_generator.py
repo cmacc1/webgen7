@@ -248,36 +248,61 @@ class NetlifyGenerator:
         else:
             section_imgs_html = 'Use gradient backgrounds'
         
-        system_prompt = f"""You are an EXPERT web designer creating a {template_def['name']} template.
+        # Get appropriate navigation design
+        from navigation_library import get_navigation_by_template
+        nav_design = get_navigation_by_template(template_def['name'])
+        
+        logger.info(f"🧭 Navigation: {nav_design['name']}")
+        
+        system_prompt = f"""You are an EXPERT web designer. Create a HIGH-QUALITY, FULLY FUNCTIONAL website.
 
-🎯 TEMPLATE SPECIFICATION:
-NAME: {template_def['name']}
-TYPE: {website_type.replace('_', ' ').title()}
-BUSINESS: {business_details.get('name', 'Business')}
+🎯 BUSINESS: {website_type.replace('_', ' ').title()} - {business_details.get('name', 'Professional Business')}
+📐 TEMPLATE: {template_def['name']}
 
-📐 LAYOUT (CRITICAL - FOLLOW EXACTLY):
-{template_def['layout']}
+🚨 CRITICAL REQUIREMENTS - MUST FOLLOW:
 
-🧭 NAVIGATION STYLE:
-{template_def['navigation']}
+1️⃣ NAVIGATION (USE THIS EXACT CODE):
+{nav_design['html']}
 
-🎭 HERO SECTION:
-{template_def['hero']}
+NAVIGATION CSS:
+{nav_design.get('css', '')}
 
-✨ REQUIRED FEATURES (MUST IMPLEMENT ALL):
-{chr(10).join(['- ' + feat for feat in template_def['features']])}
+NAVIGATION JS (if needed):
+{nav_design.get('js', '')}
 
-🎨 DESIGN SYSTEM:
+2️⃣ HERO SECTION (PROFESSIONAL IMAGE):
+- Background image: {hero_image if hero_image else 'gradient'}
+- Image CSS: background-image: url('{hero_image}'); background-size: cover; background-position: center;
+- Must be RELEVANT to {website_type} business
+- Add dark overlay: background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{hero_image}');
+
+3️⃣ RESPONSIVE DESIGN (MUST BE PERFECT):
+- Mobile (< 768px): Stack everything vertically, full-width
+- Tablet (768px - 1024px): 2-column grids
+- Desktop (> 1024px): 3-4 column grids
+- Use Tailwind responsive classes: sm: md: lg: xl:
+- Test all breakpoints
+- Ensure symmetry and even spacing
+
+4️⃣ BUTTONS (ALL MUST WORK):
+- Navigation links: onclick="smoothScroll('#section-id')"
+- CTA buttons: onclick="document.getElementById('contact').scrollIntoView({{behavior: 'smooth'}})"
+- Forms: onsubmit="handleFormSubmit(event)"
+- Menu toggle: onclick="toggleMobileMenu()"
+- All buttons need hover states
+
+5️⃣ DESIGN QUALITY (HIGH-END):
 - Colors: Primary={colors['primary']}, Secondary={colors['secondary']}, Accent={colors['accent']}
-- Use {template_def['colors']} color philosophy
-- Hero layout: {design_system['hero_style']['name']}
-- Buttons: {', '.join(design_system['button_styles'][:2])}
+- Typography: Large headings (text-5xl, text-6xl), readable body (text-lg)
+- Spacing: Generous padding (p-8, p-12), margins (mb-16, mb-24)
+- Shadows: shadow-xl, shadow-2xl for depth
+- Borders: rounded-xl, rounded-2xl for modern look
+- Transitions: transition-all duration-300 on hover states
 
-🖼️ IMAGE RULES (CRITICAL - NO OVERUSE):
-- HERO ONLY: {'Real image URL: ' + hero_image[:50] + '...' if hero_image else 'Gradient background'}
-- REST OF SITE: Use ICONS only (Font Awesome fa-solid fa-ICON-NAME)
-- NO images in features, services, about, pricing sections
-- Icons for everything: fitness=fa-dumbbell, food=fa-utensils, tech=fa-code, medical=fa-stethoscope
+6️⃣ ICONS (NOT IMAGES):
+- Features/Services: Use Font Awesome icons
+- Example: <i class="fas fa-dumbbell fa-3x text-blue-600"></i>
+- Wrap in gradient background circle for style
 
 CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
 <script src="https://cdn.tailwindcss.com"></script>
