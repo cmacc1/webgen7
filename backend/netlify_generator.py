@@ -129,9 +129,22 @@ class NetlifyGenerator:
         # These extra API calls were burning credits unnecessarily
         logger.info("⚡ AI GENERATION: Creating custom website with design quality")
         
-        # Get reliable working image URLs
+        # MEGA DESIGN LIBRARY INTEGRATION - DETECT TYPE FIRST
+        from advanced_design_library import COLOR_SCHEMES, BUTTON_STYLES, BACKGROUND_PATTERNS
+        from website_type_detector import WebsiteTypeDetector
+        from mega_design_library import WEBSITE_TYPES, NAVIGATION_DESIGNS
         from image_provider import ImageProvider
+        import random
         
+        # Detect website type from prompt FIRST
+        detector = WebsiteTypeDetector()
+        website_type, confidence = detector.detect_type(prompt)
+        business_details = detector.extract_business_details(prompt)
+        
+        logger.info(f"🎯 Detected website type: {website_type} (confidence: {confidence:.2f})")
+        logger.info(f"📋 Business details: {business_details}")
+        
+        # Get reliable working image URLs (now that we know the type)
         image_provider = ImageProvider()
         hero_image = image_provider.get_hero_image(website_type, prompt)
         section_images = image_provider.get_section_images(website_type, count=4, seed=prompt)
@@ -141,17 +154,6 @@ class NetlifyGenerator:
         logger.info(f"   Hero: {hero_image}")
         logger.info(f"   Sections: {len(section_images)} images")
         logger.info(f"   Thumbnails: {len(thumbnails)} images")
-        
-        # MEGA DESIGN LIBRARY INTEGRATION
-        from advanced_design_library import COLOR_SCHEMES, BUTTON_STYLES, BACKGROUND_PATTERNS
-        from website_type_detector import WebsiteTypeDetector
-        from mega_design_library import WEBSITE_TYPES, NAVIGATION_DESIGNS
-        import random
-        
-        # Detect website type from prompt
-        detector = WebsiteTypeDetector()
-        website_type, confidence = detector.detect_type(prompt)
-        business_details = detector.extract_business_details(prompt)
         
         logger.info(f"🎯 Detected website type: {website_type} (confidence: {confidence:.2f})")
         logger.info(f"📋 Business details: {business_details}")
