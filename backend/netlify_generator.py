@@ -187,22 +187,24 @@ class NetlifyGenerator:
         logger.info(f"   Hero gradient: {hero_bg['gradient']}")
         logger.info(f"   Hero icon: {hero_bg['icon']}")
         
-        # Get type-specific design if available
+        # RANDOMIZE DESIGN SYSTEM - Different for EVERY generation!
+        from design_randomizer import DesignRandomizer
+        
+        randomizer = DesignRandomizer()
+        design_system = randomizer.get_random_design_system()
+        variety_instructions = randomizer.generate_variety_instructions(design_system)
+        
+        logger.info(f"🎲 Randomized design system:")
+        logger.info(f"   Layout: {design_system['layout_pattern']}")
+        logger.info(f"   Hero: {design_system['hero_style']['name']}")
+        logger.info(f"   Colors: {design_system['colors']['name']}")
+        logger.info(f"   Payment: {bool(design_system['payment_components'])}")
+        
+        # Get type-specific design if available (for fallback)
         type_config = WEBSITE_TYPES.get(website_type, {})
         
-        # Pick color scheme (type-specific or random)
-        if type_config and "color_schemes" in type_config:
-            colors = random.choice(type_config["color_schemes"])
-        else:
-            color_category = random.choice(list(COLOR_SCHEMES.keys()))
-            colors = random.choice(COLOR_SCHEMES[color_category])
-        
-        # Get navigation style
-        nav_style = random.choice(list(NAVIGATION_DESIGNS.keys()))
-        nav_variant = random.choice(NAVIGATION_DESIGNS[nav_style]["variants"])
-        
-        button_style = random.choice(BUTTON_STYLES["modern_gradient"])
-        bg_pattern = random.choice(list(BACKGROUND_PATTERNS.values()))
+        # Use randomized colors
+        colors = design_system['colors']
         
         # Build image URLs for prompt
         hero_gradient = hero_bg.get('gradient', 'linear-gradient(135deg, #667eea, #764ba2)')
