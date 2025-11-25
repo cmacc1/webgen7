@@ -78,8 +78,8 @@ class PexelsImageService:
             logger.error(f"❌ Pexels search error: {str(e)}")
             return []
     
-    async def get_hero_image(self, website_type: str, prompt: str) -> Optional[str]:
-        """Get a relevant hero image"""
+    async def get_hero_image(self, website_type: str, prompt: str) -> Optional[Dict[str, str]]:
+        """Get a relevant hero image with metadata"""
         # Get search queries for this type
         queries = self.search_queries.get(website_type, self.search_queries["default"])
         
@@ -87,7 +87,12 @@ class PexelsImageService:
         images = await self.search_images(queries[0], per_page=5)
         
         if images:
-            return images[0]["url"]  # Return highest quality
+            return {
+                "url": images[0]["url"],
+                "alt": images[0]["alt"],
+                "query": queries[0],
+                "photographer": images[0]["photographer"]
+            }
         
         return None
     
