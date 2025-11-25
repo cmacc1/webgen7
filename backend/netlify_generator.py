@@ -133,13 +133,34 @@ class NetlifyGenerator:
         # The base64 encoded images are too large for the AI context window
         logger.info("⚠️ Image generation disabled to prevent context window errors")
         
-        # ENHANCED system prompt with design library knowledge
+        # MEGA DESIGN LIBRARY INTEGRATION
         from advanced_design_library import COLOR_SCHEMES, BUTTON_STYLES, BACKGROUND_PATTERNS
+        from website_type_detector import WebsiteTypeDetector
+        from mega_design_library import WEBSITE_TYPES, NAVIGATION_DESIGNS
         import random
         
-        # Pick random high-quality design elements
-        color_category = random.choice(list(COLOR_SCHEMES.keys()))
-        colors = random.choice(COLOR_SCHEMES[color_category])
+        # Detect website type from prompt
+        detector = WebsiteTypeDetector()
+        website_type, confidence = detector.detect_type(prompt)
+        business_details = detector.extract_business_details(prompt)
+        
+        logger.info(f"🎯 Detected website type: {website_type} (confidence: {confidence:.2f})")
+        logger.info(f"📋 Business details: {business_details}")
+        
+        # Get type-specific design if available
+        type_config = WEBSITE_TYPES.get(website_type, {})
+        
+        # Pick color scheme (type-specific or random)
+        if type_config and "color_schemes" in type_config:
+            colors = random.choice(type_config["color_schemes"])
+        else:
+            color_category = random.choice(list(COLOR_SCHEMES.keys()))
+            colors = random.choice(COLOR_SCHEMES[color_category])
+        
+        # Get navigation style
+        nav_style = random.choice(list(NAVIGATION_DESIGNS.keys()))
+        nav_variant = random.choice(NAVIGATION_DESIGNS[nav_style]["variants"])
+        
         button_style = random.choice(BUTTON_STYLES["modern_gradient"])
         bg_pattern = random.choice(list(BACKGROUND_PATTERNS.values()))
         
