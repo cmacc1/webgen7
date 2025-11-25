@@ -327,37 +327,35 @@ OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "400+ LI
         recommended_sections = detector.get_recommended_sections(website_type)
         section_hints = ", ".join(recommended_sections[:5]) if recommended_sections else "hero, features, about, contact"
         
-        # REQUIREMENT-FOCUSED user prompt - NO EXAMPLES, ONLY INSTRUCTIONS
-        user_prompt = f"""USER REQUEST: "{prompt}"
+        # REQUIREMENT-FOCUSED user prompt
+        user_prompt = f"""CREATE: "{prompt}"
 
-🚨 CRITICAL: Create website using the TEMPLATE ARCHITECTURE specified in system prompt.
-DO NOT create a generic top-navigation website. Follow the template structure EXACTLY.
+🎯 TEMPLATE: {template_def['name']}
+📐 LAYOUT: {template_def['layout']}
+🧭 NAVIGATION: {template_def['navigation']}
 
-Template: {template_config['template']['name']}
-Navigation: {template_config['template']['navigation'][:80]}
-Layout: {template_config['template']['structure'][:80]}
+🚨 CRITICAL REQUIREMENTS:
+1. Follow {template_def['name']} layout EXACTLY as described above
+2. Implement ALL these features: {', '.join(template_def['features'][:4])}
+3. Extract ALL requirements from user prompt (sections, features, functionality)
+4. Use ICONS for features/services (NO images except hero)
+5. Make everything functional (forms, buttons, animations)
 
-📋 REQUIREMENTS TO EXTRACT FROM PROMPT:
-1. Extract ALL sections mentioned (About, Services, Pricing, Team, FAQ, Contact, etc.)
-2. Extract ALL features/services (create icon card for EACH)
-3. Extract special functionality (booking, subscriptions, forms, calculations)
-4. Identify target audience and adjust tone
+🖼️ IMAGE USAGE (STRICT):
+- Hero section: {'Use this exact URL: ' + hero_image if hero_image else 'Use gradient background'}
+- All other sections: ICONS ONLY (fa-solid fa-icon-name)
+- Example icons: fa-dumbbell, fa-utensils, fa-code, fa-heart, fa-star, fa-check-circle
 
-💎 SECTIONS TO CREATE:
-1. HERO - Use template's hero style with {'Pexels image: ' + hero_image[:50] if hero_image else 'gradient'}
-2. ALL sections mentioned in user prompt
-3. CONTACT form (always include)
+🎨 COLORS TO USE:
+- Primary: {colors['primary']}
+- Secondary: {colors['secondary']}  
+- Accent: {colors['accent']}
 
-🎨 DESIGN RULES:
-- Follow TEMPLATE structure (not generic top-nav)
-- Use colors: Primary={colors['primary']}, Accent={colors['accent']}
-- Icons for features: fa-dumbbell (fitness), fa-utensils (food), fa-code (tech)
-- NO example HTML to follow - create based on template instructions
+🔥 OUTPUT:
+Return complete website with index.html, styles.css, app.js in JSON format.
+Follow the {template_def['name']} template structure. Make it UNIQUE for this business.
 
-🔥 MAKE IT UNIQUE:
-Create completely unique website following template architecture.
-
-🚨 FINAL REMINDERS:
+🚨 FINAL CHECKS:
 
 1️⃣ ANALYZE THE USER'S PROMPT:
 - Extract EVERY section mentioned (About, Services, Pricing, Team, FAQ, Testimonials, Blog, etc.)
