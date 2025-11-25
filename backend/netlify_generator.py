@@ -473,18 +473,31 @@ RULES:
 ═══════════════════════════════════════════════════════════════
 """
         
-        # ULTRA-EXPLICIT user prompt with zero tolerance for blank space
-        user_prompt = f"""Create an AWARD-WINNING, VISUALLY STUNNING website for:
+        # ULTRA-EXPLICIT user prompt with TOPIC ANALYSIS
+        user_prompt = f"""Create a UNIQUE, AWARD-WINNING, VISUALLY STUNNING website for:
 
 "{prompt}"
 
-🚨 ZERO BLANK SPACE POLICY:
+🔍 STEP 1: ANALYZE THE TOPIC/INDUSTRY FIRST
+- What industry/niche is this? (Finance, Creative, Food, Tech, etc.)
+- What mood should it convey? (Professional, Bold, Elegant, Energetic, etc.)
+- Select appropriate color palette from the industry guidelines
+- Choose appropriate typography pairing
+- Determine layout style (Corporate-clean, Creative-bold, Elegant-minimal)
+
+🎨 STEP 2: APPLY TOPIC-SPECIFIC DESIGN
+- Use the CORRECT color palette for the industry
+- Use the CORRECT font pairing for the mood
+- Create UNIQUE layout variations (not the same grid pattern)
+- Ensure ZERO overlap with proper z-indexing
+- Make text readable with proper overlays
+
+🚨 STEP 3: ZERO BLANK SPACE POLICY
 - Every pixel must be intentional
-- Dense, visually rich layouts
-- Multiple overlapping elements
-- Generous use of gradients, shadows, and colors
-- Large, bold typography everywhere
-- Icons, badges, and decorative elements throughout
+- Dense, visually rich layouts appropriate for the topic
+- Topic-relevant icons and imagery
+- Strategic use of gradients and shadows
+- Proper spacing and breathing room (not cramped, not empty)
 
 ═══════════════════════════════════════════════════════════════
 CRITICAL: INCLUDE ALL DESIGN RESOURCES
