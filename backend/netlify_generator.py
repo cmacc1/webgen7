@@ -158,11 +158,9 @@ OUTPUT JSON:
 }
 
 Make it beautiful and unique!"""
-
-"""
         
-        # ULTRA-EXPLICIT user prompt with TOPIC ANALYSIS
-        user_prompt = f"""Create a UNIQUE, AWARD-WINNING, VISUALLY STUNNING website for:
+        # SIMPLE user prompt
+        user_prompt = f"""Create a beautiful, professional website for:
 
 "{prompt}"
 
