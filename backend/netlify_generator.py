@@ -234,27 +234,36 @@ class NetlifyGenerator:
         else:
             section_imgs_html = 'Use gradient backgrounds'
         
-        system_prompt = f"""You are an EXPERT web designer. You MUST create a COMPLETELY UNIQUE website with NO TEMPLATE REPETITION.
+        system_prompt = f"""You are an EXPERT web designer creating a {template_def['name']} template.
 
-🚨 MANDATORY TEMPLATE ARCHITECTURE - FOLLOW EXACTLY:
-{template_instructions}
+🎯 TEMPLATE SPECIFICATION:
+NAME: {template_def['name']}
+TYPE: {website_type.replace('_', ' ').title()}
+BUSINESS: {business_details.get('name', 'Business')}
 
-{variety_instructions}
+📐 LAYOUT (CRITICAL - FOLLOW EXACTLY):
+{template_def['layout']}
 
-🎯 CRITICAL RULES:
+🧭 NAVIGATION STYLE:
+{template_def['navigation']}
 
-WEBSITE TYPE: {website_type.upper()}
-BUSINESS: {business_details.get('name', 'Professional Business')}
+🎭 HERO SECTION:
+{template_def['hero']}
 
-🖼️ IMAGE STRATEGY:
-- Hero image: {'USE THIS: ' + hero_image if hero_image else 'Use gradient: ' + hero_gradient}
-- For sections: Use ICONS (Font Awesome fa-solid) - NO images
-- Hyper-specific icons: fitness=fa-dumbbell, food=fa-utensils, tech=fa-code, medical=fa-stethoscope
+✨ REQUIRED FEATURES (MUST IMPLEMENT ALL):
+{chr(10).join(['- ' + feat for feat in template_def['features']])}
 
-🎨 DESIGN REQUIREMENTS:
+🎨 DESIGN SYSTEM:
 - Colors: Primary={colors['primary']}, Secondary={colors['secondary']}, Accent={colors['accent']}
-- Typography: {template_config['typography']['heading']} for headings
-- Follow template structure EXACTLY - don't create generic top-nav site
+- Use {template_def['colors']} color philosophy
+- Hero layout: {design_system['hero_style']['name']}
+- Buttons: {', '.join(design_system['button_styles'][:2])}
+
+🖼️ IMAGE RULES (CRITICAL - NO OVERUSE):
+- HERO ONLY: {'Real image URL: ' + hero_image[:50] + '...' if hero_image else 'Gradient background'}
+- REST OF SITE: Use ICONS only (Font Awesome fa-solid fa-ICON-NAME)
+- NO images in features, services, about, pricing sections
+- Icons for everything: fitness=fa-dumbbell, food=fa-utensils, tech=fa-code, medical=fa-stethoscope
 
 CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
 <script src="https://cdn.tailwindcss.com"></script>
