@@ -201,33 +201,39 @@ NO ALERTS: onclick="document.getElementById('id').scrollIntoView({{behavior:'smo
 
 OUTPUT JSON: {{"files": {{"index.html": "...", "styles.css": "...", "app.js": "..."}}}}"""
         
-        # ENHANCED user prompt
-        user_prompt = f"""Create a PREMIUM website for: "{prompt}"
+        # Industry-specific sections
+        recommended_sections = detector.get_recommended_sections(website_type)
+        section_hints = ", ".join(recommended_sections[:5]) if recommended_sections else "hero, features, about, contact"
+        
+        # ENHANCED user prompt with type-specific guidance
+        user_prompt = f"""Create a PREMIUM {website_type.replace('_', ' ').upper()} website for: "{prompt}"
 
-REQUIREMENTS:
+REQUIRED SECTIONS (industry-specific): {section_hints}
+
 1. HERO SECTION (full-screen, min-h-screen):
-   - Massive headline (text-7xl md:text-8xl lg:text-9xl)
-   - Gradient background using colors: {colors['colors'][:2]}
-   - 2 CTA buttons with different styles
-   - Animated scroll indicator
+   - Massive headline (text-7xl md:text-8xl lg:text-9xl font-black)
+   - Gradient: bg-gradient-to-br from-[{colors['colors'][0] if colors.get('colors') else '#667eea'}] to-[{colors['colors'][1] if len(colors.get('colors', [])) > 1 else '#764ba2'}]
+   - 2-3 CTA buttons with hover:scale-105 hover:shadow-2xl
+   - Stats/trust indicators (years, clients, ratings)
+   - Scroll indicator: animate-bounce
 
 2. INFO SECTIONS (3-4 sections, HIGHEST QUALITY):
-   - Features section with 3-4 cards in grid
-   - Each card: gradient icon, bold title, description
-   - Beautiful backgrounds and animations
-   - Perfect typography and spacing
-   
-3. PRICING/MEMBERSHIP (if applicable):
-   - Clear pricing cards with features
-   - Highlighted recommended plan
-   - Buy buttons with gradient styles
+   - Features/Services grid (3-4 cards)
+   - Each card: shadow-2xl rounded-3xl p-10 bg-white hover:-translate-y-2
+   - Icon: w-16 h-16 bg-gradient-to-br rounded-2xl text-4xl centered
+   - Title: text-2xl font-bold mb-4
+   - Description: text-gray-600 leading-relaxed
+   - Grid: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
 
-4. CONTACT FORM:
-   - Modern input styling
-   - Gradient submit button
-   - Proper validation
+3. INDUSTRY-SPECIFIC COMPONENTS:
+   {self._get_industry_hints(website_type)}
 
-Make it VISUALLY STUNNING with smooth animations, perfect colors, and professional design!"""
+4. CONTACT/CTA SECTION:
+   - Form: modern inputs with focus:border-[color] transitions
+   - Submit button: gradient with hover:shadow-2xl hover:scale-105
+   - Background: gradient or solid with proper contrast
+
+CRITICAL: Make it industry-appropriate, visually STUNNING, with smooth animations!"""
 
         # Try multiple models if one fails
         # ONLY use models that actually work with this Emergent API key
