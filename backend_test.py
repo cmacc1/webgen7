@@ -627,8 +627,6 @@ async def main():
 if __name__ == "__main__":
     exit_code = asyncio.run(main())
     exit(exit_code)
-
-    async def run_bulletproof_failsafe_test(self):
         """Run the complete bulletproof failsafe system test"""
         logger.info("🚀 STARTING BULLETPROOF FAILSAFE SYSTEM VERIFICATION")
         logger.info(f"Backend URL: {self.base_url}")
