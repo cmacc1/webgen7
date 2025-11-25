@@ -295,32 +295,35 @@ OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "400+ LI
         recommended_sections = detector.get_recommended_sections(website_type)
         section_hints = ", ".join(recommended_sections[:5]) if recommended_sections else "hero, features, about, contact"
         
-        # REQUIREMENT-FOCUSED user prompt - Extract and implement EVERYTHING
-        user_prompt = f"""USER PROMPT: "{prompt}"
+        # REQUIREMENT-FOCUSED user prompt - NO EXAMPLES, ONLY INSTRUCTIONS
+        user_prompt = f"""USER REQUEST: "{prompt}"
 
-🎯 YOUR TASK - READ CAREFULLY:
-1. EXTRACT EVERY REQUIREMENT from the prompt above
-2. IMPLEMENT ALL features/sections/pages mentioned
-3. ADD intelligent enhancements based on website type ({website_type})
-4. Use ICONS for features/services - NOT images everywhere
-5. Make EVERYTHING FUNCTIONAL (forms submit, buttons work, animations smooth)
+🚨 CRITICAL: Create website using the TEMPLATE ARCHITECTURE specified in system prompt.
+DO NOT create a generic top-navigation website. Follow the template structure EXACTLY.
 
-📋 REQUIREMENT EXTRACTION - ANALYZE THE PROMPT FOR:
-- Sections requested (About, Services, Pricing, Plans, Gallery, Team, etc.)
-- Features/services listed (extract each one and create icon cards)
-- Special functionality (booking, checkout, subscriptions, forms, calculators)
-- Design preferences (colors, style, mood mentioned)
-- Target audience (who is this for?)
+Template: {template_config['template']['name']}
+Navigation: {template_config['template']['navigation'][:80]}
+Layout: {template_config['template']['structure'][:80]}
 
-💎 MUST-HAVE SECTIONS (based on prompt analysis):
-1. HERO - Full screen with {'real Pexels image' if hero_image else 'gradient'}
-2. Extract requested sections from prompt (Services, Pricing, About, etc.)
-3. CONTACT - Always include with working form
+📋 REQUIREMENTS TO EXTRACT FROM PROMPT:
+1. Extract ALL sections mentioned (About, Services, Pricing, Team, FAQ, Contact, etc.)
+2. Extract ALL features/services (create icon card for EACH)
+3. Extract special functionality (booking, subscriptions, forms, calculations)
+4. Identify target audience and adjust tone
 
-📦 FOR EACH FEATURE/SERVICE - USE ICON CARDS:
-Create a STUNNING, ULTRA-MODERN {website_type.replace('_', ' ').upper()} website for: "{prompt}"
+💎 SECTIONS TO CREATE:
+1. HERO - Use template's hero style with {'Pexels image: ' + hero_image[:50] if hero_image else 'gradient'}
+2. ALL sections mentioned in user prompt
+3. CONTACT form (always include)
 
-HERO SECTION (FULL SCREEN WITH REAL IMAGE):
+🎨 DESIGN RULES:
+- Follow TEMPLATE structure (not generic top-nav)
+- Use colors: Primary={colors['primary']}, Accent={colors['accent']}
+- Icons for features: fa-dumbbell (fitness), fa-utensils (food), fa-code (tech)
+- NO example HTML to follow - create based on template instructions
+
+🔥 MAKE IT UNIQUE:
+Every element must match the template architecture. Create website for: "{prompt}"
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
     {'<img src="'+hero_image+'" alt="Hero" class="absolute inset-0 w-full h-full object-cover">' if hero_image else '<div class="absolute inset-0" style="background: '+hero_bg['gradient']+';"></div>'}
     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
