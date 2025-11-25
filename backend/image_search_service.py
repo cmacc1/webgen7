@@ -1,113 +1,148 @@
 """
-Image/Video Search Service using reliable placeholder and free stock photo services
+AI-Powered Image Generation Service using OpenAI DALL-E
+Automatically generates contextual, high-quality images for websites
 """
-import httpx
+import os
+import base64
 import logging
 from typing import List, Dict, Optional
 import asyncio
-import hashlib
-import random
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
 class ImageSearchService:
-    """Service to provide high-quality images using multiple free, reliable sources"""
-    
-    # Color schemes for contextual images
-    COLOR_SCHEMES = {
-        'restaurant': ['FF6B35', 'F7931E', 'FDC830'],
-        'fitness': ['FF6B6B', '4ECDC4', '45B7D1'],
-        'business': ['2C3E50', '3498DB', '95A5A6'],
-        'tech': ['667EEA', '764BA2', 'F093FB'],
-        'health': ['4FACFE', '00F2FE', '43E97B'],
-        'education': ['FA709A', 'FEE140', '30CFD0'],
-        'travel': ['38EF7D', '11998E', '0ABFBC'],
-        'portfolio': ['833AB4', 'FD1D1D', 'FCB045'],
-        'ecommerce': ['F857A6', 'FF5858', 'FCFCFC'],
-        'default': ['667EEA', 'F093FB', '4FACFE']
-    }
+    """Service to generate AI images using OpenAI's image generation API"""
     
     def __init__(self):
-        self.timeout = 10
+        self.api_key = os.getenv('EMERGENT_LLM_KEY')
+        if not self.api_key:
+            logger.warning("⚠️ EMERGENT_LLM_KEY not found in environment")
+        
+    def _create_image_prompt(self, context: str, image_type: str = "general") -> str:
+        """Create a detailed prompt for image generation"""
+        if image_type == "hero":
+            return f"Professional, high-quality hero image for {context}. Modern, vibrant, eye-catching design suitable for a website header. Photorealistic style."
+        elif image_type == "section":
+            return f"Professional stock photo representing {context}. Clean, modern, suitable for website content section. High quality, photorealistic."
+        else:
+            return f"Professional image for {context} website. Modern, clean, photorealistic."
     
-    def _detect_category(self, prompt: str) -> str:
-        """Detect the category of website from the prompt"""
-        prompt_lower = prompt.lower()
-        for category in self.COLOR_SCHEMES.keys():
-            if category in prompt_lower:
-                return category
-        return 'default'
-    
-    def _get_color_from_seed(self, seed: str, index: int = 0) -> str:
-        """Generate a consistent color hex from seed"""
-        hash_input = f"{seed}_{index}".encode('utf-8')
-        hash_value = hashlib.md5(hash_input).hexdigest()[:6]
-        return hash_value.upper()
+    async def _generate_single_image(self, prompt: str) -> Optional[str]:
+        """Generate a single image and return as base64 data URL"""
+        try:
+            from emergentintegrations.llm.openai.image_generation import OpenAIImageGeneration
+            
+            if not self.api_key:
+                logger.error("❌ Cannot generate image: EMERGENT_LLM_KEY not configured")
+                return None
+            
+            # Initialize image generator
+            image_gen = OpenAIImageGeneration(api_key=self.api_key)
+            
+            # Generate image (this may take 30-60 seconds)
+            logger.info(f"🎨 Generating AI image: {prompt[:60]}...")
+            images = await image_gen.generate_images(
+                prompt=prompt,
+                model="gpt-image-1",  # Latest model
+                number_of_images=1
+            )
+            
+            if images and len(images) > 0:
+                # Convert to base64 data URL
+                image_base64 = base64.b64encode(images[0]).decode('utf-8')
+                data_url = f"data:image/png;base64,{image_base64}"
+                logger.info(f"✅ Image generated successfully ({len(images[0])} bytes)")
+                return data_url
+            else:
+                logger.error("❌ No image was generated")
+                return None
+                
+        except ImportError:
+            logger.error("❌ emergentintegrations not installed. Run: pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/")
+            return None
+        except Exception as e:
+            logger.error(f"❌ Image generation error: {str(e)}")
+            return None
     
     async def search_images(self, query: str, count: int = 4) -> List[Dict[str, str]]:
         """
-        Generate contextual placeholder images based on query
-        Returns list of image URLs with metadata
-        Uses placehold.co - reliable, free, professional-looking placeholders
+        Generate AI images based on query
+        Returns list of images with base64 data URLs
+        Note: This generates real AI images, so it may take 1-2 minutes
         """
         try:
             images = []
             
-            # Detect category for better color scheme
-            category = self._detect_category(query)
-            colors = self.COLOR_SCHEMES.get(category, self.COLOR_SCHEMES['default'])
+            # Clean query
+            clean_query = query.replace('+', ' ').replace('_', ' ').strip()
             
-            # Clean query for display
-            clean_query = query.replace('+', ' ').replace('_', ' ').title()
+            logger.info(f"🎨 Generating {count} AI images for: {clean_query}")
             
-            # Generate multiple image URLs with different colors for variety
+            # Generate images concurrently for speed
+            tasks = []
             for i in range(count):
-                # Cycle through colors
-                bg_color = colors[i % len(colors)]
-                text_color = 'FFFFFF' if i % 2 == 0 else '000000'
+                prompt = self._create_image_prompt(clean_query, "section")
+                # Add variety to each image
+                if i == 0:
+                    prompt += " Close-up view."
+                elif i == 1:
+                    prompt += " Wide angle view."
+                elif i == 2:
+                    prompt += " Detail shot."
+                else:
+                    prompt += " Overview perspective."
                 
-                # Using placehold.co with custom colors and text
-                url = f"https://placehold.co/1600x900/{bg_color}/{text_color}/png?text={clean_query}+{i+1}"
-                images.append({
-                    "url": url,
-                    "description": f"{clean_query} image {i+1}",
-                    "source": "placehold.co",
-                    "bg_color": bg_color
-                })
+                tasks.append(self._generate_single_image(prompt))
             
-            logger.info(f"✅ Generated {len(images)} images for query: {query} (category: {category})")
+            # Wait for all images to generate
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Collect successful results
+            for i, result in enumerate(results):
+                if isinstance(result, str) and result:
+                    images.append({
+                        "url": result,  # Base64 data URL
+                        "description": f"{clean_query} image {i+1}",
+                        "source": "ai-generated",
+                        "type": "base64"
+                    })
+                elif isinstance(result, Exception):
+                    logger.error(f"Failed to generate image {i+1}: {str(result)}")
+            
+            logger.info(f"✅ Successfully generated {len(images)}/{count} AI images")
             return images
             
         except Exception as e:
             logger.error(f"❌ Image search error: {str(e)}")
-            # Return empty list on error - don't fail generation
             return []
     
     async def get_hero_image(self, keywords: List[str]) -> Optional[str]:
         """
-        Get a hero image based on keywords
-        Returns single high-quality image URL with gradient background
+        Generate a hero image based on keywords
+        Returns base64 data URL for high-quality hero image
         """
         try:
-            # Use first keyword for hero
-            main_keyword = keywords[0] if keywords else "modern"
+            # Use first keyword or combination
+            main_keyword = keywords[0] if keywords else "modern business"
             
-            # Detect category
-            category = self._detect_category(main_keyword)
-            colors = self.COLOR_SCHEMES.get(category, self.COLOR_SCHEMES['default'])
+            # Create compelling hero prompt
+            prompt = self._create_image_prompt(main_keyword, "hero")
             
-            # Use first color from scheme
-            bg_color = colors[0]
-            text_color = 'FFFFFF'
+            logger.info(f"🎨 Generating hero image for: {main_keyword}")
             
-            # Create hero text
-            hero_text = main_keyword.replace('_', ' ').replace('+', ' ').title()
+            # Generate hero image
+            hero_url = await self._generate_single_image(prompt)
             
-            # Get high-res hero image
-            url = f"https://placehold.co/1920x1080/{bg_color}/{text_color}/png?text={hero_text}"
+            if hero_url:
+                logger.info(f"✅ Hero image generated successfully")
+            else:
+                logger.error(f"❌ Failed to generate hero image")
             
-            logger.info(f"✅ Generated hero image for: {main_keyword} (category: {category}, color: {bg_color})")
-            return url
+            return hero_url
             
         except Exception as e:
             logger.error(f"❌ Hero image error: {str(e)}")
