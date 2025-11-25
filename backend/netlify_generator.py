@@ -233,8 +233,9 @@ OUTPUT JSON: {{"files": {{"index.html": "...", "styles.css": "...", "app.js": ".
 REQUIRED SECTIONS (industry-specific): {section_hints}
 
 1. HERO SECTION (full-screen, min-h-screen):
-   - Massive headline (text-7xl md:text-8xl lg:text-9xl font-black)
-   - Gradient: bg-gradient-to-br from-[{colors['colors'][0] if colors.get('colors') else '#667eea'}] to-[{colors['colors'][1] if len(colors.get('colors', [])) > 1 else '#764ba2'}]
+   - Background: USE PROVIDED HERO IMAGE - style="background-image: url('{hero_image}'); background-size: cover; background-position: center;"
+   - Overlay: bg-black/50 or bg-gradient-to-r from-black/80 to-transparent for text readability
+   - Massive headline (text-7xl md:text-8xl lg:text-9xl font-black text-white)
    - 2-3 CTA buttons with hover:scale-105 hover:shadow-2xl
    - Stats/trust indicators (years, clients, ratings)
    - Scroll indicator: animate-bounce
