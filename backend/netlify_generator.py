@@ -144,40 +144,25 @@ class NetlifyGenerator:
         logger.info(f"🎯 Detected website type: {website_type} (confidence: {confidence:.2f})")
         logger.info(f"📋 Business details: {business_details}")
         
-        # Get REAL images from Pexels + contextual visual backgrounds as fallback
+        # Get HERO IMAGE ONLY from Pexels (not cluttered with images everywhere)
         from pexels_service import PexelsImageService
+        from icon_library import get_icon_for_feature, get_multiple_icons, CATEGORY_ICONS
         image_provider = ImageProvider()
         pexels = PexelsImageService()
         
-        # Try to get real UNIQUE images from Pexels (async)
+        # MINIMAL IMAGE USAGE - Hero only, rest is icons and design
         try:
             hero_image_data = await pexels.get_hero_image(website_type, prompt)
-            section_images_data = await pexels.get_section_images(website_type, count=4)
-            
-            # Track used URLs to prevent duplicates
-            used_urls = set()
-            if hero_image_data:
-                used_urls.add(hero_image_data["url"])
-            for img in section_images_data:
-                used_urls.add(img["url"])
-            
-            # Get gallery images excluding already used ones
-            gallery_images_data = await pexels.get_gallery_images(website_type, count=6, exclude_urls=used_urls)
-            
-            # Extract URLs for easier use
             hero_image = hero_image_data["url"] if hero_image_data else None
-            section_images = [img["url"] for img in section_images_data]
-            gallery_images = [img["large"] for img in gallery_images_data]
             
-            logger.info(f"🖼️ Pexels UNIQUE images retrieved:")
-            logger.info(f"   Hero: {hero_image[:50] if hero_image else 'None'}...")
-            logger.info(f"   Sections: {len(section_images)} UNIQUE images")
-            logger.info(f"   Gallery: {len(gallery_images)} UNIQUE images (total unique: {len(used_urls) + len(gallery_images)})")
+            logger.info(f"🖼️ Hero image from Pexels: {hero_image[:50] if hero_image else 'Using gradient'}...")
         except Exception as e:
             logger.error(f"❌ Pexels failed: {str(e)}")
             hero_image = None
-            section_images = []
-            gallery_images = []
+        
+        # No section images or gallery - use ICONS instead
+        section_images = []
+        gallery_images = []
         
         # Get gradient backgrounds as fallback/complement
         hero_bg = image_provider.get_hero_background(website_type)
