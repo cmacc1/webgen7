@@ -283,17 +283,35 @@ HERO SECTION (FULL SCREEN WITH REAL IMAGE):
     </div>
 </section>
 
+ABOUT SECTION (WITH REAL IMAGE):
+<section class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-6xl font-black mb-6">About Us</h2>
+                <p class="text-xl text-gray-600 leading-relaxed mb-6">{{Description}}</p>
+                <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:shadow-2xl transition-all">Learn More</button>
+            </div>
+            <div class="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+                {('<img src="'+section_images[0]+'" alt="About" class="absolute inset-0 w-full h-full object-cover">') if section_images else '<div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center"><i class="fas '+hero_bg['icon']+' text-9xl text-white opacity-30"></i></div>'}
+            </div>
+        </div>
+    </div>
+</section>
+
 FEATURES SECTION (3-4 CARDS):
 <section class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-6">
         <h2 class="text-6xl font-black text-center mb-16">{{Section Title}}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="bg-gradient-to-br from-purple-600 to-pink-600 p-10 rounded-3xl shadow-2xl hover:-translate-y-2 transition-all duration-300">
-                <i class="fas fa-star text-6xl text-white mb-6"></i>
-                <h3 class="text-3xl font-bold text-white mb-4">{{Feature}}</h3>
-                <p class="text-white text-lg opacity-90">{{Description}}</p>
+            <div class="bg-white rounded-3xl shadow-2xl hover:-translate-y-2 hover:shadow-3xl transition-all duration-300 overflow-hidden">
+                {('<img src="'+section_images[1]+'" alt="Feature" class="w-full h-64 object-cover">') if len(section_images) > 1 else '<div class="w-full h-64 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center"><i class="fas fa-star text-6xl text-white"></i></div>'}
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-4">{{Feature}}</h3>
+                    <p class="text-gray-600">{{Description}}</p>
+                </div>
             </div>
-            <!-- Repeat with different gradients -->
+            <!-- Repeat with different images -->
         </div>
     </div>
 </section>
