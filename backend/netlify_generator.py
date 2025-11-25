@@ -1950,11 +1950,19 @@ console.log('Environment:', window.location.hostname);
         sections_html = ""
         
         if "about" in sections:
+            about_img = section_images[0] if section_images else ""
             sections_html += f'''
         <section id="about" class="section">
             <div class="container">
                 <h2 class="section-title">About Us</h2>
-                <p class="section-text">We are dedicated professionals committed to delivering exceptional results. Our team brings years of experience and expertise to every project.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-top: 2rem;">
+                    <div>
+                        <p class="section-text">We are dedicated professionals committed to delivering exceptional results. Our team brings years of experience and expertise to every project.</p>
+                    </div>
+                    <div>
+                        <img src="{about_img}" alt="About {business_name}" style="width: 100%; height: 400px; object-fit: cover; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);" loading="lazy">
+                    </div>
+                </div>
             </div>
         </section>'''
         
