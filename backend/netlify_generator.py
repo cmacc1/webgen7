@@ -419,35 +419,48 @@ PRICING/PLANS SECTION (IF MENTIONED IN PROMPT):
     </div>
 </section>
 
-GALLERY SECTION (OPTIONAL - ALL UNIQUE IMAGES):
-<section class="py-24 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-        <h2 class="text-5xl font-black text-center mb-16">Gallery</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {f'''
-            {''.join([f'<img src="{img}" alt="Gallery" class="w-full h-64 object-cover rounded-2xl shadow-lg hover:scale-105 transition-transform">' for img in gallery_images[:6]])}
-            ''' if gallery_images else '<!-- No gallery images -->'}
-        </div>
-    </div>
-</section>
+🚨 CRITICAL REQUIREMENTS - FOLLOW EXACTLY:
 
-STYLES.CSS (400+ LINES):
-- Custom animations (@keyframes)
-- Advanced hover effects
-- Scroll reveal animations
-- Responsive breakpoints
-- Custom utility classes
+1️⃣ ANALYZE THE USER'S PROMPT:
+- Extract EVERY section mentioned (About, Services, Pricing, Team, FAQ, Testimonials, Blog, etc.)
+- Extract EVERY feature/service listed - create icon card for each
+- If pricing/plans/subscriptions mentioned → CREATE pricing section with 3 tiers
+- If booking/appointments mentioned → ADD booking form
+- If gallery/portfolio mentioned → CREATE grid with icon placeholders (no images)
+- If team/staff mentioned → CREATE team section with icon avatars
 
-APP.JS (INTERACTIVE):
-- Smooth scroll function
-- Intersection Observer for animations
-- Mobile menu toggle
-- Form validation
+2️⃣ IMPLEMENT EVERYTHING - NO SHORTCUTS:
+✅ Create ALL sections requested in prompt
+✅ Make forms functional (validation, error messages)
+✅ Make buttons work (smooth scroll, modals, actions)
+✅ Add animations (fade-in-up on scroll)
+✅ Make it responsive (mobile, tablet, desktop)
 
-CRITICAL REMINDERS:
-✅ NO duplicate image URLs - each <img> tag must use a DIFFERENT URL
-✅ Features get sequential images: Feature 1 uses section_images[0], Feature 2 uses section_images[1], etc.
-✅ Gallery uses completely separate gallery_images array (already unique)
+3️⃣ USE ICONS - NOT IMAGES (except hero):
+✅ Features/Services: Icon cards with fa-solid icons
+✅ Team members: Icon avatars (fa-user-circle)
+✅ Pricing: Plan-specific icons (fa-cube, fa-crown, fa-building)
+✅ Process steps: Numbered icons (fa-1, fa-2, fa-3)
+✅ Benefits: Checkmark icons (fa-check-circle)
+
+4️⃣ DESIGN VARIETY:
+✅ Use the randomized design system provided above
+✅ Apply random colors from palette: {colors['name']}
+✅ Use random layout: {design_system['layout_pattern']}
+✅ Apply random animations from list
+
+5️⃣ OUTPUT FORMAT:
+Return JSON with 3 files:
+- index.html: Complete HTML with ALL sections from prompt
+- styles.css: 400+ lines with animations, hover effects, responsive
+- app.js: Interactive features (scroll, forms, animations)
+
+EXAMPLE ICON USAGE:
+Fitness: fa-dumbbell, fa-heart-pulse, fa-trophy
+Restaurant: fa-utensils, fa-burger, fa-martini-glass
+Tech: fa-code, fa-server, fa-rocket
+Business: fa-briefcase, fa-chart-line, fa-handshake
+Medical: fa-stethoscope, fa-pills, fa-user-doctor
 ✅ Make it industry-appropriate, visually STUNNING, with smooth animations!"""
 
         # Try multiple models if one fails
