@@ -191,8 +191,17 @@ class NetlifyGenerator:
         bg_pattern = random.choice(list(BACKGROUND_PATTERNS.values()))
         
         # Build image URLs for prompt
-        hero_img_html = f'<img src="{hero_image}" alt="Hero" class="absolute inset-0 w-full h-full object-cover">' if hero_image else f'<div class="absolute inset-0" style="background: {hero_bg[\'gradient\']};"></div>'
-        section_imgs_html = '\\n'.join([f'<img src="{img}" alt="Section image" class="w-full h-96 object-cover rounded-2xl shadow-xl">' for img in section_images[:4]]) if section_images else ''
+        hero_gradient = hero_bg.get('gradient', 'linear-gradient(135deg, #667eea, #764ba2)')
+        if hero_image:
+            hero_img_html = f'<img src="{hero_image}" alt="Hero" class="absolute inset-0 w-full h-full object-cover">'
+        else:
+            hero_img_html = f'<div class="absolute inset-0" style="background: {hero_gradient};"></div>'
+        
+        if section_images:
+            section_imgs_list = [f'<img src="{img}" alt="Section" class="w-full h-96 object-cover rounded-2xl">' for img in section_images[:4]]
+            section_imgs_html = ', '.join(section_imgs_list)
+        else:
+            section_imgs_html = 'Use gradient backgrounds'
         
         system_prompt = f"""You are an ELITE web designer with access to 1000+ UI components creating STUNNING, MODERN, PROFESSIONAL websites.
 
