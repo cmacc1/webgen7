@@ -172,24 +172,31 @@ class NetlifyGenerator:
         logger.info(f"   Hero gradient: {hero_bg['gradient']}")
         logger.info(f"   Hero icon: {hero_bg['icon']}")
         
-        # RANDOMIZE DESIGN SYSTEM - Different for EVERY generation!
+        # RANDOMIZE COMPLETE TEMPLATE - Different ARCHITECTURE for EVERY generation!
         from design_randomizer import DesignRandomizer
+        from template_library import get_random_template, get_template_specific_instructions
         
+        # Get a completely random template structure
+        template_config = get_random_template()
+        template_instructions = get_template_specific_instructions(template_config)
+        
+        # Also get design randomization for additional variety
         randomizer = DesignRandomizer()
         design_system = randomizer.get_random_design_system()
         variety_instructions = randomizer.generate_variety_instructions(design_system)
         
-        logger.info(f"🎲 Randomized design system:")
-        logger.info(f"   Layout: {design_system['layout_pattern']}")
-        logger.info(f"   Hero: {design_system['hero_style']['name']}")
-        logger.info(f"   Colors: {design_system['colors']['name']}")
-        logger.info(f"   Payment: {bool(design_system['payment_components'])}")
+        logger.info(f"🎲 TEMPLATE RANDOMIZATION:")
+        logger.info(f"   Template: {template_config['template']['name']}")
+        logger.info(f"   Template ID: {template_config['template_id']}")
+        logger.info(f"   Navigation: {template_config['template']['navigation'][:50]}...")
+        logger.info(f"   Color Scheme: {template_config['colors']['name']}")
+        logger.info(f"   Typography: {template_config['typography']['name']}")
         
         # Get type-specific design if available (for fallback)
         type_config = WEBSITE_TYPES.get(website_type, {})
         
-        # Use randomized colors
-        colors = design_system['colors']
+        # Use template colors
+        colors = template_config['colors']
         
         # Build image URLs for prompt
         hero_gradient = hero_bg.get('gradient', 'linear-gradient(135deg, #667eea, #764ba2)')
