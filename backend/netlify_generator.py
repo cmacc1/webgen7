@@ -265,21 +265,20 @@ OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "400+ LI
         recommended_sections = detector.get_recommended_sections(website_type)
         section_hints = ", ".join(recommended_sections[:5]) if recommended_sections else "hero, features, about, contact"
         
-        # ULTRA-DETAILED user prompt
+        # ULTRA-DETAILED user prompt with REAL IMAGES
         user_prompt = f"""Create a STUNNING, ULTRA-MODERN {website_type.replace('_', ' ').upper()} website for: "{prompt}"
 
-HERO SECTION (FULL SCREEN):
-<section class="relative min-h-screen flex items-center justify-center" style="background: {hero_bg['gradient']};">
-    <div class="absolute inset-0 opacity-10">
-        <i class="fas {hero_bg['icon']} absolute text-[40rem]" style="top:50%;left:50%;transform:translate(-50%,-50%);"></i>
-    </div>
+HERO SECTION (FULL SCREEN WITH REAL IMAGE):
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    {'<img src="'+hero_image+'" alt="Hero" class="absolute inset-0 w-full h-full object-cover">' if hero_image else '<div class="absolute inset-0" style="background: '+hero_bg['gradient']+';"></div>'}
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
     <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
         <i class="fas {hero_bg['icon']} text-8xl md:text-9xl text-white mb-6"></i>
         <h1 class="text-7xl md:text-8xl lg:text-9xl font-black text-white mb-6 leading-tight">{{Title}}</h1>
         <p class="text-2xl md:text-3xl text-white mb-12 opacity-90">{{Subtitle}}</p>
-        <div class="flex gap-6 justify-center">
-            <button class="px-12 py-5 bg-white text-gray-900 rounded-full font-bold text-xl hover:scale-110 transition-transform shadow-2xl">Get Started</button>
-            <button class="px-12 py-5 bg-white bg-opacity-20 backdrop-blur-md text-white border-3 border-white rounded-full font-bold text-xl hover:bg-opacity-30 transition-all">Learn More</button>
+        <div class="flex gap-6 justify-center flex-wrap">
+            <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="px-12 py-5 bg-white text-gray-900 rounded-full font-bold text-xl hover:scale-110 transition-transform shadow-2xl">Get Started</button>
+            <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="px-12 py-5 bg-white bg-opacity-20 backdrop-blur-md text-white border-3 border-white rounded-full font-bold text-xl hover:bg-opacity-30 transition-all">Learn More</button>
         </div>
     </div>
 </section>
