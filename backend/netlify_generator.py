@@ -295,8 +295,30 @@ OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "400+ LI
         recommended_sections = detector.get_recommended_sections(website_type)
         section_hints = ", ".join(recommended_sections[:5]) if recommended_sections else "hero, features, about, contact"
         
-        # ULTRA-DETAILED user prompt with REAL IMAGES
-        user_prompt = f"""Create a STUNNING, ULTRA-MODERN {website_type.replace('_', ' ').upper()} website for: "{prompt}"
+        # REQUIREMENT-FOCUSED user prompt - Extract and implement EVERYTHING
+        user_prompt = f"""USER PROMPT: "{prompt}"
+
+🎯 YOUR TASK - READ CAREFULLY:
+1. EXTRACT EVERY REQUIREMENT from the prompt above
+2. IMPLEMENT ALL features/sections/pages mentioned
+3. ADD intelligent enhancements based on website type ({website_type})
+4. Use ICONS for features/services - NOT images everywhere
+5. Make EVERYTHING FUNCTIONAL (forms submit, buttons work, animations smooth)
+
+📋 REQUIREMENT EXTRACTION - ANALYZE THE PROMPT FOR:
+- Sections requested (About, Services, Pricing, Plans, Gallery, Team, etc.)
+- Features/services listed (extract each one and create icon cards)
+- Special functionality (booking, checkout, subscriptions, forms, calculators)
+- Design preferences (colors, style, mood mentioned)
+- Target audience (who is this for?)
+
+💎 MUST-HAVE SECTIONS (based on prompt analysis):
+1. HERO - Full screen with {'real Pexels image' if hero_image else 'gradient'}
+2. Extract requested sections from prompt (Services, Pricing, About, etc.)
+3. CONTACT - Always include with working form
+
+📦 FOR EACH FEATURE/SERVICE - USE ICON CARDS:
+Create a STUNNING, ULTRA-MODERN {website_type.replace('_', ' ').upper()} website for: "{prompt}"
 
 HERO SECTION (FULL SCREEN WITH REAL IMAGE):
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
