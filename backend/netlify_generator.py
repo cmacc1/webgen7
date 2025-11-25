@@ -1785,10 +1785,20 @@ console.log('Environment:', window.location.hostname);
             }
         }
     
-    def _generate_customized_html(self, business_type: str, business_name: str, sections: List[str], prompt: str) -> str:
+    def _generate_customized_html(self, business_type: str, business_name: str, sections: List[str], prompt: str, hero_image: str = None, section_images: List[str] = None) -> str:
         """Generate customized HTML based on business type using advanced design library"""
         from advanced_design_library import COLOR_SCHEMES, ICON_LIBRARY
         import random
+        
+        # Default images if not provided
+        if not hero_image:
+            from image_provider import ImageProvider
+            img_provider = ImageProvider()
+            hero_image = img_provider.get_hero_image(business_type, prompt)
+        if not section_images:
+            from image_provider import ImageProvider
+            img_provider = ImageProvider()
+            section_images = img_provider.get_section_images(business_type, count=4, seed=prompt)
         
         # Select premium color scheme based on business type
         color_map = {
