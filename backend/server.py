@@ -459,66 +459,19 @@ async def generate_netlify_project(request: NetlifyProjectRequest):
             model=request.model,
             current_project=current_project
         )
+    except HTTPException:
+        # Re-raise HTTP exceptions from the generator
+        raise
     except Exception as gen_error:
-        # This should NEVER happen since netlify_generator has its own failsafe
-        # But if it does, we catch it here as a final safety net
-        logger.error(f"🚨 CRITICAL: Netlify generator threw exception despite failsafe: {str(gen_error)[:200]}")
-        logger.warning("🛡️ EMERGENCY FAILSAFE: Generating minimal project at server level")
+        # NO FALLBACK - Let errors bubble up properly
+        logger.error(f"🚨 CRITICAL: Netlify generator failed: {str(gen_error)[:200]}")
+        logger.error("   NO FALLBACK TEMPLATE - User will see proper error")
         
-        # Emergency fallback - generate minimal project
-        project_data = {
-            "files": {
-                "index.html": """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Website</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🚀 Your Website</h1>
-        <p>Generated successfully and ready for customization!</p>
-    </div>
-</body>
-</html>""",
-                "netlify.toml": """[build]
-  publish = "."
-  
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200"""
-            },
-            "deploy_config": {
-                "publish_dir": ".",
-                "build_command": ""
-            }
-        }
+        # Re-raise as HTTP exception with clear message
+        raise HTTPException(
+            status_code=500,
+            detail=f"Website generation failed: {str(gen_error)[:150]}. Please try again."
+        )
     
     # Create project response
     project_id = str(uuid.uuid4())
