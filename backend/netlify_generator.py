@@ -156,72 +156,20 @@ OUTPUT FORMAT (JSON):
   }
 }"""
         
-        # COMPACT user prompt
-        user_prompt = f"""Create a premium website for: "{prompt}"
+        # MINIMAL user prompt to avoid context window errors
+        user_prompt = f"""Create a premium, modern website for: "{prompt}"
 
-🚨 CRITICAL REQUIREMENTS - MUST IMPLEMENT:
+Requirements:
+- Full-screen hero with gradient background and large headline
+- 3-4 content sections (About, Features, Services, Contact)
+- Use Tailwind utility classes extensively
+- Include Font Awesome icons
+- No alert() popups - use smooth scrolling
+- High contrast, readable text
+- Centered, balanced layouts
+- Vibrant colors and professional design
 
-**1. FUNCTIONAL BUTTONS (NO ALERT POPUPS!):**
-❌ NEVER use alert() - no popup dialogs allowed
-✅ Make buttons scroll to sections smoothly
-Example: <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})">Contact Us</button>
-
-**2. TEXT CONTRAST (READABLE TEXT):**
-❌ NEVER white text on white background
-❌ NEVER dark text on dark background
-✅ Dark backgrounds → Use text-white or text-gray-100
-✅ Light backgrounds → Use text-gray-900 or text-gray-800
-✅ Ensure ALWAYS readable with high contrast
-
-**3. CENTERED SYMMETRICAL LAYOUTS:**
-✅ Center grid layouts: max-w-7xl mx-auto
-✅ Use justify-center and items-center for flex
-✅ Grid items: place-items-center
-✅ Make layouts balanced and symmetrical
-Example: <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto place-items-center">
-
-🎨 PREMIUM DESIGN REQUIREMENTS:
-
-**HERO SECTION:**
-- Full screen height (min-h-screen)
-- MASSIVE headline: text-6xl md:text-7xl lg:text-8xl font-bold
-- Stunning 3-color gradient background: bg-gradient-to-br from-[color1] via-[color2] to-[color3]
-- 2-3 premium CTA buttons with shadows and hover effects
-- Decorative Font Awesome icons (text-8xl)
-
-**IMAGES - USE PROVIDED URLs:**
-✅ USE the hero image URL for hero section background or img tag
-✅ USE section images for About, Features, Services sections
-✅ Add <img src="url" alt="description" class="w-full h-96 object-cover rounded-xl">
-✅ If images provided, MUST use them in the design
-✅ If NO images provided, use CSS gradients + Font Awesome icons
-
-**CONTENT:**
-- 3-4 sections minimum (About, Features, Services, Contact)
-- Dense grids: grid-cols-1 md:grid-cols-3 lg:grid-cols-4
-- Premium cards: shadow-2xl rounded-2xl with hover:scale-105
-- HUGE Font Awesome icons (text-6xl, text-7xl, text-8xl)
-- Gradient text for emphasis
-- NO blank space - every section must be visually rich
-
-**COLORS:**
-- Vibrant 3-color gradients throughout
-- High contrast
-- Professional scheme for the topic
-
-**TYPOGRAPHY:**
-- Extra large headlines (text-6xl, text-7xl, text-8xl)
-- Bold fonts (font-bold, font-extrabold)
-- Generous spacing (leading-relaxed)
-
-**SPACING:**
-- Generous padding: p-12, p-16, py-20, py-24
-- Large gaps: gap-8, gap-12
-- Breathing room but NO emptiness
-
-Generate complete JSON with ALL 3 files (HTML with ALL CDN links, comprehensive CSS 600+ lines, interactive JS).
-
-MAKE IT PREMIUM QUALITY - stunning, professional, and visually impressive!"""
+Return JSON with index.html, styles.css, and app.js files."""
 
         # Try multiple models if one fails
         # ONLY use models that actually work with this Emergent API key
