@@ -144,16 +144,15 @@ class NetlifyGenerator:
         logger.info(f"🎯 Detected website type: {website_type} (confidence: {confidence:.2f})")
         logger.info(f"📋 Business details: {business_details}")
         
-        # Get reliable working image URLs (now that we know the type)
+        # Get contextual visual backgrounds (gradients + icons) - ALWAYS loads, ALWAYS relevant
         image_provider = ImageProvider()
-        hero_image = image_provider.get_hero_image(website_type, prompt)
-        section_images = image_provider.get_section_images(website_type, count=4, seed=prompt)
-        thumbnails = image_provider.get_thumbnail_images(website_type, count=6, seed=prompt)
+        hero_bg = image_provider.get_hero_background(website_type)
+        section_bgs = image_provider.get_section_backgrounds(website_type, count=4)
         
-        logger.info(f"🖼️ Generated image URLs:")
-        logger.info(f"   Hero: {hero_image}")
-        logger.info(f"   Sections: {len(section_images)} images")
-        logger.info(f"   Thumbnails: {len(thumbnails)} images")
+        logger.info(f"🎨 Generated contextual visuals:")
+        logger.info(f"   Hero gradient: {hero_bg['gradient']}")
+        logger.info(f"   Hero icon: {hero_bg['icon']}")
+        logger.info(f"   Section backgrounds: {len(section_bgs)} variations")
         
         # Get type-specific design if available
         type_config = WEBSITE_TYPES.get(website_type, {})
