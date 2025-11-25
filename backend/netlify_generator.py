@@ -171,55 +171,51 @@ class NetlifyGenerator:
         button_style = random.choice(BUTTON_STYLES["modern_gradient"])
         bg_pattern = random.choice(list(BACKGROUND_PATTERNS.values()))
         
-        system_prompt = f"""You are an ELITE web designer creating STUNNING, PROFESSIONAL websites.
+        system_prompt = f"""You are an ELITE web designer creating STUNNING, MODERN, PROFESSIONAL websites.
 
-WEBSITE TYPE DETECTED: {website_type.upper()} (Use industry-specific design patterns)
-BUSINESS: {business_details.get('name', 'Professional Business')}
-COLOR SCHEME: {colors.get('name', 'Modern')} - {colors.get('colors', [])}
+WEBSITE TYPE: {website_type.upper()} | BUSINESS: {business_details.get('name', 'Professional Business')}
+THEME ICON: {hero_bg['icon']} | GRADIENT: {hero_bg['gradient']}
 
-🎨 CONTEXTUAL VISUALS (MANDATORY):
-HERO: Use gradient {hero_bg['gradient']} with icon {hero_bg['icon']}
-SECTIONS: Use provided gradient backgrounds with contextual icons
-ICONS: {hero_bg['icon']} (main theme icon for {website_type})
+CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="styles.css" rel="stylesheet">
+<script src="app.js"></script>
 
-CRITICAL REQUIREMENTS:
-✅ Tailwind CSS: <script src="https://cdn.tailwindcss.com"></script>
-✅ Font Awesome 6: <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-✅ Google Fonts: <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-✅ External Files: <link href="styles.css" rel="stylesheet"> and <script src="app.js"></script>
+DESIGN STANDARDS (ULTRA-MODERN):
+✨ USE TAILWIND EXTENSIVELY - Every element needs Tailwind classes
+🎨 Hero: min-h-screen flex items-center justify-center style="background: {hero_bg['gradient']}"
+🎭 Large Icons: <i class="fas {hero_bg['icon']} text-8xl md:text-9xl text-white mb-6"></i>
+📐 Sections: py-20 md:py-24 max-w-7xl mx-auto px-6
+🎯 Cards: bg-white shadow-2xl rounded-3xl p-8 md:p-12 hover:-translate-y-2 transition-all duration-300
+🔤 Typography: text-6xl md:text-7xl lg:text-9xl font-black for headlines
+💫 Effects: hover:scale-105 hover:shadow-2xl transition-all duration-300
+📱 Grids: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
+🌈 Gradients: bg-gradient-to-br from-purple-600 to-pink-600 (use gradient classes)
 
-NAVIGATION: Use {nav_style} style - {nav_variant.get('name', 'Modern')}
+SECTIONS REQUIRED (3-4 minimum):
+1. HERO - Full screen with gradient background, huge icon, headline, 2 CTA buttons
+2. FEATURES/SERVICES - Grid of 3-4 cards with icons, each with different gradient
+3. ABOUT - Text + large decorative icon or gradient card
+4. CONTACT - Form with gradient submit button
 
-HIGH-QUALITY DESIGN (INDUSTRY-SPECIFIC):
-🎨 Colors: PRIMARY {colors['colors'][0] if colors.get('colors') else '#667eea'}, SECONDARY {colors['colors'][1] if len(colors.get('colors', [])) > 1 else '#764ba2'}
-🎯 Buttons: Gradient/3D styles with hover:scale-105, shadow-2xl effects
-📐 Layout: Hero (min-h-screen), sections (py-20/py-24), max-w-7xl containers
-🖼️ Backgrounds: Gradients, patterns, or contextual images
-✨ Animations: hover:-translate-y-2, transitions, scroll-reveal effects
-📱 Responsive: Mobile-first (grid-cols-1 md:grid-cols-2 lg:grid-cols-3)
-🔤 Typography: Headlines text-6xl to text-9xl, body text-lg to text-xl
-🎭 Icons: Font Awesome fas/fab, sizes text-5xl to text-9xl with gradient backgrounds
-💫 Effects: shadow-xl/2xl, rounded-2xl/3xl, backdrop-blur, opacity
+CRITICAL CSS FILE:
+- styles.css MUST have 400+ lines of custom CSS
+- Include animations (@keyframes fadeInUp, slideIn, etc.)
+- Custom classes for advanced effects
+- Responsive breakpoints
+- Smooth transitions
 
-INFO SECTIONS - HIGHEST QUALITY (CRITICAL):
-- Premium cards: bg-white shadow-2xl rounded-3xl p-8 to p-12
-- Hover: hover:-translate-y-2 hover:shadow-3xl transition-all duration-300
-- Icon containers: w-16 h-16 bg-gradient-to-br rounded-2xl with centered icons
-- Grid layouts: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
-- Perfect contrast: dark bg = text-white, light bg = text-gray-900
-- Generous spacing: mb-6 for titles, mb-4 for subtitles, leading-relaxed for text
+CRITICAL JS FILE:
+- app.js MUST have smooth scroll, animations, interactions
+- Intersection Observer for scroll animations
+- Mobile menu toggle
+- Form validation
 
-🎨 VISUAL DESIGN (MANDATORY - NO IMAGES):
-- Hero: style="background: {hero_bg['gradient']};" with LARGE icon <i class="fas {hero_bg['icon']} text-9xl"></i>
-- Section cards: Use gradient backgrounds with icon containers
-- NO img tags, NO background-image URLs - USE CSS GRADIENTS ONLY
-- Large contextual icons (text-6xl to text-9xl) throughout
-- Gradient backgrounds make sections visually stunning
-- Icons are ALWAYS relevant to {website_type}
+NO ALERTS: Use smooth scrolling onclick="document.getElementById('id').scrollIntoView({{behavior:'smooth'}})"
 
-NO ALERTS: onclick="document.getElementById('id').scrollIntoView({{behavior:'smooth'}})"
-
-OUTPUT JSON: {{"files": {{"index.html": "...", "styles.css": "...", "app.js": "..."}}}}"""
+OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "400+ LINES CSS", "app.js": "INTERACTIVE JS"}}}}"""
         
         # Industry-specific sections
         recommended_sections = detector.get_recommended_sections(website_type)
