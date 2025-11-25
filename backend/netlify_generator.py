@@ -1612,6 +1612,21 @@ console.log('Environment:', window.location.hostname);
 """
 
     
+    
+    def _get_industry_hints(self, website_type: str) -> str:
+        """Get industry-specific component hints for the AI"""
+        hints = {
+            "law_firm": "- Practice areas grid\n   - Attorney bios with credentials\n   - Case results/testimonials\n   - Free consultation CTA",
+            "gym": "- Class schedule grid\n   - Membership pricing (3-tier)\n   - Trainer profiles\n   - Before/after transformations",
+            "restaurant": "- Menu preview with prices\n   - Online reservation form\n   - Photo gallery of dishes\n   - Hours and location map",
+            "consultant_coaching": "- Methodology/process (4 steps)\n   - Client testimonials with photos\n   - Booking calendar/form\n   - Lead magnet (free resource)",
+            "saas": "- Feature comparison table\n   - Pricing tiers (3 plans, highlight middle)\n   - Demo video or screenshots\n   - API documentation link",
+            "medical_clinic": "- Services offered\n   - Doctor profiles with specialties\n   - Online appointment booking\n   - Patient portal login",
+            "real_estate": "- Featured properties grid\n   - Agent profiles\n   - Search filters\n   - Mortgage calculator",
+            "ecommerce": "- Product showcase grid\n   - Featured/bestsellers\n   - Shopping cart icon\n   - Trust badges"
+        }
+        return hints.get(website_type, "- Relevant service/product showcase\n   - Trust indicators\n   - Clear value proposition")
+
     def _analyze_prompt_for_fallback(self, prompt: str) -> Dict[str, Any]:
         """Analyze prompt to determine what type of website to generate as fallback"""
         prompt_lower = prompt.lower()
