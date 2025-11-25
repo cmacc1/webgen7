@@ -133,107 +133,31 @@ class NetlifyGenerator:
         # The base64 encoded images are too large for the AI context window
         logger.info("⚠️ Image generation disabled to prevent context window errors")
         
-        # HIGH-QUALITY system prompt for AI generation
-        system_prompt = """You are an EXPERT web developer creating STUNNING, PREMIUM-QUALITY websites.
+        # COMPACT system prompt to avoid context window issues
+        system_prompt = """You are an expert web developer. Create stunning, modern websites using Tailwind CSS.
 
-🎯 CRITICAL CDN Links in <head>:
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+REQUIREMENTS:
+- Use Tailwind CSS via CDN: <script src="https://cdn.tailwindcss.com"></script>
+- Include Font Awesome: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+- Link external files: <link rel="stylesheet" href="styles.css"> and <script src="app.js"></script>
+- NO alert() popups - use smooth scrolling or inline messages
+- High contrast text (dark bg = light text, light bg = dark text)
+- Centered, symmetrical layouts
+- Vibrant gradients and professional colors
+- Large, bold typography
+- Generous spacing and padding
 
-Before </body>:
-<script src="app.js"></script>
-
-🚨 CRITICAL FIXES - MUST FOLLOW:
-
-**1. BUTTON FUNCTIONALITY (NO POPUPS!):**
-❌ NEVER use alert("Button clicked!") or alert() anywhere
-❌ NEVER show popup dialogs
-✅ Buttons should scroll to sections: onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"
-✅ Contact buttons scroll to contact section
-✅ CTA buttons scroll to relevant sections
-✅ Submit buttons show inline success message (not popup)
-
-**2. TEXT READABILITY (CRITICAL):**
-❌ NEVER use white text on white backgrounds
-❌ NEVER use dark text on dark backgrounds
-✅ Dark backgrounds (bg-gray-900, bg-black) → Light text (text-white, text-gray-100)
-✅ Light backgrounds (bg-white, bg-gray-100) → Dark text (text-gray-900, text-gray-800)
-✅ Gradient backgrounds → Use text-white with text-shadow for readability
-✅ Always ensure high contrast between text and background
-
-**3. LAYOUT SYMMETRY (CRITICAL):**
-✅ Grid layouts MUST be centered: justify-items-center mx-auto max-w-7xl
-✅ Service cards/features: Use even numbers (2, 4, 6 items) OR center with mx-auto
-✅ Single row layouts: flex justify-center items-center
-✅ Multi-column grids: grid place-items-center
-✅ Exception: Split layouts (image left, content right) should fill each half evenly
-Example: <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-
-🎨 PREMIUM DESIGN REQUIREMENTS:
-
-**HERO SECTION (min-h-screen):**
-- MASSIVE bold headlines: text-6xl md:text-7xl lg:text-8xl font-bold
-- Stunning gradient backgrounds: bg-gradient-to-br from-[color1] via-[color2] to-[color3]
-- Multiple premium CTA buttons with hover effects
-- Large decorative Font Awesome icons (text-8xl)
-
-**IMAGES - USE REAL IMAGES:**
-✅ Use <img> tags with the provided image URLs
-✅ For hero background: Use provided hero_image_url if available
-✅ For sections: Use provided section images where appropriate
-✅ Add proper alt text describing the image
-✅ Use object-fit: cover for proper sizing
-✅ If NO images provided, use CSS gradients as fallback
-Example: <img src="provided_url" alt="description" class="w-full h-full object-cover">
-
-**CONTENT SECTIONS:**
-- Dense 3-4 column grids: grid-cols-1 md:grid-cols-3 lg:grid-cols-4
-- Premium cards: bg-white shadow-2xl rounded-2xl p-8
-- HUGE icons: text-6xl md:text-7xl lg:text-8xl with gradient colors
-- Multiple layers: overlapping elements with proper z-index
-- Rich backgrounds: gradients, patterns, or solid colors
-
-**TYPOGRAPHY:**
-- Headlines: text-5xl md:text-6xl lg:text-7xl font-bold
-- Subheadings: text-3xl md:text-4xl font-semibold
-- Body: text-lg leading-relaxed
-- Use gradient text: bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent
-
-**COLORS:**
-- Use VIBRANT multi-color gradients (3+ colors)
-- High contrast combinations
-- Professional color schemes matching the topic
-
-**SPACING:**
-- Generous padding: p-8, p-12, p-16, py-20, py-24
-- Large gaps: gap-8, gap-12
-- Full sections: min-h-screen for hero, py-20 for other sections
-
-OUTPUT JSON:
+OUTPUT FORMAT (JSON):
 {
   "files": {
-    "index.html": "Complete premium HTML",
-    "styles.css": "Professional CSS (600+ lines)",
+    "index.html": "Full HTML with Tailwind classes",
+    "styles.css": "Additional custom CSS",
     "app.js": "Interactive JavaScript"
   }
-}
-
-MAKE IT PREMIUM QUALITY!"""
+}"""
         
-        # Build image URLs section for the prompt
-        images_section = ""
-        if hero_image_url:
-            images_section += f"\n🖼️ HERO IMAGE URL: {hero_image_url}"
-        if section_images:
-            images_section += f"\n🖼️ SECTION IMAGES ({len(section_images)} available):"
-            for idx, img in enumerate(section_images, 1):
-                images_section += f"\n   Image {idx}: {img['url']}"
-        
-        # HIGH-QUALITY user prompt
-        user_prompt = f"""Create a PREMIUM, STUNNING, HIGH-QUALITY website for: "{prompt}"
-{images_section}
+        # COMPACT user prompt
+        user_prompt = f"""Create a premium website for: "{prompt}"
 
 🚨 CRITICAL REQUIREMENTS - MUST IMPLEMENT:
 
