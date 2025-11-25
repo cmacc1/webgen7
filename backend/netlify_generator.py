@@ -149,16 +149,30 @@ class NetlifyGenerator:
         image_provider = ImageProvider()
         pexels = PexelsImageService()
         
-        # Try to get real images from Pexels (async)
+        # Try to get real UNIQUE images from Pexels (async)
         try:
-            hero_image = await pexels.get_hero_image(website_type, prompt)
-            section_images = await pexels.get_section_images(website_type, count=4)
-            gallery_images = await pexels.get_gallery_images(website_type, count=6)
+            hero_image_data = await pexels.get_hero_image(website_type, prompt)
+            section_images_data = await pexels.get_section_images(website_type, count=4)
             
-            logger.info(f"🖼️ Pexels images retrieved:")
+            # Track used URLs to prevent duplicates
+            used_urls = set()
+            if hero_image_data:
+                used_urls.add(hero_image_data["url"])
+            for img in section_images_data:
+                used_urls.add(img["url"])
+            
+            # Get gallery images excluding already used ones
+            gallery_images_data = await pexels.get_gallery_images(website_type, count=6, exclude_urls=used_urls)
+            
+            # Extract URLs for easier use
+            hero_image = hero_image_data["url"] if hero_image_data else None
+            section_images = [img["url"] for img in section_images_data]
+            gallery_images = [img["large"] for img in gallery_images_data]
+            
+            logger.info(f"🖼️ Pexels UNIQUE images retrieved:")
             logger.info(f"   Hero: {hero_image[:50] if hero_image else 'None'}...")
-            logger.info(f"   Sections: {len(section_images)} images")
-            logger.info(f"   Gallery: {len(gallery_images)} images")
+            logger.info(f"   Sections: {len(section_images)} UNIQUE images")
+            logger.info(f"   Gallery: {len(gallery_images)} UNIQUE images (total unique: {len(used_urls) + len(gallery_images)})")
         except Exception as e:
             logger.error(f"❌ Pexels failed: {str(e)}")
             hero_image = None
