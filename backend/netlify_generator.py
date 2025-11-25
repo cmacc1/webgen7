@@ -166,36 +166,40 @@ class NetlifyGenerator:
         
         system_prompt = f"""You are an ELITE web designer creating STUNNING, PROFESSIONAL websites.
 
+WEBSITE TYPE DETECTED: {website_type.upper()} (Use industry-specific design patterns)
+BUSINESS: {business_details.get('name', 'Professional Business')}
+COLOR SCHEME: {colors.get('name', 'Modern')} - {colors.get('colors', [])}
+
 CRITICAL REQUIREMENTS:
-✅ Use Tailwind CSS CDN: <script src="https://cdn.tailwindcss.com"></script>
-✅ Include Font Awesome 6: <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-✅ Include Google Fonts: <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-✅ Link files: <link href="styles.css" rel="stylesheet"> and <script src="app.js"></script>
+✅ Tailwind CSS: <script src="https://cdn.tailwindcss.com"></script>
+✅ Font Awesome 6: <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+✅ Google Fonts: <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+✅ External Files: <link href="styles.css" rel="stylesheet"> and <script src="app.js"></script>
 
-HIGH-QUALITY DESIGN STANDARDS:
-🎨 Colors: Use this premium palette - {colors['colors']}
-🎯 Buttons: Modern gradient styles with hover effects and shadows
-📐 Layout: Full-screen hero (min-h-screen), sections with py-20 or py-24
-🖼️ Backgrounds: Vibrant gradients, patterns, or solid colors
-✨ Animations: Smooth transitions, hover effects, scroll reveals
-📱 Responsive: Mobile-first design with proper breakpoints
-🔤 Typography: Bold headlines (text-6xl to text-8xl), readable body text
-🎭 Icons: Font Awesome 6 icons (fas fa-*), large sizes (text-5xl+)
-💫 Effects: Box shadows, rounded corners, opacity, transforms
+NAVIGATION: Use {nav_style} style - {nav_variant.get('name', 'Modern')}
 
-INFO SECTIONS (CRITICAL - HIGHEST QUALITY):
-- Use cards with shadow-2xl and rounded-3xl
-- Add hover effects: hover:-translate-y-2 hover:shadow-3xl
-- Include gradient icon backgrounds
-- Readable text with proper contrast
-- Generous padding (p-8 to p-12)
-- Grid layouts: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
-- Animated transitions on all interactive elements
+HIGH-QUALITY DESIGN (INDUSTRY-SPECIFIC):
+🎨 Colors: PRIMARY {colors['colors'][0] if colors.get('colors') else '#667eea'}, SECONDARY {colors['colors'][1] if len(colors.get('colors', [])) > 1 else '#764ba2'}
+🎯 Buttons: Gradient/3D styles with hover:scale-105, shadow-2xl effects
+📐 Layout: Hero (min-h-screen), sections (py-20/py-24), max-w-7xl containers
+🖼️ Backgrounds: Gradients, patterns, or contextual images
+✨ Animations: hover:-translate-y-2, transitions, scroll-reveal effects
+📱 Responsive: Mobile-first (grid-cols-1 md:grid-cols-2 lg:grid-cols-3)
+🔤 Typography: Headlines text-6xl to text-9xl, body text-lg to text-xl
+🎭 Icons: Font Awesome fas/fab, sizes text-5xl to text-9xl with gradient backgrounds
+💫 Effects: shadow-xl/2xl, rounded-2xl/3xl, backdrop-blur, opacity
 
-NO ALERTS: Use smooth scrolling: onclick="document.getElementById('section').scrollIntoView({{behavior:'smooth'}})"
+INFO SECTIONS - HIGHEST QUALITY (CRITICAL):
+- Premium cards: bg-white shadow-2xl rounded-3xl p-8 to p-12
+- Hover: hover:-translate-y-2 hover:shadow-3xl transition-all duration-300
+- Icon containers: w-16 h-16 bg-gradient-to-br rounded-2xl with centered icons
+- Grid layouts: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
+- Perfect contrast: dark bg = text-white, light bg = text-gray-900
+- Generous spacing: mb-6 for titles, mb-4 for subtitles, leading-relaxed for text
 
-OUTPUT JSON ONLY:
-{{"files": {{"index.html": "...", "styles.css": "...", "app.js": "..."}}}}"""
+NO ALERTS: onclick="document.getElementById('id').scrollIntoView({{behavior:'smooth'}})"
+
+OUTPUT JSON: {{"files": {{"index.html": "...", "styles.css": "...", "app.js": "..."}}}}"""
         
         # ENHANCED user prompt
         user_prompt = f"""Create a PREMIUM website for: "{prompt}"
