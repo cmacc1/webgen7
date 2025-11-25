@@ -350,31 +350,16 @@ Return JSON with index.html, styles.css, and app.js files."""
             error_msg = str(e).lower()
             logger.error(f"⚠️ AI Generation failed: {str(e)[:200]}")
             
-            # CRITICAL: NEVER let generation fail - use intelligent fallback system
-            logger.warning("🛡️ FAILSAFE ACTIVATED: Using intelligent fallback generation")
-            logger.warning(f"   Reason: {str(e)[:150]}")
+            # NO FALLBACK - Let it fail with proper error message
+            logger.error("❌ AI GENERATION FAILED - NO FALLBACK WILL BE USED")
+            logger.error(f"   Reason: {str(e)[:200]}")
+            logger.error("   User will see error message to try again")
             
-            try:
-                # Analyze prompt to generate appropriate fallback
-                fallback_analysis = self._analyze_prompt_for_fallback(prompt)
-                logger.info(f"📋 Fallback analysis: {fallback_analysis}")
-                
-                # Generate smart fallback based on prompt
-                fallback_project = self._generate_smart_fallback(prompt, fallback_analysis)
-                
-                logger.info(f"✅ FAILSAFE SUCCESS: Generated fallback with {len(fallback_project['files'])} files")
-                logger.info(f"   HTML: {len(fallback_project['files'].get('index.html', ''))} chars")
-                logger.info(f"   CSS: {len(fallback_project['files'].get('styles.css', ''))} chars")
-                logger.info(f"   JS: {len(fallback_project['files'].get('app.js', ''))} chars")
-                
-                return fallback_project
-                
-            except Exception as fallback_error:
-                # Even fallback failed - use absolute minimum viable project
-                logger.error(f"❌ Fallback also failed: {str(fallback_error)}")
-                logger.warning("🆘 LAST RESORT: Generating minimal viable project")
-                
-                return self._generate_minimal_viable_project(prompt)
+            # Re-raise the exception - no templates allowed
+            raise HTTPException(
+                status_code=500,
+                detail=f"AI generation failed: {str(e)[:100]}. Please try again with a different prompt or model."
+            )
     
     async def _edit_netlify_project(self, prompt: str, current_project: Dict, provider: str, model: str, session_id: str) -> Dict[str, Any]:
         """Edit an existing Netlify project"""
