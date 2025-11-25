@@ -219,21 +219,22 @@ class NetlifyGenerator:
         else:
             section_imgs_html = 'Use gradient backgrounds'
         
-        system_prompt = f"""You are an ELITE web designer with access to 1000+ UI components creating STUNNING, MODERN, PROFESSIONAL websites.
+        system_prompt = f"""You are an ELITE web designer with access to 1000+ UI components creating UNIQUE, STUNNING websites.
+
+{variety_instructions}
 
 WEBSITE TYPE: {website_type.upper()} | BUSINESS: {business_details.get('name', 'Professional Business')}
 THEME ICON: {hero_bg['icon']} | REAL IMAGES: {len(section_images)} from Pexels
 
 🖼️ REAL IMAGES PROVIDED (ALL UNIQUE & CONTEXTUAL):
-{'Hero Image: ' + hero_image[:60] + '...' if hero_image else 'Hero: Use gradient ' + hero_bg['gradient']}
-{'Section Images: ' + str(len(section_images)) + ' DIFFERENT images (no duplicates)' if section_images else 'Sections: Use gradient backgrounds'}
+{'Hero Image: ' + hero_image[:60] + '...' if hero_image else 'Hero: Use gradient'}
+{'Section Images: ' + str(len(section_images)) + ' DIFFERENT images' if section_images else 'Sections: Use gradients'}
 {'Gallery: ' + str(len(gallery_images)) + ' additional UNIQUE images' if gallery_images else ''}
 
 CRITICAL IMAGE RULES:
-1. NEVER reuse the same image URL twice
-2. Each feature card MUST use a DIFFERENT image from the list
-3. Images are ordered by relevance - use them in sequence
-4. If feature is "Personal Training" use image index 0, "Group Classes" use index 1, etc.
+1. NEVER reuse the same image URL
+2. Each feature MUST use a DIFFERENT image
+3. Images ordered by relevance - use sequentially
 
 CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
 <script src="https://cdn.tailwindcss.com"></script>
