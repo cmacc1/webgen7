@@ -333,42 +333,32 @@ class DesignVarietyPexelsTester:
         
         return results
 
-    async def test_business_type_customization(self, business_type: str, prompt: str) -> Dict[str, Any]:
-        """TEST 3: Different Business Types - Test intelligent fallback customization"""
-        logger.info(f"\n--- TEST 3: {business_type.upper()} BUSINESS TYPE ---")
+    def _calculate_similarity(self, text1: str, text2: str) -> float:
+        """Calculate similarity between two texts (0.0 = completely different, 1.0 = identical)"""
+        if not text1 or not text2:
+            return 0.0
         
-        session_id = await self.create_session(f"Test {business_type.title()}")
-        if not session_id:
-            return {"success": False, "error": "Failed to create session"}
+        # Simple similarity based on common words
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
         
-        result = await self.test_normal_ai_generation(session_id, prompt)
+        if not words1 or not words2:
+            return 0.0
         
-        if result.get('success'):
-            # Analyze the generated content for business-specific customization
-            project = result.get('project', {})
-            files = project.get('files', {})
-            html_content = files.get('index.html', '')
-            
-            # Check for business-specific content
-            business_keywords = {
-                'renovation': ['flooring', 'bathroom', 'kitchen', 'renovation', 'remodeling'],
-                'restaurant': ['menu', 'dining', 'food', 'restaurant', 'beverages'],
-                'tech': ['software', 'development', 'cloud', 'technology', 'services']
-            }
-            
-            keywords = business_keywords.get(business_type, [])
-            found_keywords = [kw for kw in keywords if kw.lower() in html_content.lower()]
-            
-            result['business_customization'] = {
-                'expected_keywords': keywords,
-                'found_keywords': found_keywords,
-                'customization_score': len(found_keywords) / len(keywords) * 100 if keywords else 0
-            }
-            
-            logger.info(f"   Business customization: {result['business_customization']['customization_score']:.1f}%")
-            logger.info(f"   Found keywords: {found_keywords}")
+        intersection = words1.intersection(words2)
+        union = words1.union(words2)
         
-        return result
+        return len(intersection) / len(union) if union else 0.0
+
+    def _extract_pexels_urls(self, html_content: str) -> List[str]:
+        """Extract Pexels image URLs from HTML content"""
+        import re
+        
+        # Look for URLs containing pexels.com or api.pexels.com
+        pexels_pattern = r'https?://[^"\s]*pexels\.com[^"\s]*'
+        urls = re.findall(pexels_pattern, html_content, re.IGNORECASE)
+        
+        return urls
 
     async def test_live_url_accessibility(self, url: str) -> Dict[str, Any]:
         """Test if the live Netlify URL is accessible and contains expected content"""
