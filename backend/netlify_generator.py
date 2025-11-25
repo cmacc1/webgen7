@@ -179,6 +179,11 @@ WEBSITE TYPE DETECTED: {website_type.upper()} (Use industry-specific design patt
 BUSINESS: {business_details.get('name', 'Professional Business')}
 COLOR SCHEME: {colors.get('name', 'Modern')} - {colors.get('colors', [])}
 
+🖼️ IMAGES PROVIDED (USE THESE URLS):
+HERO IMAGE: {hero_image}
+SECTION IMAGES: {', '.join(section_images[:2])}
+THUMBNAILS: {', '.join(thumbnails[:3])}
+
 CRITICAL REQUIREMENTS:
 ✅ Tailwind CSS: <script src="https://cdn.tailwindcss.com"></script>
 ✅ Font Awesome 6: <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
