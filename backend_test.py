@@ -483,58 +483,132 @@ class DesignVarietyPexelsTester:
         total_time = time.time() - start_time
         return self._generate_final_summary(all_results, total_time)
 
-    async def test_stress_multiple_requests(self) -> Dict[str, Any]:
-        """TEST 5: Stress Test - Multiple rapid requests to verify no conflicts"""
-        logger.info("\n--- TEST 5: STRESS TEST - MULTIPLE RAPID REQUESTS ---")
+    def _generate_final_summary(self, all_results: Dict[str, Any], total_time: float):
+        """Generate comprehensive test summary"""
+        logger.info("\n" + "="*80)
+        logger.info("DESIGN VARIETY & PEXELS INTEGRATION - FINAL SUMMARY")
+        logger.info("="*80)
         
-        prompts = [
-            "Create website for business 1 - a coffee shop",
-            "Create website for business 2 - a tech startup", 
-            "Create website for business 3 - a photography studio"
-        ]
+        # Analyze Design Variety Results
+        design_results = all_results.get('design_variety', {})
+        design_success = False
+        design_issues = []
         
-        tasks = []
-        start_time = time.time()
+        if design_results.get('variety_verified'):
+            logger.info("✅ TEST 1 - DESIGN VARIETY SYSTEM: PASSED")
+            logger.info(f"   Content similarity: {design_results.get('content_similarity', 0):.2f} (< 0.8 = good variety)")
+            design_success = True
+        else:
+            logger.info("❌ TEST 1 - DESIGN VARIETY SYSTEM: FAILED")
+            design_issues.append("Same prompt produces identical outputs")
         
-        for i, prompt in enumerate(prompts, 1):
-            session_id = await self.create_session(f"Stress Test {i}")
-            if session_id:
-                task = self.test_normal_ai_generation(session_id, prompt)
-                tasks.append(task)
+        if design_results.get('design_ids_different'):
+            logger.info("   ✅ Design IDs are different for each generation")
+        else:
+            logger.info("   ❌ Design IDs are identical (no randomization)")
+            design_issues.append("Design IDs not randomized")
         
-        if not tasks:
-            return {"success": False, "error": "Failed to create sessions for stress test"}
+        if design_results.get('logs_show_randomization'):
+            logger.info("   ✅ Backend logs show '🎲 Randomized design system'")
+        else:
+            logger.info("   ❌ No randomization logs found")
+            design_issues.append("No randomization logs in backend")
         
-        # Run all requests concurrently
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        total_time = time.time() - start_time
+        # Analyze Pexels Results
+        pexels_results = all_results.get('pexels_integration', {})
+        pexels_success = False
+        pexels_issues = []
         
-        # Analyze results
-        successful_requests = 0
-        failed_requests = 0
-        unique_websites = set()
-        
-        for i, result in enumerate(results):
-            if isinstance(result, Exception):
-                logger.error(f"Request {i+1} failed with exception: {result}")
-                failed_requests += 1
-            elif result.get('success'):
-                successful_requests += 1
-                # Check uniqueness by HTML content hash
-                html_content = result.get('project', {}).get('files', {}).get('index.html', '')
-                unique_websites.add(hash(html_content))
+        if pexels_results.get('generation_success'):
+            logger.info("✅ TEST 2 - PEXELS INTEGRATION: GENERATION SUCCESSFUL")
+            
+            unique_urls = pexels_results.get('unique_image_urls', [])
+            if unique_urls:
+                logger.info(f"   ✅ Found {len(unique_urls)} unique Pexels image URLs")
+                pexels_success = True
             else:
-                failed_requests += 1
+                logger.info("   ❌ No Pexels image URLs found in generated HTML")
+                pexels_issues.append("No Pexels images in HTML")
+            
+            if pexels_results.get('images_are_unique'):
+                logger.info("   ✅ All image URLs are unique (no duplicates)")
+            else:
+                logger.info("   ❌ Duplicate image URLs found")
+                pexels_issues.append("Duplicate images used")
+            
+            if pexels_results.get('contextual_relevance'):
+                keywords = pexels_results.get('contextual_keywords', [])
+                logger.info(f"   ✅ Images are contextually relevant: {keywords}")
+            else:
+                logger.info("   ❌ Images may not be contextually relevant")
+                pexels_issues.append("Images not contextually relevant")
+        else:
+            logger.info("❌ TEST 2 - PEXELS INTEGRATION: GENERATION FAILED")
+            pexels_issues.append(f"Generation error: {pexels_results.get('error', 'Unknown')}")
+        
+        if pexels_results.get('pexels_logs_found'):
+            logger.info("   ✅ Backend logs show Pexels API activity")
+        else:
+            logger.info("   ❌ No Pexels activity found in backend logs")
+            pexels_issues.append("No Pexels logs found")
+        
+        # Analyze API Health Results
+        health_results = all_results.get('api_health', {})
+        api_health_success = True
+        api_issues = []
+        
+        logger.info("✅ TEST 3 - API HEALTH CHECK:")
+        
+        if health_results.get('session_create', {}).get('success'):
+            logger.info("   ✅ Session creation: WORKING")
+        else:
+            logger.info("   ❌ Session creation: FAILED")
+            api_health_success = False
+            api_issues.append("Session creation failed")
+        
+        if health_results.get('models', {}).get('success'):
+            model_count = health_results.get('models', {}).get('count', 0)
+            logger.info(f"   ✅ Models endpoint: WORKING ({model_count} models)")
+        else:
+            logger.info("   ❌ Models endpoint: FAILED")
+            api_health_success = False
+            api_issues.append("Models endpoint failed")
+        
+        if health_results.get('root', {}).get('success'):
+            logger.info("   ✅ Root endpoint: WORKING")
+        else:
+            logger.info("   ❌ Root endpoint: FAILED")
+            api_health_success = False
+            api_issues.append("Root endpoint failed")
+        
+        # Overall Assessment
+        logger.info(f"\n📊 OVERALL ASSESSMENT:")
+        logger.info(f"   Total Test Time: {total_time:.2f}s")
+        
+        overall_success = design_success and pexels_success and api_health_success
+        
+        if overall_success:
+            logger.info("🎉 ALL TESTS PASSED - DESIGN VARIETY & PEXELS INTEGRATION WORKING!")
+        else:
+            logger.info("❌ SOME TESTS FAILED - ISSUES DETECTED")
+        
+        # Critical Issues Summary
+        all_issues = design_issues + pexels_issues + api_issues
+        if all_issues:
+            logger.info(f"\n🚨 CRITICAL ISSUES FOUND:")
+            for i, issue in enumerate(all_issues, 1):
+                logger.error(f"   {i}. {issue}")
+        else:
+            logger.info(f"\n✅ NO CRITICAL ISSUES FOUND")
         
         return {
-            "success": successful_requests > 0,
-            "total_requests": len(tasks),
-            "successful_requests": successful_requests,
-            "failed_requests": failed_requests,
-            "unique_websites": len(unique_websites),
+            "overall_success": overall_success,
             "total_time": total_time,
-            "no_race_conditions": len(unique_websites) == successful_requests,
-            "results": results
+            "design_variety_success": design_success,
+            "pexels_integration_success": pexels_success,
+            "api_health_success": api_health_success,
+            "critical_issues": all_issues,
+            "detailed_results": all_results
         }
 
     async def check_backend_logs_for_failsafe(self) -> Dict[str, Any]:
