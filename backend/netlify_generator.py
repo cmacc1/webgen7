@@ -162,7 +162,9 @@ class NetlifyGenerator:
         image_provider = ImageProvider()
         pexels = PexelsImageService()
         
-        # HYPER-SPECIFIC IMAGE - Extract exact keywords from prompt for Pexels
+        # MULTI-SOURCE HIGH-QUALITY IMAGE - Unsplash > Pixabay > Pexels
+        from multi_image_service import MultiImageService
+        
         try:
             # Extract specific keywords from prompt for hyper-specific image search
             import re
@@ -180,21 +182,29 @@ class NetlifyGenerator:
             # Create hyper-specific search query
             specific_query = ' '.join(keywords[:4]) if keywords else website_type.replace('_', ' ')
             
-            logger.info(f"🔍 Hyper-specific Pexels search: '{specific_query}'")
+            logger.info(f"🔍 Hyper-specific image search: '{specific_query}'")
             
-            # Search with specific query, fallback to website type
-            hero_image_data = await pexels.search_images(specific_query, per_page=5)
-            if not hero_image_data:
-                # Fallback to website type
-                hero_image_data = await pexels.get_hero_image(website_type, prompt)
-                hero_image = hero_image_data["url"] if hero_image_data else None
+            # Use multi-source service (tries Unsplash, Pixabay, Pexels in order)
+            multi_image = MultiImageService()
+            hero_image_data = await multi_image.search_with_fallback(specific_query, orientation="landscape")
+            
+            if hero_image_data:
+                hero_image = hero_image_data["url"]
+                hero_photographer = hero_image_data.get("photographer", "Unknown")
+                hero_source = hero_image_data.get("source", "unknown")
+                logger.info(f"✅ Hero image from {hero_source.upper()}: {hero_image[:50]}...")
+                logger.info(f"   Photographer: {hero_photographer}")
             else:
-                hero_image = hero_image_data[0]["url"] if hero_image_data else None
-            
-            logger.info(f"🖼️ Hero image from Pexels: {hero_image[:50] if hero_image else 'Using gradient'}...")
+                # Final fallback to website type search
+                hero_image_data = await multi_image.search_with_fallback(website_type.replace('_', ' '), orientation="landscape")
+                hero_image = hero_image_data["url"] if hero_image_data else None
+                logger.info(f"🖼️ Hero image (fallback): {hero_image[:50] if hero_image else 'Using gradient'}...")
+                
         except Exception as e:
-            logger.error(f"❌ Pexels failed: {str(e)}")
+            logger.error(f"❌ Image search failed: {str(e)}")
             hero_image = None
+            hero_photographer = None
+            hero_source = None
         
         # No section images or gallery - use ICONS instead
         section_images = []
