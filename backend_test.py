@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-CRITICAL PRIORITY TESTING - Bulletproof Failsafe System Verification
-Tests the comprehensive 3-layer failsafe system to guarantee 100% success rate
+CRITICAL BACKEND TESTING - Design Variety & Pexels Image Integration
+Tests the two critical features implemented to address P0 user complaints about "template-like" outputs:
+1. design_randomizer.py - Forces variety by randomly selecting from 1000+ design components  
+2. pexels_service.py - Fetches real, contextually relevant images from Pexels API
 """
 
 import asyncio
@@ -18,7 +20,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-class BulletproofFailsafeTester:
+class DesignVarietyPexelsTester:
     def __init__(self):
         # Get backend URL from frontend .env
         self.base_url = self._get_backend_url()
