@@ -186,12 +186,14 @@ Example: <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-
 - Multiple premium CTA buttons with hover effects
 - Large decorative Font Awesome icons (text-8xl)
 
-**IMAGES - CRITICAL:**
-❌ NEVER use broken img src=""
-✅ ALWAYS use background gradients instead of images
-✅ Use Font Awesome icons as visual elements (text-6xl, text-8xl sizes)
-✅ For hero sections: Use stunning CSS gradients, NOT images
-Example: <div class="bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600">
+**IMAGES - USE REAL IMAGES:**
+✅ Use <img> tags with the provided image URLs
+✅ For hero background: Use provided hero_image_url if available
+✅ For sections: Use provided section images where appropriate
+✅ Add proper alt text describing the image
+✅ Use object-fit: cover for proper sizing
+✅ If NO images provided, use CSS gradients as fallback
+Example: <img src="provided_url" alt="description" class="w-full h-full object-cover">
 
 **CONTENT SECTIONS:**
 - Dense 3-4 column grids: grid-cols-1 md:grid-cols-3 lg:grid-cols-4
