@@ -91,32 +91,97 @@ class PexelsImageService:
         
         return None
     
-    async def get_section_images(self, website_type: str, count: int = 4) -> List[str]:
-        """Get multiple relevant section images"""
+    async def get_section_images(self, website_type: str, count: int = 4) -> List[Dict[str, str]]:
+        """Get multiple UNIQUE, relevant section images with metadata"""
         queries = self.search_queries.get(website_type, self.search_queries["default"])
         
         all_images = []
+        used_urls = set()
         
-        # Search with different queries for variety
+        # Search with different queries for variety and uniqueness
         for i, query in enumerate(queries[:count]):
-            images = await self.search_images(query, per_page=3)
-            if images:
-                all_images.append(images[0]["url"])
+            images = await self.search_images(query, per_page=5)
+            for img in images:
+                if img["url"] not in used_urls:
+                    all_images.append({
+                        "url": img["url"],
+                        "alt": img["alt"],
+                        "query": query,  # Track what this image is about
+                        "photographer": img["photographer"]
+                    })
+                    used_urls.add(img["url"])
+                    break  # One unique image per query
             
             if len(all_images) >= count:
                 break
         
-        # Fill remaining with first query if needed
-        while len(all_images) < count:
-            images = await self.search_images(queries[0], per_page=10)
-            for img in images:
-                if img["url"] not in all_images:
-                    all_images.append(img["url"])
+        # Fill remaining with additional unique images if needed
+        if len(all_images) < count:
+            more_images = await self.search_images(queries[0], per_page=15)
+            for img in more_images:
+                if img["url"] not in used_urls:
+                    all_images.append({
+                        "url": img["url"],
+                        "alt": img["alt"],
+                        "query": queries[0],
+                        "photographer": img["photographer"]
+                    })
+                    used_urls.add(img["url"])
                     if len(all_images) >= count:
                         break
         
-        logger.info(f"✅ Retrieved {len(all_images)} section images from Pexels")
+        logger.info(f"✅ Retrieved {len(all_images)} UNIQUE section images from Pexels")
         return all_images[:count]
+    
+    async def get_feature_specific_images(self, features: List[str], website_type: str) -> List[Dict[str, str]]:
+        """Get images specific to each feature - ensures contextual relevance"""
+        feature_images = []
+        used_urls = set()
+        
+        for feature in features:
+            # Create specific search query from feature text
+            # Extract keywords from feature (e.g., "Personal Training" -> "personal training")
+            feature_clean = feature.lower().strip()
+            
+            # Combine with website type for better context
+            queries = self.search_queries.get(website_type, ["professional business"])
+            search_query = f"{feature_clean} {queries[0].split()[0]}"  # e.g., "personal training gym"
+            
+            logger.info(f"🔍 Searching for feature-specific image: '{search_query}'")
+            
+            images = await self.search_images(search_query, per_page=5)
+            
+            # Get first unique image
+            for img in images:
+                if img["url"] not in used_urls:
+                    feature_images.append({
+                        "url": img["url"],
+                        "alt": f"{feature} - {img['alt']}",
+                        "feature": feature,
+                        "query": search_query,
+                        "photographer": img["photographer"]
+                    })
+                    used_urls.add(img["url"])
+                    break
+            
+            # Fallback if no images found for this specific feature
+            if len(feature_images) < len([f for f in features[:features.index(feature)+1]]):
+                # Use general query but ensure uniqueness
+                general_images = await self.search_images(queries[0], per_page=10)
+                for img in general_images:
+                    if img["url"] not in used_urls:
+                        feature_images.append({
+                            "url": img["url"],
+                            "alt": f"{feature} - {img['alt']}",
+                            "feature": feature,
+                            "query": queries[0],
+                            "photographer": img["photographer"]
+                        })
+                        used_urls.add(img["url"])
+                        break
+        
+        logger.info(f"✅ Retrieved {len(feature_images)} feature-specific UNIQUE images")
+        return feature_images
     
     async def get_gallery_images(self, website_type: str, count: int = 6) -> List[Dict[str, str]]:
         """Get gallery images with multiple sizes"""
