@@ -1,42 +1,114 @@
 """
-IMAGE PROVIDER - Reliable Image URLs for Website Generation
-Uses high-quality, reliable image sources that actually load
+IMAGE PROVIDER - Contextual Visual Backgrounds for Website Generation
+Uses CSS gradients with relevant Font Awesome icons - ALWAYS loads, ALWAYS contextual
 """
 
 import hashlib
 from typing import List, Dict
 
 class ImageProvider:
-    """Provides reliable, working image URLs for website generation"""
+    """Provides contextual visual backgrounds using CSS gradients and icons"""
     
     def __init__(self):
-        # Use Lorem Picsum's v2 API which is more reliable
-        self.picsum_base = "https://picsum.photos"
-        
-        # Curated image IDs from Lorem Picsum (verified working)
-        self.curated_ids = {
-            "business": [1, 3, 7, 15, 20, 22, 24, 26, 28, 29],
-            "nature": [10, 11, 13, 14, 16, 17, 18, 19, 21, 23],
-            "tech": [0, 2, 4, 5, 6, 8, 9, 25, 27, 30],
-            "food": [42, 43, 44, 45, 46, 47, 48, 49, 50, 51],
-            "architecture": [100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
-            "people": [200, 201, 202, 203, 204, 205, 206, 207, 208, 209],
-            "sports": [300, 301, 302, 303, 304, 305, 306, 307, 308, 309],
-            "abstract": [400, 401, 402, 403, 404, 405, 406, 407, 408, 409]
-        }
-        
-        # Category mapping for website types
-        self.category_map = {
-            "law_firm": "business",
-            "consultant_coaching": "business",
-            "gym": "sports",
-            "restaurant": "food",
-            "tech": "tech",
-            "saas": "tech",
-            "renovation": "architecture",
-            "landscaping": "nature",
-            "hotel": "architecture",
-            "default": "business"
+        # Icon and gradient mappings for each website type
+        self.visual_themes = {
+            "law_firm": {
+                "icon": "fa-scale-balanced",
+                "gradients": [
+                    "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)",
+                    "linear-gradient(135deg, #1f2937 0%, #4b5563 100%)",
+                    "linear-gradient(135deg, #92400e 0%, #d97706 100%)"
+                ]
+            },
+            "consultant_coaching": {
+                "icon": "fa-lightbulb",
+                "gradients": [
+                    "linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)",
+                    "linear-gradient(135deg, #059669 0%, #10b981 100%)",
+                    "linear-gradient(135deg, #ea580c 0%, #fb923c 100%)"
+                ]
+            },
+            "gym": {
+                "icon": "fa-dumbbell",
+                "gradients": [
+                    "linear-gradient(135deg, #dc2626 0%, #ef4444 100%)",
+                    "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
+                    "linear-gradient(135deg, #16a34a 0%, #22c55e 100%)"
+                ]
+            },
+            "restaurant": {
+                "icon": "fa-utensils",
+                "gradients": [
+                    "linear-gradient(135deg, #92400e 0%, #d97706 100%)",
+                    "linear-gradient(135deg, #15803d 0%, #22c55e 100%)",
+                    "linear-gradient(135deg, #881337 0%, #be123c 100%)"
+                ]
+            },
+            "renovation": {
+                "icon": "fa-hammer",
+                "gradients": [
+                    "linear-gradient(135deg, #854d0e 0%, #ca8a04 100%)",
+                    "linear-gradient(135deg, #4b5563 0%, #6b7280 100%)",
+                    "linear-gradient(135deg, #92400e 0%, #d97706 100%)"
+                ]
+            },
+            "tech": {
+                "icon": "fa-laptop-code",
+                "gradients": [
+                    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                    "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)"
+                ]
+            },
+            "saas": {
+                "icon": "fa-rocket",
+                "gradients": [
+                    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)"
+                ]
+            },
+            "medical_clinic": {
+                "icon": "fa-stethoscope",
+                "gradients": [
+                    "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                    "linear-gradient(135deg, #059669 0%, #10b981 100%)"
+                ]
+            },
+            "dental": {
+                "icon": "fa-tooth",
+                "gradients": [
+                    "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                    "linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%)"
+                ]
+            },
+            "landscaping": {
+                "icon": "fa-tree",
+                "gradients": [
+                    "linear-gradient(135deg, #15803d 0%, #22c55e 100%)",
+                    "linear-gradient(135deg, #166534 0%, #16a34a 100%)"
+                ]
+            },
+            "real_estate": {
+                "icon": "fa-building",
+                "gradients": [
+                    "linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)",
+                    "linear-gradient(135deg, #1f2937 0%, #4b5563 100%)"
+                ]
+            },
+            "ecommerce": {
+                "icon": "fa-shopping-cart",
+                "gradients": [
+                    "linear-gradient(135deg, #9333ea 0%, #c026d3 100%)",
+                    "linear-gradient(135deg, #db2777 0%, #f472b6 100%)"
+                ]
+            },
+            "default": {
+                "icon": "fa-star",
+                "gradients": [
+                    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+                ]
+            }
         }
     
     def get_hero_image(self, website_type: str, seed: str = None) -> str:
