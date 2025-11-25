@@ -231,12 +231,12 @@ OUTPUT JSON: {{"files": {{"index.html": "...", "styles.css": "...", "app.js": ".
 REQUIRED SECTIONS (industry-specific): {section_hints}
 
 1. HERO SECTION (full-screen, min-h-screen):
-   - Background: USE PROVIDED HERO IMAGE - style="background-image: url('{hero_image}'); background-size: cover; background-position: center;"
-   - Overlay: bg-black/50 or bg-gradient-to-r from-black/80 to-transparent for text readability
+   - Background: style="background: {hero_bg['gradient']};"
+   - LARGE CONTEXTUAL ICON: <i class="fas {hero_bg['icon']} text-9xl text-white mb-6"></i>
+   - Giant background icon (optional): Huge {hero_bg['icon']} at opacity-10 as decoration
    - Massive headline (text-7xl md:text-8xl lg:text-9xl font-black text-white)
    - 2-3 CTA buttons with hover:scale-105 hover:shadow-2xl
    - Stats/trust indicators (years, clients, ratings)
-   - Scroll indicator: animate-bounce
 
 2. INFO SECTIONS (3-4 sections, HIGHEST QUALITY):
    - About/Services section: USE PROVIDED SECTION IMAGES
