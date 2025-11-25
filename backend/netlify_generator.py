@@ -221,39 +221,54 @@ OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "400+ LI
         recommended_sections = detector.get_recommended_sections(website_type)
         section_hints = ", ".join(recommended_sections[:5]) if recommended_sections else "hero, features, about, contact"
         
-        # ENHANCED user prompt with type-specific guidance
-        user_prompt = f"""Create a PREMIUM {website_type.replace('_', ' ').upper()} website for: "{prompt}"
+        # ULTRA-DETAILED user prompt
+        user_prompt = f"""Create a STUNNING, ULTRA-MODERN {website_type.replace('_', ' ').upper()} website for: "{prompt}"
 
-REQUIRED SECTIONS (industry-specific): {section_hints}
+HERO SECTION (FULL SCREEN):
+<section class="relative min-h-screen flex items-center justify-center" style="background: {hero_bg['gradient']};">
+    <div class="absolute inset-0 opacity-10">
+        <i class="fas {hero_bg['icon']} absolute text-[40rem]" style="top:50%;left:50%;transform:translate(-50%,-50%);"></i>
+    </div>
+    <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        <i class="fas {hero_bg['icon']} text-8xl md:text-9xl text-white mb-6"></i>
+        <h1 class="text-7xl md:text-8xl lg:text-9xl font-black text-white mb-6 leading-tight">{{Title}}</h1>
+        <p class="text-2xl md:text-3xl text-white mb-12 opacity-90">{{Subtitle}}</p>
+        <div class="flex gap-6 justify-center">
+            <button class="px-12 py-5 bg-white text-gray-900 rounded-full font-bold text-xl hover:scale-110 transition-transform shadow-2xl">Get Started</button>
+            <button class="px-12 py-5 bg-white bg-opacity-20 backdrop-blur-md text-white border-3 border-white rounded-full font-bold text-xl hover:bg-opacity-30 transition-all">Learn More</button>
+        </div>
+    </div>
+</section>
 
-1. HERO SECTION (full-screen, min-h-screen):
-   - Background: style="background: {hero_bg['gradient']};"
-   - LARGE CONTEXTUAL ICON: <i class="fas {hero_bg['icon']} text-9xl text-white mb-6"></i>
-   - Giant background icon (optional): Huge {hero_bg['icon']} at opacity-10 as decoration
-   - Massive headline (text-7xl md:text-8xl lg:text-9xl font-black text-white)
-   - 2-3 CTA buttons with hover:scale-105 hover:shadow-2xl
-   - Stats/trust indicators (years, clients, ratings)
+FEATURES SECTION (3-4 CARDS):
+<section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-6xl font-black text-center mb-16">{{Section Title}}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-gradient-to-br from-purple-600 to-pink-600 p-10 rounded-3xl shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <i class="fas fa-star text-6xl text-white mb-6"></i>
+                <h3 class="text-3xl font-bold text-white mb-4">{{Feature}}</h3>
+                <p class="text-white text-lg opacity-90">{{Description}}</p>
+            </div>
+            <!-- Repeat with different gradients -->
+        </div>
+    </div>
+</section>
 
-2. INFO SECTIONS (3-4 sections, HIGHEST QUALITY):
-   - Features/Services grid (3-4 cards)
-   - Each card: Use GRADIENT backgrounds (different gradient for each)
-   - Example card: style="background: linear-gradient(135deg, #color1, #color2);" class="p-10 rounded-3xl"
-   - Icon: <i class="fas {hero_bg['icon']} text-6xl text-white mb-6"></i> or related icons
-   - Title: text-3xl font-bold text-white mb-4
-   - Description: text-white text-lg opacity-90 leading-relaxed
-   - Grid: grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8
-   - Cards hover:-translate-y-2 hover:shadow-3xl transition-all
-   - NO img tags - all visuals are gradients + icons
+STYLES.CSS (400+ LINES):
+- Custom animations (@keyframes)
+- Advanced hover effects
+- Scroll reveal animations
+- Responsive breakpoints
+- Custom utility classes
 
-3. INDUSTRY-SPECIFIC COMPONENTS:
-   {self._get_industry_hints(website_type)}
+APP.JS (INTERACTIVE):
+- Smooth scroll function
+- Intersection Observer for animations
+- Mobile menu toggle
+- Form validation
 
-4. CONTACT/CTA SECTION:
-   - Form: modern inputs with focus:border-[color] transitions
-   - Submit button: gradient with hover:shadow-2xl hover:scale-105
-   - Background: gradient or solid with proper contrast
-
-CRITICAL: Make it industry-appropriate, visually STUNNING, with smooth animations!"""
+USE TAILWIND CLASSES EVERYWHERE! Make it VISUALLY STUNNING with gradients, large icons ({hero_bg['icon']}), smooth animations!"""
 
         # Try multiple models if one fails
         # ONLY use models that actually work with this Emergent API key
