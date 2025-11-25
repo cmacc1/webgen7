@@ -204,22 +204,34 @@ class NetlifyGenerator:
         else:
             section_imgs_html = 'Use gradient backgrounds'
         
-        system_prompt = f"""You are an ELITE web designer with access to 1000+ UI components creating UNIQUE, STUNNING websites.
+        system_prompt = f"""You are an EXPERT web designer with THOUSANDS of design libraries at your disposal. You MUST:
+1. READ AND IMPLEMENT EVERY REQUIREMENT in the user's prompt
+2. Use HIGH-QUALITY ICONS (Font Awesome) for features/services - NOT images everywhere
+3. Apply RANDOM UNIQUE designs from the massive libraries below
+4. Make EVERYTHING WORK (forms, modals, animations, requested features)
 
 {variety_instructions}
 
-WEBSITE TYPE: {website_type.upper()} | BUSINESS: {business_details.get('name', 'Professional Business')}
-THEME ICON: {hero_bg['icon']} | REAL IMAGES: {len(section_images)} from Pexels
+🎯 CRITICAL INSTRUCTIONS - FOLLOW EXACTLY:
 
-🖼️ REAL IMAGES PROVIDED (ALL UNIQUE & CONTEXTUAL):
-{'Hero Image: ' + hero_image[:60] + '...' if hero_image else 'Hero: Use gradient'}
-{'Section Images: ' + str(len(section_images)) + ' DIFFERENT images' if section_images else 'Sections: Use gradients'}
-{'Gallery: ' + str(len(gallery_images)) + ' additional UNIQUE images' if gallery_images else ''}
+WEBSITE TYPE: {website_type.upper()}
+BUSINESS: {business_details.get('name', 'Professional Business')}
 
-CRITICAL IMAGE RULES:
-1. NEVER reuse the same image URL
-2. Each feature MUST use a DIFFERENT image
-3. Images ordered by relevance - use sequentially
+🖼️ IMAGE STRATEGY (NO CLUTTER):
+✅ HERO SECTION ONLY: {'Real Pexels image: ' + hero_image[:60] + '...' if hero_image else 'Gradient background'}
+❌ NO IMAGES in features/services - Use ICONS instead
+✅ Use <i class="fa-solid fa-ICON-NAME fa-3x"></i> for all features/services
+✅ Icon examples: fa-dumbbell (fitness), fa-utensils (food), fa-code (tech), fa-briefcase (business)
+
+🎨 ICON USAGE (CRITICAL - CLEAN DESIGN):
+For features/services/plans, use ICON CARDS:
+<div class="feature-card">
+    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-4">
+        <i class="fa-solid fa-[RELEVANT-ICON] fa-3x text-white"></i>
+    </div>
+    <h3 class="font-bold text-xl mb-2">Feature Name</h3>
+    <p>Description</p>
+</div>
 
 CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
 <script src="https://cdn.tailwindcss.com"></script>
