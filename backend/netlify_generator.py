@@ -2626,8 +2626,10 @@ h3 { font-size: clamp(1.5rem, 4vw, 3rem); }
     def _generate_interactive_js(self) -> str:
         """Generate comprehensive interactive JavaScript with AOS and advanced features"""
         return '''// ═══════════════════════════════════════════════════════════════
-// ULTRA-INTERACTIVE JAVASCRIPT WITH ADVANCED FEATURES
+// ULTRA-INTERACTIVE JAVASCRIPT - NO ALERT POPUPS!
 // ═══════════════════════════════════════════════════════════════
+
+// 🚨 CRITICAL: NEVER USE alert() - Use inline messages instead!
 
 // Initialize AOS (Animate On Scroll) Library
 if (typeof AOS !== 'undefined') {
