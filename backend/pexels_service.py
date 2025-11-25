@@ -183,24 +183,35 @@ class PexelsImageService:
         logger.info(f"✅ Retrieved {len(feature_images)} feature-specific UNIQUE images")
         return feature_images
     
-    async def get_gallery_images(self, website_type: str, count: int = 6) -> List[Dict[str, str]]:
-        """Get gallery images with multiple sizes"""
+    async def get_gallery_images(self, website_type: str, count: int = 6, exclude_urls: set = None) -> List[Dict[str, str]]:
+        """Get gallery images with multiple sizes - all UNIQUE"""
         queries = self.search_queries.get(website_type, self.search_queries["default"])
+        exclude_urls = exclude_urls or set()
         
-        # Get variety by using multiple queries
         all_images = []
-        images = await self.search_images(queries[0], per_page=count)
+        used_urls = set(exclude_urls)  # Start with already used URLs
         
-        for img in images[:count]:
-            all_images.append({
-                "large": img["url"],
-                "medium": img["medium"],
-                "thumbnail": img["small"],
-                "alt": img["alt"],
-                "photographer": img["photographer"]
-            })
+        # Get variety by using ALL queries
+        for query in queries:
+            if len(all_images) >= count:
+                break
+                
+            images = await self.search_images(query, per_page=5)
+            for img in images:
+                if img["url"] not in used_urls:
+                    all_images.append({
+                        "large": img["url"],
+                        "medium": img["medium"],
+                        "thumbnail": img["small"],
+                        "alt": img["alt"],
+                        "photographer": img["photographer"],
+                        "query": query
+                    })
+                    used_urls.add(img["url"])
+                    if len(all_images) >= count:
+                        break
         
-        logger.info(f"✅ Retrieved {len(all_images)} gallery images from Pexels")
+        logger.info(f"✅ Retrieved {len(all_images)} UNIQUE gallery images from Pexels")
         return all_images
     
     def get_fallback_gradient(self, website_type: str) -> str:
