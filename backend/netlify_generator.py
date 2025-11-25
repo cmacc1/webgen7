@@ -1760,8 +1760,14 @@ console.log('Environment:', window.location.hostname);
         
         logger.info(f"🎨 Generating smart fallback: {business_type} for '{business_name}'")
         
+        # Get images for fallback
+        from image_provider import ImageProvider
+        image_provider = ImageProvider()
+        hero_img = image_provider.get_hero_image(business_type, prompt)
+        section_imgs = image_provider.get_section_images(business_type, count=4, seed=prompt)
+        
         # Generate customized HTML based on business type
-        html = self._generate_customized_html(business_type, business_name, sections, prompt)
+        html = self._generate_customized_html(business_type, business_name, sections, prompt, hero_img, section_imgs)
         css = self._generate_modern_css()
         js = self._generate_interactive_js()
         
