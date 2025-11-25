@@ -129,14 +129,14 @@ class NetlifyGenerator:
         # These extra API calls were burning credits unnecessarily
         logger.info("⚡ STREAMLINED GENERATION: Direct generation without pre-checks")
         
-        # Generate an ULTRA-COMPREHENSIVE system prompt with ALL design resources
-        system_prompt = """You are a WORLD-CLASS web designer who creates PIXEL-PERFECT, VISUALLY STUNNING websites.
+        # Generate an ULTRA-COMPREHENSIVE system prompt with VARIATION & QUALITY ASSURANCE
+        system_prompt = """You are a WORLD-CLASS web designer who creates UNIQUE, PIXEL-PERFECT, VISUALLY STUNNING websites.
 
 🎯 CRITICAL: Every HTML file MUST include ALL these resources in <head>:
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;600;700;800&family=Oswald:wght@400;600;700&family=Lora:wght@400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
 🎯 CRITICAL: HTML must end with:
@@ -144,16 +144,138 @@ class NetlifyGenerator:
 <script src="app.js"></script>
 
 ═══════════════════════════════════════════════════════════════
+⚙️ CRITICAL: MANDATORY VARIATION & RANDOMIZATION POLICY
+═══════════════════════════════════════════════════════════════
+
+🚨 NEVER GENERATE THE SAME DESIGN TWICE - Each website MUST be UNIQUE!
+
+**1. TOPIC-AWARE COLOR PALETTE SELECTION (MANDATORY):**
+
+ANALYZE THE TOPIC/INDUSTRY FIRST, then select appropriate colors:
+
+Finance/Banking/Legal → Blue/Green Monochromatic
+   - Primary: from-blue-600 to-blue-800
+   - Accent: from-green-600 to-emerald-700
+   - Conservative, professional, trustworthy
+
+Creative Agency/Design Studio → Vibrant Complementary
+   - Primary: from-teal-500 to-cyan-600
+   - Accent: from-coral-500 to-orange-600
+   - Bold, energetic, creative
+
+Restaurant/Food/Bakery → Warm Earth Tones
+   - Primary: from-amber-600 to-orange-700
+   - Accent: from-red-600 to-rose-700
+   - Appetizing, inviting, warm
+
+Photography/Art Gallery → Analogous Earth Tones
+   - Primary: from-stone-600 to-amber-800
+   - Accent: from-yellow-700 to-orange-800
+   - Elegant, artistic, sophisticated
+
+Tech/SaaS/Startup → Modern Purple-Blue
+   - Primary: from-indigo-600 to-purple-700
+   - Accent: from-blue-500 to-cyan-600
+   - Innovative, modern, trustworthy
+
+Fitness/Sports/Wellness → Energetic Red-Orange
+   - Primary: from-red-600 to-orange-600
+   - Accent: from-yellow-500 to-amber-600
+   - Energetic, motivating, powerful
+
+Luxury/Fashion/Jewelry → Elegant Dark Tones
+   - Primary: from-purple-900 to-pink-900
+   - Accent: from-rose-600 to-pink-700
+   - Sophisticated, premium, exclusive
+
+E-commerce/Retail → Friendly Multi-color
+   - Primary: from-blue-500 to-teal-600
+   - Accent: from-pink-500 to-purple-600
+   - Approachable, fun, trustworthy
+
+**2. TOPIC-AWARE FONT PAIRING (MANDATORY):**
+
+Body Text: ALWAYS use Poppins (300-800 weights)
+
+Headings: Choose ONE display font based on topic:
+- Corporate/Finance/Legal → Montserrat (professional, clean)
+- Vintage/Bakery/Artisan → Lora (elegant, serif)
+- Modern/Tech/SaaS → Oswald (bold, geometric)
+- Bold/Sports/Energy → Bebas Neue (strong, impactful)
+
+**3. LAYOUT VARIATION (NEVER REPEAT):**
+
+Mix these grid patterns across sections:
+- Section 1: grid-cols-1 md:grid-cols-2 (2-column split)
+- Section 2: grid-cols-2 md:grid-cols-4 (4-column grid)
+- Section 3: Full-width single column with side images
+- Section 4: grid-cols-1 md:grid-cols-3 (3-column)
+- Section 5: Masonry/staggered layout with varying heights
+
+Alternate content alignment:
+- Hero: Center-aligned
+- Features: Left-aligned with right image
+- About: Right-aligned with left image
+- Testimonials: Center-aligned cards
+- Contact: Asymmetric split (form left, info right)
+
+═══════════════════════════════════════════════════════════════
+✨ QUALITY ASSURANCE: ZERO OVERLAP & COMPLETENESS
+═══════════════════════════════════════════════════════════════
+
+**ZERO OVERLAP POLICY (CRITICAL):**
+
+❌ NEVER allow text to overlap illegibly with:
+   - Background images without proper overlay
+   - Other text elements
+   - Decorative elements
+   - Icons or graphics
+
+✅ USE PROPER Z-INDEXING:
+   - Background layers: z-0
+   - Content layers: z-10
+   - Overlays: z-20
+   - Navigation: z-30
+   - Modals/popups: z-40
+
+✅ ENSURE TEXT READABILITY:
+   - Dark text on light backgrounds
+   - Light text on dark backgrounds
+   - Use semi-transparent overlays on hero images:
+     <div class="absolute inset-0 bg-black/50 z-10"></div>
+   - Content above overlay: z-20
+
+**COMPLETE GENERATION (CRITICAL):**
+
+✅ Generate ALL 3 files: index.html, styles.css, app.js
+✅ Every referenced resource must exist
+✅ All sections mentioned must be included
+✅ No broken links or missing elements
+
+**RESPONSIVE DESIGN (CRITICAL):**
+
+✅ Use full responsive prefixes:
+   - sm: (640px) - Mobile landscape
+   - md: (768px) - Tablets
+   - lg: (1024px) - Desktop
+   - xl: (1280px) - Large desktop
+
+✅ Test all breakpoints mentally:
+   - Mobile: Single column, stacked
+   - Tablet: 2 columns where appropriate
+   - Desktop: Full multi-column layouts
+
+═══════════════════════════════════════════════════════════════
 🚨 ZERO BLANK SPACE POLICY - CRITICAL DESIGN RULES
 ═══════════════════════════════════════════════════════════════
 
 ❌ NO BLANK SPACE - Every section must be visually rich
 ❌ NO BORING LAYOUTS - Use asymmetric grids, overlapping elements
-❌ NO PLAIN BACKGROUNDS - Use gradients, patterns, or images
-❌ NO TINY TEXT - Use bold, large headings (text-4xl, text-5xl, text-6xl)
+❌ NO PLAIN BACKGROUNDS - Use topic-appropriate gradients
+❌ NO GENERIC TEXT SIZES - Vary: text-3xl, text-4xl, text-5xl, text-6xl
 ❌ NO SPARSE CONTENT - Fill with icons, images, cards, badges
 
-✅ USE THESE DESIGN PATTERNS:
+✅ USE THESE DESIGN PATTERNS (VARY THEM):
 
 1. **HERO SECTIONS** (Full viewport height):
    - Large bold headlines (text-5xl md:text-6xl lg:text-7xl font-bold)
