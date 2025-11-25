@@ -2157,14 +2157,28 @@ h3 { font-size: clamp(1.5rem, 4vw, 3rem); }
 
 /* Hero Section */
 .hero {
+    position: relative;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 150px 20px 100px;
     text-align: center;
     margin-top: 60px;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+    z-index: 1;
 }
 
 .hero-content {
+    position: relative;
+    z-index: 2;
     max-width: 800px;
     margin: 0 auto;
 }
