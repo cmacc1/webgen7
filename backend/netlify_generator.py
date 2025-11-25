@@ -129,9 +129,18 @@ class NetlifyGenerator:
         # These extra API calls were burning credits unnecessarily
         logger.info("⚡ AI GENERATION: Creating custom website with design quality")
         
-        # DISABLED: Image generation causes context window exceeded errors
-        # The base64 encoded images are too large for the AI context window
-        logger.info("⚠️ Image generation disabled to prevent context window errors")
+        # Get reliable working image URLs
+        from image_provider import ImageProvider
+        
+        image_provider = ImageProvider()
+        hero_image = image_provider.get_hero_image(website_type, prompt)
+        section_images = image_provider.get_section_images(website_type, count=4, seed=prompt)
+        thumbnails = image_provider.get_thumbnail_images(website_type, count=6, seed=prompt)
+        
+        logger.info(f"🖼️ Generated image URLs:")
+        logger.info(f"   Hero: {hero_image}")
+        logger.info(f"   Sections: {len(section_images)} images")
+        logger.info(f"   Thumbnails: {len(thumbnails)} images")
         
         # MEGA DESIGN LIBRARY INTEGRATION
         from advanced_design_library import COLOR_SCHEMES, BUTTON_STYLES, BACKGROUND_PATTERNS
