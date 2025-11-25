@@ -177,10 +177,10 @@ WEBSITE TYPE DETECTED: {website_type.upper()} (Use industry-specific design patt
 BUSINESS: {business_details.get('name', 'Professional Business')}
 COLOR SCHEME: {colors.get('name', 'Modern')} - {colors.get('colors', [])}
 
-🖼️ IMAGES PROVIDED (USE THESE URLS):
-HERO IMAGE: {hero_image}
-SECTION IMAGES: {', '.join(section_images[:2])}
-THUMBNAILS: {', '.join(thumbnails[:3])}
+🎨 CONTEXTUAL VISUALS (MANDATORY):
+HERO: Use gradient {hero_bg['gradient']} with icon {hero_bg['icon']}
+SECTIONS: Use provided gradient backgrounds with contextual icons
+ICONS: {hero_bg['icon']} (main theme icon for {website_type})
 
 CRITICAL REQUIREMENTS:
 ✅ Tailwind CSS: <script src="https://cdn.tailwindcss.com"></script>
