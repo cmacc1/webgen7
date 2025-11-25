@@ -159,127 +159,28 @@ OUTPUT JSON:
 
 Make it beautiful and unique!"""
         
-        # SIMPLE user prompt
-        user_prompt = f"""Create a beautiful, professional website for:
+        # SIMPLE, DIRECT user prompt
+        user_prompt = f"""Create a stunning, modern website for: "{prompt}"
 
-"{prompt}"
+Requirements:
+- Use vibrant gradients and colors appropriate for the topic
+- Large, bold headlines (text-5xl, text-6xl)
+- Modern cards with shadows (shadow-xl)
+- Font Awesome icons
+- Dense layouts with NO blank space
+- Professional design matching the topic
+- Fully responsive
 
-🔍 STEP 1: ANALYZE THE TOPIC/INDUSTRY FIRST
-- What industry/niche is this? (Finance, Creative, Food, Tech, etc.)
-- What mood should it convey? (Professional, Bold, Elegant, Energetic, etc.)
-- Select appropriate color palette from the industry guidelines
-- Choose appropriate typography pairing
-- Determine layout style (Corporate-clean, Creative-bold, Elegant-minimal)
+Generate JSON:
+{{
+  "files": {{
+    "index.html": "Complete HTML with CDN links",
+    "styles.css": "Custom CSS (500+ lines)",
+    "app.js": "JavaScript with interactions"
+  }}
+}}
 
-🎨 STEP 2: APPLY TOPIC-SPECIFIC DESIGN
-- Use the CORRECT color palette for the industry
-- Use the CORRECT font pairing for the mood
-- Create UNIQUE layout variations (not the same grid pattern)
-- Ensure ZERO overlap with proper z-indexing
-- Make text readable with proper overlays
-
-🚨 STEP 3: ZERO BLANK SPACE POLICY
-- Every pixel must be intentional
-- Dense, visually rich layouts appropriate for the topic
-- Topic-relevant icons and imagery
-- Strategic use of gradients and shadows
-- Proper spacing and breathing room (not cramped, not empty)
-
-═══════════════════════════════════════════════════════════════
-CRITICAL: INCLUDE ALL DESIGN RESOURCES
-═══════════════════════════════════════════════════════════════
-
-✅ index.html MUST have ALL these CDN links:
-   <script src="https://cdn.tailwindcss.com"></script>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="styles.css">
-   
-   AND at end of body:
-   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-   <script src="app.js"></script>
-
-═══════════════════════════════════════════════════════════════
-MANDATORY DESIGN FEATURES
-═══════════════════════════════════════════════════════════════
-
-✅ HERO SECTION (Full screen, min-h-screen):
-   - Massive headlines (text-6xl lg:text-7xl font-bold)
-   - Vibrant gradient background (from-purple-600 via-pink-600 to-blue-600)
-   - Multiple CTA buttons with different styles
-   - Floating decorative elements
-   - Large icons (text-8xl)
-   - Animate.css animations (animate__fadeInUp)
-
-✅ CONTENT SECTIONS (NO blank space):
-   - Dense grids (grid-cols-3 lg:grid-cols-4 gap-8)
-   - Glassmorphism cards (backdrop-blur-lg bg-white/10)
-   - Large feature icons (text-6xl text-gradient)
-   - Overlapping elements with z-index
-   - Background patterns or gradients
-   - Section dividers with SVG waves
-
-✅ CARDS & COMPONENTS:
-   - Deep shadows (shadow-2xl)
-   - Rounded corners (rounded-2xl)
-   - Hover transforms (hover:scale-105 hover:-rotate-2)
-   - Gradient borders
-   - Icon badges in corners
-   - AOS scroll animations (data-aos="fade-up")
-
-✅ styles.css REQUIREMENTS (MINIMUM 500 lines, TOPIC-SPECIFIC):
-
-   CRITICAL: Generate CUSTOM CSS based on the project's aesthetic, NOT generic blocks!
-
-   Must Include (customized to topic colors):
-   - CSS custom properties: --primary-color, --secondary-color (from topic palette)
-   - Topic-specific gradients: --hero-gradient, --card-gradient, --accent-gradient
-   - Custom animations matching the topic mood (elegant float vs energetic bounce)
-   - Unique hover states not achievable with Tailwind alone
-   - Custom clip-paths for decorative elements (if creative topic)
-   - Glassmorphism effects (if modern/tech topic)
-   - Proper z-index layers for overlapping elements
-   - Responsive breakpoints with topic-appropriate adjustments
-   
-   Example for Finance (Blue/Green):
-   ```css
-   :root {
-       --primary-color: #2563eb;
-       --secondary-color: #059669;
-       --hero-gradient: linear-gradient(135deg, #1e40af 0%, #047857 100%);
-   }
-   ```
-   
-   Example for Creative Agency (Teal/Coral):
-   ```css
-   :root {
-       --primary-color: #14b8a6;
-       --secondary-color: #f97316;
-       --hero-gradient: linear-gradient(135deg, #0d9488 0%, #ea580c 100%);
-   }
-   ```
-
-✅ app.js REQUIREMENTS:
-   - AOS.init() with settings
-   - Smooth scroll behavior
-   - Counter animations for statistics
-   - Parallax effects
-   - Interactive hover states
-   - Form validation with animations
-   - Image lazy loading
-
-✅ VISUAL RICHNESS:
-   - Use Font Awesome icons everywhere (fas fa-star, fa-fire, fa-crown)
-   - Gradient text (bg-clip-text text-transparent)
-   - Multiple background layers
-   - Decorative shapes and blobs
-   - Stats counters with large numbers
-   - Testimonials with profile images
-   - Social media icons
-   - Newsletter signup section
-
-Generate complete JSON with ALL 3 files. Make it VISUALLY STUNNING with ZERO wasted space!"""
+Make it beautiful, unique, and professional!"""
 
         # Try multiple models if one fails
         # ONLY use models that actually work with this Emergent API key
