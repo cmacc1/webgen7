@@ -540,6 +540,53 @@ async def deploy_to_netlify(project_id: str, auto_deploy: bool = True):
             site_name=base_name,
             project_files=files
         )
+    except Exception as e:
+        error_msg = str(e)
+        # Check if it's a usage limit error
+        if "exceeded usage limit" in error_msg.lower():
+            logger.warning("⚠️ Netlify usage limit exceeded - attempting cleanup...")
+            
+            # Get all deployed projects sorted by creation date (oldest first)
+            old_projects = await db.netlify_projects.find(
+                {"netlify_site_id": {"$exists": True}},
+                {"_id": 0, "project_id": 1, "netlify_site_id": 1, "created_at": 1}
+            ).sort("created_at", 1).limit(3).to_list(3)  # Get 3 oldest sites
+            
+            # Delete old sites to free up space
+            deleted_count = 0
+            for old_proj in old_projects:
+                try:
+                    site_id = old_proj.get("netlify_site_id")
+                    if site_id:
+                        logger.info(f"🗑️  Deleting old site: {site_id}")
+                        success = await netlify_deploy_service.delete_site(site_id)
+                        if success:
+                            # Remove deployment info from database
+                            await db.netlify_projects.update_one(
+                                {"project_id": old_proj["project_id"]},
+                                {"$unset": {
+                                    "netlify_site_id": "",
+                                    "netlify_deploy_id": "",
+                                    "deploy_url": "",
+                                    "deploy_preview_url": ""
+                                }}
+                            )
+                            deleted_count += 1
+                            logger.info(f"✅ Deleted site {site_id}")
+                except Exception as del_error:
+                    logger.error(f"Failed to delete site {site_id}: {del_error}")
+            
+            if deleted_count > 0:
+                logger.info(f"✅ Cleaned up {deleted_count} old sites - retrying deployment...")
+                # Retry deployment after cleanup
+                deploy_result = await netlify_deploy_service.create_site(
+                    site_name=base_name,
+                    project_files=files
+                )
+            else:
+                raise Exception("Unable to free up space - please upgrade Netlify plan")
+        else:
+            raise
         
         # Save deployment info to database
         await db.netlify_projects.update_one(
