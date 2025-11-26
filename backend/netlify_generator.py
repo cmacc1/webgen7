@@ -129,32 +129,33 @@ class NetlifyGenerator:
         # These extra API calls were burning credits unnecessarily
         logger.info("⚡ AI GENERATION: Creating custom website with design quality")
         
-        # MEGA DESIGN LIBRARY INTEGRATION - DETECT TYPE FIRST
-        from advanced_design_library import COLOR_SCHEMES, BUTTON_STYLES, BACKGROUND_PATTERNS
+        # 🎲 ULTRA RANDOMIZATION SYSTEM - COMPLETELY UNIQUE EVERY TIME
+        from ultra_randomizer import UltraRandomizer
         from website_type_detector import WebsiteTypeDetector
-        from mega_design_library import WEBSITE_TYPES, NAVIGATION_DESIGNS
+        from website_types_comprehensive import detect_website_type
         from image_provider import ImageProvider
         import random
         
-        # Detect website type using comprehensive system (100+ types)
-        from website_types_comprehensive import detect_website_type, get_templates_for_type
-        from template_definitions import get_template_definition, select_best_template
-        from website_type_detector import WebsiteTypeDetector
+        # Get ultra-randomized design
+        ultra = UltraRandomizer()
+        ultra_design = ultra.get_ultra_random_design()
+        component_mix = ultra.get_random_component_mix()
         
-        # Use new comprehensive detection
+        # Detect website type for image relevance
         website_type = detect_website_type(prompt)
-        available_templates = get_templates_for_type(website_type)
-        best_template = select_best_template(website_type, prompt, available_templates)
-        template_def = get_template_definition(best_template)
         
-        # Get business details from old detector
+        # Get business details
         detector = WebsiteTypeDetector()
         business_details = detector.extract_business_details(prompt)
         
+        logger.info(f"🎲 ULTRA RANDOMIZATION ACTIVE")
         logger.info(f"🎯 Website Type: {website_type}")
         logger.info(f"📋 Business: {business_details.get('name', 'N/A')}")
-        logger.info(f"🎨 Template: {template_def['name']}")
-        logger.info(f"📐 Layout: {template_def['layout'][:60]}...")
+        logger.info(f"🎨 Color Scheme: {ultra_design['colors']['name']}")
+        logger.info(f"📐 Layout: {ultra_design['layout']}")
+        logger.info(f"🦸 Hero Style: {ultra_design['hero_style']['name']}")
+        logger.info(f"🃏 Card Style: Randomized")
+        logger.info(f"🎭 Components: {component_mix['hero']} + {component_mix['features']}")
         
         # Get HERO IMAGE ONLY from Pexels (not cluttered with images everywhere)
         from pexels_service import PexelsImageService
