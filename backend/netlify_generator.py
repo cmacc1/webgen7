@@ -738,35 +738,46 @@ NOW CREATE: "{prompt}"
 Return complete website with index.html, styles.css, app.js in JSON format.
 Apply ALL randomized design specifications. Make it UNIQUE and match the user's business needs.
 
-🚨 FINAL CHECKS:
+🚨 FINAL VALIDATION CHECKLIST - REVIEW BEFORE SUBMITTING:
 
-1️⃣ ANALYZE THE USER'S PROMPT:
-- Extract EVERY section mentioned (About, Services, Pricing, Team, FAQ, Testimonials, Blog, etc.)
-- Extract EVERY feature/service listed - create icon card for each
-- If pricing/plans/subscriptions mentioned → CREATE pricing section with 3 tiers
-- If booking/appointments mentioned → ADD booking form
-- If gallery/portfolio mentioned → CREATE grid with icon placeholders (no images)
-- If team/staff mentioned → CREATE team section with icon avatars
+1️⃣ 3-COLOR RULE CHECK:
+❓ Did I use ONLY Primary ({colors['primary']}), Secondary ({colors['secondary']}), Accent ({colors['accent']})?
+❓ Are there any random colors that don't match the palette?
+✅ PASS = Only 3 colors used throughout
 
-2️⃣ IMPLEMENT EVERYTHING - NO SHORTCUTS:
-✅ Create ALL sections requested in prompt
+2️⃣ IMAGE USAGE CHECK:
+❓ Did I use the hero image ONLY ONCE in the hero section?
+❓ Did I use icons/gradients for ALL other sections (features, about, team)?
+❓ Are there any repeated images?
+✅ PASS = Hero image used once, icons everywhere else
+
+3️⃣ TEXT READABILITY CHECK:
+❓ Does hero section have dark overlay (bg-black opacity: 0.5)?
+❓ Does hero text have text-shadow for readability?
+❓ Is all hero text white with drop-shadow-2xl?
+✅ PASS = Hero text is easily readable on background image
+
+4️⃣ NAVIGATION FUNCTIONALITY CHECK:
+❓ Does Home button have working href="#" or onclick?
+❓ Does About button scroll to id="about"?
+❓ Does Services button scroll to id="services" or id="features"?
+❓ Does Contact button scroll to id="contact"?
+❓ Does mobile menu toggle work with toggleMobileMenu() function?
+❓ Are all section IDs present (id="about", id="services", id="contact")?
+✅ PASS = All nav buttons work, all sections have IDs
+
+5️⃣ IMPLEMENT EVERYTHING FROM PROMPT:
+✅ Create ALL sections mentioned
 ✅ Make forms functional (validation, error messages)
 ✅ Make buttons work (smooth scroll, modals, actions)
 ✅ Add animations (fade-in-up on scroll)
 ✅ Make it responsive (mobile, tablet, desktop)
 
-3️⃣ USE ICONS - NOT IMAGES (except hero):
-✅ Features/Services: Icon cards with fa-solid icons
-✅ Team members: Icon avatars (fa-user-circle)
-✅ Pricing: Plan-specific icons (fa-cube, fa-crown, fa-building)
-✅ Process steps: Numbered icons (fa-1, fa-2, fa-3)
-✅ Benefits: Checkmark icons (fa-check-circle)
-
-4️⃣ DESIGN VARIETY:
-✅ Use the randomized design system provided above
-✅ Apply colors from palette: {colors['name']}
+6️⃣ DESIGN SYSTEM APPLIED:
 ✅ Use layout structure: {ultra_design['layout']}
+✅ Apply typography: {ultra_design['typography']['heading']}
 ✅ Apply animations: {ultra_design['animation']}
+✅ Use spacing: {ultra_design['spacing']['section_padding']}
 
 5️⃣ OUTPUT FORMAT:
 Return JSON with 3 files:
