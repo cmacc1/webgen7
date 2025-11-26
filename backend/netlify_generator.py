@@ -247,13 +247,61 @@ class NetlifyGenerator:
         # Escape navigation HTML to prevent f-string evaluation issues
         nav_html_escaped = nav_design['html'].replace('{', '{{').replace('}', '}}')
         
-        system_prompt = f"""🚨 CRITICAL: DO NOT CREATE A BASIC WHITE WEBSITE! 🚨
+        system_prompt = f"""🚨 CRITICAL: CREATE A COMPLETELY UNIQUE DESIGN! 🚨
 
-You MUST create a STUNNING, COLORFUL, MODERN website with RICH VISUALS.
+You are a WORLD-CLASS web designer creating STUNNING, MODERN, PROFESSIONAL websites with MAXIMUM VARIETY.
 
-BUSINESS: {website_type.replace('_', ' ').title()} - {business_details.get('name', 'Professional Business')}
+🎯 USER'S REQUEST: {prompt}
 
-🚨 MANDATORY DESIGN RULES - NO EXCEPTIONS:
+🎲 RANDOMIZED DESIGN SYSTEM - USE THESE EXACT SPECIFICATIONS:
+
+📐 LAYOUT STRUCTURE: {ultra_design['layout']}
+🎨 COLOR SCHEME: {colors['name']}
+   - Primary: {colors['primary']}
+   - Secondary: {colors['secondary']}
+   - Accent: {colors['accent']}
+   - Background: {colors['bg']}
+   - Text: {colors['text']}
+   - Gradient: {colors['gradient']}
+
+🦸 HERO STYLE: {hero_style['name']}
+   - HTML Classes: {hero_style['html_class']}
+   - Overlay: {hero_style['overlay']}
+   - Content Position: {hero_style['content_position']}
+
+🃏 CARD STYLE: {ultra_design['card_style']}
+🔘 BUTTON STYLE: {ultra_design['button_style']}
+
+📏 SPACING:
+   - Sections: {ultra_design['spacing']['section_padding']}
+   - Container: {ultra_design['spacing']['container_padding']}
+   - Gap: {ultra_design['spacing']['element_gap']}
+
+📊 GRID LAYOUTS:
+   - Features: {ultra_design['grid']['features']}
+   - Testimonials: {ultra_design['grid']['testimonials']}
+   - Team: {ultra_design['grid']['team']}
+
+🎭 ANIMATIONS: {ultra_design['animation']}
+✍️ TYPOGRAPHY:
+   - Headings: {ultra_design['typography']['heading']}
+   - Subheadings: {ultra_design['typography']['subheading']}
+   - Body: {ultra_design['typography']['body']}
+
+🌈 SECTION BACKGROUNDS:
+   - Section 1: {ultra_design['section_bg_1']}
+   - Section 2: {ultra_design['section_bg_2']}
+   - Section 3: {ultra_design['section_bg_3']}
+
+🔮 COMPONENT MIX:
+   - Hero: {component_mix['hero']}
+   - Features: {component_mix['features']}
+   - About: {component_mix['about']}
+   - Testimonials: {component_mix['testimonials']}
+   - CTA: {component_mix['cta']}
+   - Footer: {component_mix['footer']}
+
+🎨 DESIGN INSTRUCTIONS - MUST FOLLOW EXACTLY:
 
 1️⃣ HERO SECTION (MUST BE FULL-SCREEN WITH IMAGE/GRADIENT):
 EXAMPLE - USE THIS STRUCTURE:
