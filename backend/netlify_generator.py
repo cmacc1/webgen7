@@ -678,6 +678,69 @@ Use: {component_mix['about']} layout
 ✅ Use the specified section backgrounds in the correct order
 ✅ Implement animations: {ultra_design['animation']}
 
+🚨🚨🚨 CRITICAL TEXT COLOR CONTRAST RULES (MUST FOLLOW) 🚨🚨🚨
+
+IF background is WHITE or LIGHT (bg-white, bg-gray-50, bg-blue-50, bg-purple-50, etc.):
+➡️ Text MUST be DARK: Use text-gray-900, text-gray-800, or style="color: {colors['text']}"
+➡️ Headings MUST be colored: style="color: {colors['primary']}" or gradient text
+➡️ NEVER use text-white on light backgrounds
+
+IF background is DARK (bg-gray-900, bg-purple-900, bg-indigo-900, etc.):
+➡️ Text MUST be WHITE: Use text-white class
+➡️ Headings can be white or light colored
+➡️ NEVER use dark text on dark backgrounds
+
+IF background has IMAGE or GRADIENT:
+➡️ Use text-white with text-shadow for readability
+➡️ Add dark overlay (bg-black with opacity-50) behind text
+➡️ Ensure high contrast for readability
+
+EXAMPLES OF CORRECT TEXT CONTRAST:
+
+✅ CORRECT - White card with dark text:
+```html
+<div class="bg-white p-8 rounded-3xl">
+    <h3 class="text-2xl font-bold text-gray-900">Title</h3>
+    <p class="text-gray-700">Description text here</p>
+</div>
+```
+
+✅ CORRECT - Light background with colored heading:
+```html
+<section class="py-20 bg-gray-50">
+    <h2 class="text-5xl font-bold" style="color: {colors['primary']};">Our Services</h2>
+    <p class="text-gray-800">Supporting text</p>
+</section>
+```
+
+✅ CORRECT - Dark background with white text:
+```html
+<section class="py-20 bg-purple-900">
+    <h2 class="text-5xl font-bold text-white">About Us</h2>
+    <p class="text-white opacity-90">Description text</p>
+</section>
+```
+
+❌ WRONG - White text on white background (INVISIBLE):
+```html
+<div class="bg-white p-8">
+    <h3 class="text-white">Title</h3> ❌ CANNOT SEE THIS!
+</div>
+```
+
+❌ WRONG - Dark text on dark background (INVISIBLE):
+```html
+<section class="bg-gray-900">
+    <h2 class="text-gray-900">Title</h2> ❌ CANNOT SEE THIS!
+</section>
+```
+
+🚨 VALIDATION CHECKPOINT:
+Before finalizing your code, check EVERY text element:
+- Is the background light? → Text must be dark (text-gray-900, text-gray-800)
+- Is the background dark? → Text must be light (text-white)
+- Is there an image background? → Text must be white with shadow/overlay
+
 7️⃣ MANDATORY VISUAL ELEMENTS:
 ✅ Gradients using the randomized color scheme
 ✅ Shadows: Cards use {ultra_design['shadows']['card']}, Buttons use {ultra_design['shadows']['button']}
@@ -687,6 +750,7 @@ Use: {component_mix['about']} layout
 ✅ Large, bold typography (text-5xl md:text-6xl font-black)
 ✅ Rounded corners everywhere (rounded-xl, rounded-2xl)
 ✅ Gradient buttons (bg-gradient-to-r from-blue-500 to-purple-600)
+✅ PROPER TEXT CONTRAST on all backgrounds (light bg = dark text, dark bg = light text)
 
 🚨 WHAT NOT TO DO - THESE WILL BE REJECTED:
 ❌ NO plain white background for entire site
