@@ -641,21 +641,34 @@ async def generate_and_deploy(request: NetlifyProjectRequest):
     try:
         deploy_result = await deploy_to_netlify(project_id=project_id)
         
+        logger.info(f"✅ GENERATE & DEPLOY COMPLETE!")
+        logger.info(f"   Project ID: {project_id}")
+        logger.info(f"   Netlify URL: {deploy_result.get('deploy_url')}")
+        
         return {
+            "success": True,
             "project": project_response.model_dump(),
             "deployment": deploy_result,
-            "deploy_preview_url": deploy_result.get("deploy_preview_url"),
-            "instant_url": deploy_result.get("deploy_url")
+            "netlify_url": deploy_result.get("deploy_url"),
+            "preview_url": deploy_result.get("deploy_preview_url"),
+            "site_url": deploy_result.get("site_url"),
+            "deploy_preview_url": deploy_result.get("deploy_preview_url"),  # For backwards compatibility
+            "instant_url": deploy_result.get("deploy_url")  # For backwards compatibility
         }
     except Exception as e:
-        logger.error(f"Deployment failed but project saved: {str(e)}")
+        logger.error(f"❌ Deployment failed but project saved: {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
+        
         # Return project anyway - user can deploy later
         return {
+            "success": False,
             "project": project_response.model_dump(),
             "deployment": {
                 "success": False,
                 "error": str(e)
-            }
+            },
+            "error_message": str(e)
         }
 
 @api_router.get("/netlify/project/{project_id}")
