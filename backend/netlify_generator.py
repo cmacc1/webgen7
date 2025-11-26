@@ -312,7 +312,7 @@ EXAMPLE - MUST FOLLOW THIS EXACTLY:
             <div>
                 <h2 class="text-5xl md:text-6xl font-black mb-6">About Us</h2>
                 <p class="text-xl leading-relaxed mb-6 opacity-90">Your compelling story goes here with rich details about your business and what makes you unique...</p>
-                <button onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" class="px-8 py-4 bg-white text-purple-900 rounded-xl font-bold hover:scale-105 hover:shadow-2xl transition-all">Learn More</button>
+                <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="px-8 py-4 bg-white text-purple-900 rounded-xl font-bold hover:scale-105 hover:shadow-2xl transition-all">Learn More</button>
             </div>
             <!-- IMPORTANT: NO <img> TAG! Use gradient decoration instead -->
             <div class="relative h-96 rounded-3xl overflow-hidden shadow-2xl">
