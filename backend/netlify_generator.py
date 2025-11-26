@@ -263,13 +263,16 @@ FAILURE TO FOLLOW = REJECTION
 🎲 MANDATORY DESIGN SPECIFICATIONS - YOU MUST USE ALL OF THESE:
 
 📐 LAYOUT STRUCTURE: {ultra_design['layout']}
-🎨 COLOR SCHEME: {colors['name']}
-   - Primary: {colors['primary']}
-   - Secondary: {colors['secondary']}
-   - Accent: {colors['accent']}
-   - Background: {colors['bg']}
-   - Text: {colors['text']}
-   - Gradient: {colors['gradient']}
+
+🎨 COLOR PALETTE (3 COLORS ONLY - STICK TO THESE):
+   - PRIMARY: {colors['primary']} (Main brand color - buttons, headings, accents)
+   - SECONDARY: {colors['secondary']} (Supporting color - hover states, borders)
+   - ACCENT: {colors['accent']} (Highlights - icons, special elements)
+   - Background: {colors['bg']} (Only for section backgrounds)
+   - Text: {colors['text']} (Only for body text)
+   - Gradient: {colors['gradient']} (Only for hero/special sections)
+
+🚨 3-COLOR RULE: Use ONLY Primary, Secondary, and Accent for visual elements. Don't add random colors!
 
 🦸 HERO STYLE: {hero_style['name']}
    - HTML Classes: {hero_style['html_class']}
