@@ -8,30 +8,76 @@ import random
 NAVIGATION_DESIGNS = [
     {
         "id": "top_minimal_centered",
-        "name": "Top Minimal Centered",
+        "name": "Top Premium Modern",
         "type": "top_bar",
-        "html": """<nav class="fixed top-0 w-full bg-white shadow-sm z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4">
+        "html": """<nav class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-lg z-50 border-b-4 border-gradient-to-r from-blue-500 to-purple-500">
+    <div class="max-w-7xl mx-auto px-6 py-5">
         <div class="flex justify-between items-center">
-            <div class="text-2xl font-bold">Logo</div>
-            <div class="hidden md:flex space-x-8">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#about" class="nav-link">About</a>
-                <a href="#services" class="nav-link">Services</a>
-                <a href="#contact" class="nav-link">Contact</a>
+            <!-- Logo with gradient -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-star text-white text-xl"></i>
+                </div>
+                <span class="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">LOGO</span>
             </div>
-            <button class="md:hidden hamburger" onclick="toggleMobileMenu()">☰</button>
+            
+            <!-- Desktop Nav Links with Boxes -->
+            <div class="hidden md:flex items-center gap-3">
+                <a href="#home" class="nav-link-box group">
+                    <div class="px-6 py-3 rounded-xl border-2 border-blue-500/30 hover:border-blue-500 hover:bg-blue-50 transition-all">
+                        <span class="text-lg font-bold text-gray-700 group-hover:text-blue-600">Home</span>
+                    </div>
+                </a>
+                <a href="#about" class="nav-link-box group">
+                    <div class="px-6 py-3 rounded-xl border-2 border-transparent hover:border-purple-500 hover:bg-purple-50 transition-all">
+                        <span class="text-lg font-bold text-gray-700 group-hover:text-purple-600">About</span>
+                    </div>
+                </a>
+                <a href="#services" class="nav-link-box group">
+                    <div class="px-6 py-3 rounded-xl border-2 border-transparent hover:border-blue-500 hover:bg-blue-50 transition-all">
+                        <span class="text-lg font-bold text-gray-700 group-hover:text-blue-600">Services</span>
+                    </div>
+                </a>
+                <a href="#contact" class="nav-link-box group">
+                    <div class="px-6 py-3 rounded-xl border-2 border-transparent hover:border-green-500 hover:bg-green-50 transition-all">
+                        <span class="text-lg font-bold text-gray-700 group-hover:text-green-600">Contact</span>
+                    </div>
+                </a>
+                <button onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold hover:scale-105 hover:shadow-xl transition-all">
+                    Get Started
+                </button>
+            </div>
+            
+            <!-- Mobile Hamburger -->
+            <button class="md:hidden w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-white text-xl"></i>
+            </button>
         </div>
     </div>
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
-        <a href="#home" class="block px-6 py-3 hover:bg-gray-50">Home</a>
-        <a href="#about" class="block px-6 py-3 hover:bg-gray-50">About</a>
-        <a href="#services" class="block px-6 py-3 hover:bg-gray-50">Services</a>
-        <a href="#contact" class="block px-6 py-3 hover:bg-gray-50">Contact</a>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t-2 border-purple-500/30 shadow-xl">
+        <a href="#home" class="block px-6 py-4 border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50 transition-all">
+            <span class="text-lg font-bold">Home</span>
+        </a>
+        <a href="#about" class="block px-6 py-4 border-l-4 border-transparent hover:border-purple-500 hover:bg-purple-50 transition-all">
+            <span class="text-lg font-bold">About</span>
+        </a>
+        <a href="#services" class="block px-6 py-4 border-l-4 border-transparent hover:border-blue-500 hover:bg-blue-50 transition-all">
+            <span class="text-lg font-bold">Services</span>
+        </a>
+        <a href="#contact" class="block px-6 py-4 border-l-4 border-transparent hover:border-green-500 hover:bg-green-50 transition-all">
+            <span class="text-lg font-bold">Contact</span>
+        </a>
     </div>
-</nav>""",
-        "css": """.nav-link { @apply text-gray-700 hover:text-blue-600 transition-colors font-medium; }
-.hamburger { @apply text-2xl cursor-pointer; }"""
+    
+    <!-- Visual Separator -->
+    <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+</nav>
+
+<!-- Spacer for fixed nav -->
+<div class="h-20"></div>""",
+        "css": """.nav-link-box { @apply transition-all duration-300; }"""
     },
     
     {
