@@ -408,7 +408,7 @@ SIDEBAR LAYOUT RULES:
 ✅ Content remains centered within remaining space
 ✅ Grids use max-w-7xl mx-auto px-6 for symmetry
 ✅ Mobile: sidebar collapses, content goes full-width
-✅ Responsive: @media (max-width: 768px) { margin-left: 0; }
+✅ Responsive: @media (max-width: 768px) {{ margin-left: 0; }}
 
 🔟 IMAGE RULES (SUPER CRITICAL - NO EXCEPTIONS):
 🚨 ONLY HERO SECTION CAN HAVE IMAGE:
