@@ -761,6 +761,9 @@ Before finalizing your code, check EVERY text element:
 ❌ NO sections without colors/gradients
 ❌ NO cards without shadows
 ❌ NO buttons without gradients
+❌ NO white text on white/light backgrounds (INVISIBLE!)
+❌ NO dark text on dark backgrounds (INVISIBLE!)
+❌ NO poor contrast - text must always be readable
 
 8️⃣ SECTION ALTERNATION (MUST FOLLOW):
 Section 1: Light gradient (bg-gradient-to-br from-gray-50 to-blue-50)
