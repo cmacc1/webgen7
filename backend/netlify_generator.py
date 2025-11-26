@@ -687,18 +687,22 @@ OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "500+ LI
         user_prompt = f"""🚨🚨🚨 BEFORE YOU START - READ THIS:
 
 YOU WILL BE REJECTED IF:
-❌ ANY section has a white background (use {colors['gradient']} or {colors['bg']})
+❌ Using more than 3 colors (only Primary, Secondary, Accent allowed)
+❌ Reusing the same image multiple times (hero image used once only)
+❌ Text on hero background is hard to read (MUST have dark overlay + text shadows)
+❌ Navigation buttons don't work (missing href or onclick)
+❌ ANY section has plain white background (use {colors['gradient']} or {colors['bg']})
 ❌ Text is small (MUST use {ultra_design['typography']['heading']} class)
 ❌ Content is narrow or left-aligned (MUST use max-w-7xl mx-auto)
-❌ Sections don't have {ultra_design['spacing']['section_padding']} padding
-❌ Colors don't match the palette (PRIMARY: {colors['primary']})
 
 ✅ YOU MUST:
+✅ STICK TO 3-COLOR RULE: Only use Primary {colors['primary']}, Secondary {colors['secondary']}, Accent {colors['accent']}
+✅ USE HERO IMAGE ONCE: Only in hero section, never reuse
+✅ ENSURE TEXT READABILITY: Dark overlay (opacity: 0.5) + text-shadow on hero text
+✅ MAKE NAV BUTTONS WORK: All links need href="#section" or onclick handlers
 ✅ Use FULL-WIDTH sections (w-full class on every section)
 ✅ Use LARGE text ({ultra_design['typography']['heading']} for titles)
 ✅ CENTER everything (text-center, mx-auto)
-✅ Apply colors from palette to EVERY element
-✅ Use the gradient {colors['gradient']} for backgrounds
 
 NOW CREATE: "{prompt}"
 
