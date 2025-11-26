@@ -358,8 +358,20 @@ FAILURE TO FOLLOW = REJECTION
 ✅ drop-shadow-2xl on all text elements
 ✅ High z-index (z-10) for content layer
 
-2️⃣ NAVIGATION (USE THIS CODE):
+2️⃣ NAVIGATION - ALL BUTTONS MUST WORK:
 {nav_html_escaped}
+
+🚨 NAVIGATION FUNCTIONALITY REQUIREMENTS:
+✅ ALL nav links must have working href="#section-id" or onclick handlers
+✅ Home button: href="#" or onclick="window.scrollTo({{top:0,behavior:'smooth'}})"
+✅ About button: href="#about" 
+✅ Services button: href="#services" or href="#features"
+✅ Contact button: href="#contact"
+✅ CTA button in nav: onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})"
+✅ Mobile menu toggle: onclick="toggleMobileMenu()" function MUST be in app.js
+✅ All section IDs must match nav hrefs (id="about", id="services", id="contact")
+❌ NO dead links - every button must do something
+❌ NO missing onclick handlers
 
 
 2️⃣ FEATURES SECTION - COPY THIS EXACTLY, ADD MORE CARDS:
