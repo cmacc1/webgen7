@@ -549,7 +549,7 @@ SECTIONS REQUIRED (3-4 minimum with REAL IMAGES):
 YOU MUST INCLUDE ALL OF THIS CSS:
 
 ```css
-/* CRITICAL: Set base colors from randomized palette */
+/* CRITICAL: Set base colors - USE ONLY THESE 3 COLORS */
 :root {{
     --primary: {colors['primary']};
     --secondary: {colors['secondary']};
@@ -557,6 +557,9 @@ YOU MUST INCLUDE ALL OF THIS CSS:
     --text: {colors['text']};
     --bg: {colors['bg']};
 }}
+
+/* 3-COLOR RULE: Only use primary, secondary, accent for design elements */
+/* DO NOT add random colors like red, blue, green unless they match palette */
 
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
 
