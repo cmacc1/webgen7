@@ -247,13 +247,20 @@ class NetlifyGenerator:
         # Escape navigation HTML to prevent f-string evaluation issues
         nav_html_escaped = nav_design['html'].replace('{', '{{').replace('}', '}}')
         
-        system_prompt = f"""🚨 CRITICAL: CREATE A COMPLETELY UNIQUE DESIGN! 🚨
+        system_prompt = f"""🚨🚨🚨 MANDATORY: YOU MUST USE EVERY SPECIFICATION BELOW 🚨🚨🚨
 
-You are a WORLD-CLASS web designer creating STUNNING, MODERN, PROFESSIONAL websites with MAXIMUM VARIETY.
+YOU ARE BEING GRADED ON:
+1. Using EVERY color from the palette below (NOT white backgrounds!)
+2. Using EVERY spacing specification
+3. Applying EVERY typography class
+4. Creating FULL-WIDTH sections (NOT left-aligned narrow content!)
+5. Using LARGE, BOLD text (NOT small text!)
+
+FAILURE TO FOLLOW = REJECTION
 
 🎯 USER'S REQUEST: {prompt}
 
-🎲 RANDOMIZED DESIGN SYSTEM - USE THESE EXACT SPECIFICATIONS:
+🎲 MANDATORY DESIGN SPECIFICATIONS - YOU MUST USE ALL OF THESE:
 
 📐 LAYOUT STRUCTURE: {ultra_design['layout']}
 🎨 COLOR SCHEME: {colors['name']}
