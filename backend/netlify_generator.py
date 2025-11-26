@@ -219,41 +219,30 @@ class NetlifyGenerator:
         hero_bg = image_provider.get_hero_background(website_type)
         section_bgs = image_provider.get_section_backgrounds(website_type, count=4)
         
-        logger.info(f"🎨 Fallback gradients ready:")
-        logger.info(f"   Hero gradient: {hero_bg['gradient']}")
-        logger.info(f"   Hero icon: {hero_bg['icon']}")
+        # Use ultra-randomized colors instead of template colors
+        colors = ultra_design['colors']
+        hero_gradient = colors['gradient']
         
-        # Use the selected template definition
-        logger.info(f"✅ Using template: {template_def['name']}")
-        logger.info(f"   Best for: {template_def['best_for']}")
-        logger.info(f"   Features: {', '.join(template_def['features'][:3])}...")
+        logger.info(f"🎨 Using randomized color scheme: {colors['name']}")
+        logger.info(f"   Primary: {colors['primary']}")
+        logger.info(f"   Gradient: {hero_gradient}")
         
-        # Get design randomization for additional variety
-        from design_randomizer import DesignRandomizer
-        randomizer = DesignRandomizer()
-        design_system = randomizer.get_random_design_system()
-        
-        # Use randomized colors
-        colors = design_system['colors']
-        
-        # Build image URLs for prompt
-        hero_gradient = hero_bg.get('gradient', 'linear-gradient(135deg, #667eea, #764ba2)')
+        # Build hero HTML with randomized style
+        hero_style = ultra_design['hero_style']
         if hero_image:
             hero_img_html = f'<img src="{hero_image}" alt="Hero" class="absolute inset-0 w-full h-full object-cover">'
         else:
             hero_img_html = f'<div class="absolute inset-0" style="background: {hero_gradient};"></div>'
         
-        if section_images:
-            section_imgs_list = [f'<img src="{img}" alt="Section" class="w-full h-96 object-cover rounded-2xl">' for img in section_images[:4]]
-            section_imgs_html = ', '.join(section_imgs_list)
-        else:
-            section_imgs_html = 'Use gradient backgrounds'
+        # Use gradient backgrounds for sections (no cluttered images)
+        section_imgs_html = 'Use gradient backgrounds and icons ONLY'
         
-        # Get appropriate navigation design
-        from navigation_library import get_navigation_by_template
-        nav_design = get_navigation_by_template(template_def['name'])
+        # Get RANDOM navigation design from library
+        from navigation_library import get_all_navigations
+        all_navs = get_all_navigations()
+        nav_design = random.choice(all_navs)
         
-        logger.info(f"🧭 Navigation: {nav_design['name']}")
+        logger.info(f"🧭 Navigation: {nav_design['name']} (randomly selected)")
         
         # Escape navigation HTML to prevent f-string evaluation issues
         nav_html_escaped = nav_design['html'].replace('{', '{{').replace('}', '}}')
