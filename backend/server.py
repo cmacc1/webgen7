@@ -641,9 +641,19 @@ async def generate_and_deploy(request: NetlifyProjectRequest):
     try:
         deploy_result = await deploy_to_netlify(project_id=project_id)
         
+        # Handle case where deploy_result is None
+        if not deploy_result:
+            logger.error(f"❌ Deployment returned None - Netlify service may be down")
+            deploy_result = {
+                "deploy_url": None,
+                "deploy_preview_url": None,
+                "site_url": None,
+                "error": "Deployment service unavailable"
+            }
+        
         logger.info(f"✅ GENERATE & DEPLOY COMPLETE!")
         logger.info(f"   Project ID: {project_id}")
-        logger.info(f"   Netlify URL: {deploy_result.get('deploy_url')}")
+        logger.info(f"   Netlify URL: {deploy_result.get('deploy_url', 'N/A')}")
         
         return {
             "success": True,
