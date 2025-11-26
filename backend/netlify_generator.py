@@ -688,38 +688,187 @@ section {{
 ```
 🚨 ADD 600+ MORE LINES OF CSS WITH HOVER EFFECTS, RESPONSIVE BREAKPOINTS, CUSTOM STYLES!
 
-CRITICAL JS FILE (COPY THESE FUNCTIONS EXACTLY - NAVIGATION MUST WORK):
+🚀 ADVANCED FEATURE CODE EXAMPLES (Copy these when user requests):
+
+📝 TWO-STEP FORM HTML (CRITICAL):
+```html
+<form id="twoStepForm" onsubmit="handleTwoStepSubmit(event)" class="max-w-2xl mx-auto">
+    <div id="step1" class="form-step">
+        <h3 class="text-3xl font-bold mb-6">Step 1: Your Email</h3>
+        <input type="email" id="stepEmail" required placeholder="Enter your email" class="w-full px-6 py-4 border-2 rounded-xl mb-4">
+        <button type="button" onclick="goToStep2()" class="w-full px-8 py-4 bg-primary text-white rounded-xl">Continue to Step 2</button>
+    </div>
+    <div id="step2" class="form-step hidden">
+        <h3 class="text-3xl font-bold mb-6">Step 2: Complete Your Profile</h3>
+        <input type="text" required placeholder="Full Name" class="w-full px-6 py-4 border-2 rounded-xl mb-4">
+        <input type="tel" required placeholder="Phone" class="w-full px-6 py-4 border-2 rounded-xl mb-4">
+        <select required class="w-full px-6 py-4 border-2 rounded-xl mb-4">
+            <option value="">Select Goal</option>
+            <option>Increase Sales</option>
+            <option>Save Time</option>
+            <option>Get More Leads</option>
+        </select>
+        <label class="flex items-center mb-4"><input type="checkbox" required class="mr-2"> I agree to terms</label>
+        <button type="submit" class="w-full px-8 py-4 bg-primary text-white rounded-xl">Submit</button>
+        <button type="button" onclick="goToStep1()" class="w-full px-8 py-4 mt-2 border-2 rounded-xl">Back</button>
+    </div>
+</form>
+```
+
+🛒 PURCHASE FORM HTML:
+```html
+<form id="purchaseForm" onsubmit="handlePurchase(event)" class="max-w-xl mx-auto bg-white p-8 rounded-3xl shadow-2xl">
+    <h3 class="text-3xl font-bold mb-6">Complete Your Purchase</h3>
+    <select id="productSelect" required class="w-full px-6 py-4 border-2 rounded-xl mb-4">
+        <option value="">Select Product</option>
+        <option value="basic">Basic Plan - $49/mo</option>
+        <option value="pro">Pro Plan - $99/mo</option>
+        <option value="enterprise">Enterprise - $199/mo</option>
+    </select>
+    <input type="text" required placeholder="Card Number" pattern="[0-9]{{16}}" class="w-full px-6 py-4 border-2 rounded-xl mb-4">
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <input type="text" required placeholder="MM/YY" pattern="[0-9]{{2}}/[0-9]{{2}}" class="px-6 py-4 border-2 rounded-xl">
+        <input type="text" required placeholder="CVV" pattern="[0-9]{{3,4}}" class="px-6 py-4 border-2 rounded-xl">
+    </div>
+    <input type="text" required placeholder="Billing Address" class="w-full px-6 py-4 border-2 rounded-xl mb-6">
+    <div class="text-right mb-4"><strong class="text-2xl">Total: $<span id="totalPrice">0</span></strong></div>
+    <button type="submit" class="w-full px-8 py-4 bg-green-600 text-white rounded-xl text-xl font-bold hover:bg-green-700">Complete Purchase</button>
+</form>
+```
+
+👤 PROFILE DASHBOARD HTML:
+```html
+<div class="min-h-screen bg-gray-50">
+    <nav class="bg-white shadow-lg p-4"><h1 class="text-2xl font-bold">Dashboard</h1></nav>
+    <div class="grid md:grid-cols-4 gap-6 p-6">
+        <aside class="bg-white p-6 rounded-2xl shadow-xl">
+            <div class="text-center mb-6">
+                <div class="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">JD</div>
+                <h3 class="text-xl font-bold">John Doe</h3>
+                <p class="text-gray-600">john@email.com</p>
+            </div>
+            <nav class="space-y-2">
+                <a href="#overview" class="block px-4 py-3 rounded-xl bg-primary text-white">Overview</a>
+                <a href="#settings" class="block px-4 py-3 rounded-xl hover:bg-gray-100">Settings</a>
+                <a href="#billing" class="block px-4 py-3 rounded-xl hover:bg-gray-100">Billing</a>
+                <a href="#logout" class="block px-4 py-3 rounded-xl hover:bg-gray-100">Logout</a>
+            </nav>
+        </aside>
+        <main class="md:col-span-3">
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white p-6 rounded-2xl shadow-xl"><h4 class="text-gray-600">Total Sales</h4><p class="text-4xl font-bold">$12,450</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-xl"><h4 class="text-gray-600">Active Users</h4><p class="text-4xl font-bold">1,234</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-xl"><h4 class="text-gray-600">Conversions</h4><p class="text-4xl font-bold">89%</p></div>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-xl">
+                <h3 class="text-2xl font-bold mb-6">Account Settings</h3>
+                <form><input type="text" placeholder="Name" class="w-full px-6 py-4 border-2 rounded-xl mb-4">
+                <input type="email" placeholder="Email" class="w-full px-6 py-4 border-2 rounded-xl mb-4">
+                <button type="submit" class="px-8 py-4 bg-primary text-white rounded-xl">Save Changes</button></form>
+            </div>
+        </main>
+    </div>
+</div>
+```
+
+📹 VSL VIDEO HTML:
+```html
+<section class="py-20 bg-gray-50">
+    <div class="max-w-5xl mx-auto px-6">
+        <h2 class="text-5xl font-bold text-center mb-12">Watch Our 3-Minute Overview</h2>
+        <div class="video-container relative" style="padding-bottom: 56.25%; height: 0;">
+            <iframe id="vslVideo" src="https://www.youtube.com/embed/VIDEO_ID?enablejsapi=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+        <button onclick="scrollToCalendar()" class="w-full mt-6 px-8 py-4 bg-primary text-white rounded-xl text-xl font-bold sticky-cta">Book Your Blueprint Call</button>
+    </div>
+</section>
+```
+
+📅 INTERACTIVE CALENDAR HTML:
+```html
+<section id="calendar" class="py-20">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-5xl font-bold text-center mb-12">Schedule Your Call</h2>
+        <div class="calendar-wrapper bg-white p-8 rounded-3xl shadow-2xl">
+            <iframe src="https://calendly.com/YOUR_LINK/30min" width="100%" height="700px" frameborder="0"></iframe>
+        </div>
+    </div>
+</section>
+```
+
+CRITICAL JS FILE (MUST INCLUDE ALL THESE FUNCTIONS):
 ```javascript
-// ✅ CRITICAL: Smooth scroll for ALL navigation links
-document.addEventListener('DOMContentLoaded', function() {{
-    // Smooth scroll for all anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {{
-        anchor.addEventListener('click', function (e) {{
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {{
-                target.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-                // Close mobile menu after click
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (mobileMenu) mobileMenu.classList.add('hidden');
-            }}
-        }});
+// ✅ Two-Step Form Functions
+let currentStep = 1;
+function goToStep2() {{
+    const email = document.getElementById('stepEmail').value;
+    if (!email || !email.includes('@')) {{ alert('Please enter valid email'); return; }}
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    currentStep = 2;
+}}
+function goToStep1() {{
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step1').classList.remove('hidden');
+    currentStep = 1;
+}}
+function handleTwoStepSubmit(e) {{
+    e.preventDefault();
+    alert('Form submitted successfully!');
+    // In real app: fetch('/api/submit', {{ method: 'POST', body: new FormData(e.target) }})
+}}
+
+// ✅ Purchase Form Handler
+function handlePurchase(e) {{
+    e.preventDefault();
+    const product = document.getElementById('productSelect').value;
+    alert('Processing payment for ' + product);
+    // Real: Stripe.js or payment gateway integration
+}}
+
+// ✅ VSL Video Tracking
+let videoPlayed = false;
+document.addEventListener('DOMContentLoaded', () => {{
+    const video = document.getElementById('vslVideo');
+    if (video) {{
+        // Track video milestones
+        console.log('VSL video ready');
+    }}
+}});
+
+// ✅ Calendar Scroll
+function scrollToCalendar() {{
+    document.getElementById('calendar').scrollIntoView({{behavior: 'smooth'}});
+}}
+
+// ✅ Profile Dashboard
+function logout() {{
+    localStorage.removeItem('user');
+    alert('Logged out');
+    window.location.href = '/login.html';
+}}
+
+// ✅ Form Validation
+function validateEmail(email) {{
+    return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
+}}
+
+// ✅ Mobile menu
+function toggleMobileMenu() {{
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+}}
+
+// ✅ Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {{
+    a.addEventListener('click', function(e) {{
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({{behavior:'smooth'}});
     }});
 }});
 
-// ✅ CRITICAL: Mobile menu toggle function (MUST EXIST)
-function toggleMobileMenu() {{
-    const menu = document.getElementById('mobile-menu');
-    if (menu) {{
-        menu.classList.toggle('hidden');
-    }} else {{
-        console.error('Mobile menu not found! Add id="mobile-menu" to mobile nav');
-    }}
-}}
-
-// ✅ CRITICAL: Form submission handler
-function handleFormSubmit(event) {{
-    event.preventDefault();
+// ✅ Form handler
+function handleFormSubmit(e) {{
+    e.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
     // Show success message
