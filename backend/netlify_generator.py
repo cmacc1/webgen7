@@ -895,6 +895,19 @@ section {{
 .fade-in-up {{ animation: fadeInUp 0.8s ease-out; }}
 .slide-in {{ animation: slideIn 0.8s ease-out; }}
 .scale-in {{ animation: scaleIn 0.8s ease-out; }}
+
+/* TEXT CONTRAST UTILITIES - USE THESE! */
+.text-on-light {{ color: #1a1a1a; }} /* Dark text for light backgrounds */
+.text-on-dark {{ color: #ffffff; }} /* White text for dark backgrounds */
+.heading-on-light {{ color: var(--primary); font-weight: 800; }} /* Colored heading for light bg */
+.heading-on-dark {{ color: #ffffff; font-weight: 800; }} /* White heading for dark bg */
+
+/* BACKGROUND-SPECIFIC TEXT CLASSES */
+.bg-white h1, .bg-white h2, .bg-white h3 {{ color: var(--primary); }}
+.bg-white p, .bg-white span {{ color: #2d3436; }}
+.bg-gray-50 h1, .bg-gray-50 h2, .bg-gray-50 h3 {{ color: var(--primary); }}
+.bg-gray-50 p, .bg-gray-50 span {{ color: #2d3436; }}
+.bg-gray-900 *, .bg-purple-900 *, .bg-indigo-900 * {{ color: #ffffff; }}
 ```
 🚨 ADD 600+ MORE LINES OF CSS WITH HOVER EFFECTS, RESPONSIVE BREAKPOINTS, CUSTOM STYLES!
 
