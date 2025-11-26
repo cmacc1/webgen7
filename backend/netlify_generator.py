@@ -308,25 +308,34 @@ FAILURE TO FOLLOW = REJECTION
    - CTA: {component_mix['cta']}
    - Footer: {component_mix['footer']}
 
-🎨 DESIGN INSTRUCTIONS - MUST FOLLOW EXACTLY:
+🚨 CRITICAL DESIGN RULES - FAILURE = REJECTION:
 
-1️⃣ HERO SECTION - USE THE RANDOMIZED HERO STYLE:
-Apply the hero style specifications above ({hero_style['name']}).
-EXAMPLE STRUCTURE (adapt to the randomized hero style):
+❌ NO WHITE BACKGROUNDS - Use gradient: {colors['gradient']}
+❌ NO SMALL TEXT - Use {ultra_design['typography']['heading']} for headings
+❌ NO LEFT-ALIGNED NARROW CONTENT - Use max-w-7xl mx-auto for centering
+❌ NO BASIC LAYOUTS - Apply {ultra_design['spacing']['section_padding']} to ALL sections
+✅ FULL-WIDTH sections with colored backgrounds
+✅ LARGE, BOLD typography 
+✅ CENTER content in containers
+✅ Use PRIMARY color {colors['primary']} prominently
+
+1️⃣ HERO SECTION - COPY THIS EXACTLY, REPLACE TEXT ONLY:
 ```html
-<section class="{hero_style['html_class']}" style="background: {colors['gradient']};">
-    {hero_img_html if hero_image else f'<div class="absolute inset-0" style="background: {hero_gradient};"></div>'}
-    <div class="{hero_style['content_position']}">
-        <i class="fas fa-star {ultra_design['icon_size']} mb-6 {ultra_design['animation']}"></i>
-        <h1 class="{ultra_design['typography']['heading']} mb-6" style="color: {colors['text'] if ultra_design['colors']['bg'] == '#ffffff' else 'white'}">YOUR HEADLINE HERE</h1>
-        <p class="{ultra_design['typography']['body']} mb-12 opacity-90">Compelling subtitle that engages visitors</p>
-        <div class="flex {ultra_design['spacing']['element_gap']} justify-center flex-wrap">
-            <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="{ultra_design['button_style']}">Get Started</button>
-            <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="{ultra_design['button_style'].replace('bg-gradient', 'bg-white').replace('text-white', 'text-gray-900')}">Learn More</button>
+<section class="{hero_style['html_class']} w-full" style="background: {colors['gradient']}; min-height: 100vh;">
+    <div class="max-w-7xl mx-auto {ultra_design['spacing']['container_padding']} h-full flex items-center justify-center">
+        <div class="text-center w-full">
+            <i class="fas fa-rocket {ultra_design['icon_size']} mb-6 {ultra_design['animation']}" style="color: {colors['primary']};"></i>
+            <h1 class="{ultra_design['typography']['heading']} mb-6" style="color: {colors['text']};">YOUR COMPELLING HEADLINE</h1>
+            <p class="{ultra_design['typography']['body']} mb-12 max-w-2xl mx-auto" style="color: {colors['text']}; opacity: 0.9;">Your engaging subtitle goes here</p>
+            <div class="flex {ultra_design['spacing']['element_gap']} justify-center flex-wrap">
+                <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="{ultra_design['button_style']}">Get Started</button>
+                <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="px-8 py-4 border-4 rounded-xl font-bold text-xl hover:scale-110 transition-all" style="border-color: {colors['primary']}; color: {colors['primary']};">Learn More</button>
+            </div>
         </div>
     </div>
 </section>
 ```
+🚨 MANDATORY: Copy this structure EXACTLY for hero section!
 
 2️⃣ NAVIGATION (USE THIS CODE):
 {nav_html_escaped}
