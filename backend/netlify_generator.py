@@ -731,7 +731,22 @@ YOU WILL BE REJECTED IF:
 ✅ Use LARGE text ({ultra_design['typography']['heading']} for titles)
 ✅ CENTER everything (text-center, mx-auto)
 
-NOW CREATE: "{prompt}"
+🚨🚨🚨 DO NOT WRITE A PLAN - GENERATE THE ACTUAL WEBSITE CODE 🚨🚨🚨
+
+NOW CREATE THE COMPLETE WEBSITE FOR: "{prompt}"
+
+❌ DO NOT respond with:
+- "Here's what I'll build"
+- "Strategy and structure"
+- "Deliverables"
+- "What I need from you"
+- Any planning or description text
+
+✅ RESPOND WITH:
+- Complete HTML code (index.html)
+- Complete CSS code (styles.css)  
+- Complete JavaScript code (app.js)
+- In JSON format ONLY
 
 🎯 MANDATORY DESIGN SPECIFICATIONS:
 📐 LAYOUT: {ultra_design['layout']}
