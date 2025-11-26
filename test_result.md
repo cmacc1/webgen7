@@ -415,6 +415,70 @@ agent_communication:
   - agent: "main"
   - agent: "main"
   - agent: "main"
+  - agent: "main"
+    message: "🚨🚨🚨 CRITICAL DESIGN FIX - BASIC WHITE BACKGROUND PROBLEM SOLVED! User reported: 'generator creating basic visuals with all white background and text going downward, looks terrible'. ROOT CAUSE: AI was ignoring design instructions and generating minimal HTML. COMPREHENSIVE SOLUTION:
+
+PROBLEM ANALYSIS:
+- AI generating plain white backgrounds
+- Text just stacking vertically
+- No colors, gradients, or visual interest
+- Minimal, boring design
+- Not following template specifications
+
+SOLUTION IMPLEMENTED - EXPLICIT CODE EXAMPLES:
+1️⃣ Added MANDATORY design examples with actual HTML/CSS code
+2️⃣ Hero section example with full-screen gradient background
+3️⃣ Feature cards example with gradient icons and shadows
+4️⃣ About section example with dark gradient background
+5️⃣ Contact form example with colorful styling
+6️⃣ Explicit 'WHAT NOT TO DO' list rejecting white backgrounds
+
+MANDATORY VISUAL ELEMENTS NOW ENFORCED:
+✅ Gradients on EVERY section (bg-gradient-to-br from-blue-50 to-purple-50)
+✅ Dark sections alternating with light (purple-900, indigo-900, white text)
+✅ Shadows on ALL cards (shadow-xl, shadow-2xl)
+✅ Hover effects on ALL elements (hover:-translate-y-2, hover:scale-110)
+✅ Icons with gradient circles (from-blue-500 to-purple-600)
+✅ Large bold typography (text-5xl md:text-6xl font-black)
+✅ Rounded corners everywhere (rounded-xl, rounded-2xl)
+✅ Gradient buttons (bg-gradient-to-r from-blue-500 to-purple-600)
+
+SECTION ALTERNATION PATTERN (ENFORCED):
+Section 1: Light gradient (bg-gradient-to-br from-gray-50 to-blue-50)
+Section 2: Dark gradient (bg-gradient-to-br from-purple-900 to-indigo-900 text-white)
+Section 3: Light gradient (bg-gradient-to-br from-blue-50 to-purple-50)
+Section 4: Dark gradient (bg-gradient-to-br from-indigo-900 to-blue-900 text-white)
+
+EXPLICIT REJECTIONS ADDED:
+❌ NO plain white background for entire site
+❌ NO basic black text on white
+❌ NO minimal design
+❌ NO text just going down the page
+❌ NO boring layout
+❌ NO sections without colors/gradients
+❌ NO cards without shadows
+❌ NO buttons without gradients
+
+EXAMPLE STRUCTURES PROVIDED:
+- Hero: Full-screen with gradient overlay on image, large icon, gradient buttons
+- Features: Grid of gradient-icon cards with shadows and hover effects
+- About: Dark gradient background with white text and decorative elements
+- Contact: Colorful form on light gradient background
+- All sections: Alternating light/dark gradients
+
+FINAL CHECKLIST ADDED TO PROMPT:
+✅ Hero has full-screen image or dark gradient
+✅ Navigation is included from template
+✅ At least 4 sections with alternating colors
+✅ Every card has shadow-xl or shadow-2xl
+✅ Every button has gradient background
+✅ All text is readable (white on dark, dark on light)
+✅ Icons wrapped in gradient circles
+✅ Forms have colorful styling
+✅ Mobile responsive grid classes
+
+Backend restarted. System will now generate COLORFUL, MODERN, VISUALLY STUNNING websites with gradients, shadows, and rich design. NO MORE basic white backgrounds!"
+
     message: "🔥🔥🔥 ALL 7 CRITICAL ERRORS FIXED - MASSIVE SYSTEM OVERHAUL! User reported 7 critical errors. COMPREHENSIVE SOLUTIONS IMPLEMENTED:
 
 ERROR 1 FIXED - IMAGES LOADING CORRECTLY:
