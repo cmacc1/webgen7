@@ -303,18 +303,19 @@ You are a WORLD-CLASS web designer creating STUNNING, MODERN, PROFESSIONAL websi
 
 🎨 DESIGN INSTRUCTIONS - MUST FOLLOW EXACTLY:
 
-1️⃣ HERO SECTION (MUST BE FULL-SCREEN WITH IMAGE/GRADIENT):
-EXAMPLE - USE THIS STRUCTURE:
+1️⃣ HERO SECTION - USE THE RANDOMIZED HERO STYLE:
+Apply the hero style specifications above ({hero_style['name']}).
+EXAMPLE STRUCTURE (adapt to the randomized hero style):
 ```html
-<section class="relative min-h-screen flex items-center justify-center" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{hero_image if hero_image else ''}'); background-size: cover; background-position: center; background-attachment: fixed;">
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-900/80 to-purple-900/80"></div>
-    <div class="relative z-10 text-center px-6 max-w-5xl mx-auto text-white">
-        <i class="fas fa-star text-8xl mb-6 animate-pulse"></i>
-        <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">YOUR HEADLINE HERE</h1>
-        <p class="text-2xl md:text-3xl mb-12 opacity-90">Subtitle goes here</p>
-        <div class="flex gap-6 justify-center flex-wrap">
-            <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-bold text-xl hover:scale-110 hover:shadow-2xl transition-all">Get Started</button>
-            <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="px-12 py-5 bg-white text-gray-900 rounded-full font-bold text-xl hover:scale-110 hover:shadow-2xl transition-all">Learn More</button>
+<section class="{hero_style['html_class']}" style="background: {colors['gradient']};">
+    {hero_img_html if hero_image else f'<div class="absolute inset-0" style="background: {hero_gradient};"></div>'}
+    <div class="{hero_style['content_position']}">
+        <i class="fas fa-star {ultra_design['icon_size']} mb-6 {ultra_design['animation']}"></i>
+        <h1 class="{ultra_design['typography']['heading']} mb-6" style="color: {colors['text'] if ultra_design['colors']['bg'] == '#ffffff' else 'white'}">YOUR HEADLINE HERE</h1>
+        <p class="{ultra_design['typography']['body']} mb-12 opacity-90">Compelling subtitle that engages visitors</p>
+        <div class="flex {ultra_design['spacing']['element_gap']} justify-center flex-wrap">
+            <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="{ultra_design['button_style']}">Get Started</button>
+            <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="{ultra_design['button_style'].replace('bg-gradient', 'bg-white').replace('text-white', 'text-gray-900')}">Learn More</button>
         </div>
     </div>
 </section>
