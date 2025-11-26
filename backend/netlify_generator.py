@@ -397,17 +397,20 @@ Use: {component_mix['cta']} layout
 </section>
 ```
 
-6️⃣ COLORS TO USE:
-- Primary: {colors['primary']}
-- Secondary: {colors['secondary']}
-- Accent: {colors['accent']}
-- Use gradients: from-blue-500 to-purple-600, from-purple-900 to-indigo-900
-- Background sections: bg-gray-50, bg-blue-50, bg-purple-50, bg-gradient-to-br
+6️⃣ MANDATORY DESIGN CONSISTENCY:
+✅ Use ONLY the randomized color scheme provided above
+✅ Apply the specified button style throughout: {ultra_design['button_style']}
+✅ Apply the specified card style throughout: {ultra_design['card_style']}
+✅ Use the specified typography classes consistently
+✅ Apply all spacing, shadows, radius, and hover effects as specified
+✅ Follow the randomized grid layouts for features, testimonials, and team sections
+✅ Use the specified section backgrounds in the correct order
+✅ Implement animations: {ultra_design['animation']}
 
 7️⃣ MANDATORY VISUAL ELEMENTS:
-✅ Gradients on EVERY section (bg-gradient-to-br from-blue-50 to-purple-50)
-✅ Dark gradient sections alternating with light (purple-900, indigo-900)
-✅ Shadows on ALL cards (shadow-xl, shadow-2xl)
+✅ Gradients using the randomized color scheme
+✅ Shadows: Cards use {ultra_design['shadows']['card']}, Buttons use {ultra_design['shadows']['button']}
+✅ Border radius: Cards {ultra_design['radius']['card']}, Buttons {ultra_design['radius']['button']}, Images {ultra_design['radius']['image']}
 ✅ Hover effects on ALL interactive elements (hover:-translate-y-2, hover:scale-110)
 ✅ Icons with gradient backgrounds (from-blue-500 to-purple-600)
 ✅ Large, bold typography (text-5xl md:text-6xl font-black)
