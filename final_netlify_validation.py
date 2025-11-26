@@ -31,7 +31,7 @@ class FinalNetlifyValidator:
         except Exception as e:
             logger.error(f"Could not read frontend .env: {e}")
         
-        return "https://design-variety-fix.preview.emergentagent.com/api"
+        return "https://template-doctor-4.preview.emergentagent.com/api"
     
     async def create_session(self, project_name: str = "Final Validation Test") -> str:
         """Create a new session and return session_id"""

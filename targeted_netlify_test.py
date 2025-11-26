@@ -34,7 +34,7 @@ class TargetedNetlifyTester:
             logger.error(f"Could not read frontend .env: {e}")
         
         # Fallback
-        return "https://design-variety-fix.preview.emergentagent.com/api"
+        return "https://template-doctor-4.preview.emergentagent.com/api"
     
     async def test_existing_deployment(self, deploy_url: str) -> Dict[str, Any]:
         """Test an existing Netlify deployment URL"""
