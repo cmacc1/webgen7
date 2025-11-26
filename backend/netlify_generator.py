@@ -618,24 +618,36 @@ section {{
 ```
 🚨 ADD 600+ MORE LINES OF CSS WITH HOVER EFFECTS, RESPONSIVE BREAKPOINTS, CUSTOM STYLES!
 
-CRITICAL JS FILE (MUST INCLUDE ALL THESE FUNCTIONS):
+CRITICAL JS FILE (COPY THESE FUNCTIONS EXACTLY - NAVIGATION MUST WORK):
 ```javascript
-// Smooth scroll for all anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {{
-    anchor.addEventListener('click', function (e) {{
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) target.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+// ✅ CRITICAL: Smooth scroll for ALL navigation links
+document.addEventListener('DOMContentLoaded', function() {{
+    // Smooth scroll for all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {{
+        anchor.addEventListener('click', function (e) {{
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {{
+                target.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+                // Close mobile menu after click
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (mobileMenu) mobileMenu.classList.add('hidden');
+            }}
+        }});
     }});
 }});
 
-// Mobile menu toggle
+// ✅ CRITICAL: Mobile menu toggle function (MUST EXIST)
 function toggleMobileMenu() {{
     const menu = document.getElementById('mobile-menu');
-    if (menu) menu.classList.toggle('hidden');
+    if (menu) {{
+        menu.classList.toggle('hidden');
+    }} else {{
+        console.error('Mobile menu not found! Add id="mobile-menu" to mobile nav');
+    }}
 }}
 
-// Form submission handler
+// ✅ CRITICAL: Form submission handler
 function handleFormSubmit(event) {{
     event.preventDefault();
     const form = event.target;
