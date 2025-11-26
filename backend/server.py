@@ -588,6 +588,11 @@ async def deploy_to_netlify(project_id: str, auto_deploy: bool = True):
         else:
             raise
         
+        # Verify deploy_result is valid
+        if not deploy_result or not isinstance(deploy_result, dict):
+            logger.error(f"❌ Invalid deploy_result: {deploy_result}")
+            raise Exception("Deployment returned invalid result")
+        
         # Save deployment info to database
         await db.netlify_projects.update_one(
             {"project_id": project_id},
@@ -596,6 +601,7 @@ async def deploy_to_netlify(project_id: str, auto_deploy: bool = True):
                 "netlify_deploy_id": deploy_result.get("deploy_id"),
                 "deploy_url": deploy_result.get("deploy_url"),
                 "deploy_preview_url": deploy_result.get("deploy_preview_url"),
+                "site_url": deploy_result.get("site_url"),
                 "deployed_at": datetime.now(timezone.utc).isoformat()
             }}
         )
@@ -603,10 +609,13 @@ async def deploy_to_netlify(project_id: str, auto_deploy: bool = True):
         logger.info(f"✅ DEPLOYMENT SUCCESS!")
         logger.info(f"   Site ID: {deploy_result.get('site_id')}")
         logger.info(f"   Deploy URL: {deploy_result.get('deploy_url')}")
+        logger.info(f"   Preview URL: {deploy_result.get('deploy_preview_url')}")
         
         return {
             "success": True,
             "project_id": project_id,
+            "netlify_url": deploy_result.get("deploy_url"),
+            "preview_url": deploy_result.get("deploy_preview_url"),
             **deploy_result
         }
         
