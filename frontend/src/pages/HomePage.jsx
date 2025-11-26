@@ -293,20 +293,19 @@ export default function HomePage() {
       setGeneratedWebsite(websiteData);
       
       // Add success message with Netlify URL
-      const deployUrl = response.data.deploy_preview_url || response.data.instant_url;
       const successMsg = {
         role: 'assistant',
         content: `✅ I've successfully generated and deployed your website to Netlify!
 
-🌐 **Live URL**: ${deployUrl || 'Processing...'}
+🌐 **Live URL**: ${netlifyUrl || 'Processing...'}
 
 You can:
+- Click the "🌐 View Live Site" button to visit your deployed website
 - View the HTML, CSS, and JavaScript tabs to see the code
-- Visit the live URL to see it deployed
 - Download the code using the download button
 - Ask me to make any changes or improvements!
 
-${deployUrl ? `Click here to visit: ${deployUrl}` : 'The deployment is processing and will be ready shortly.'}`,
+${netlifyUrl ? `Your website is live at: ${netlifyUrl}` : 'The deployment is processing and will be ready shortly.'}`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, successMsg]);
