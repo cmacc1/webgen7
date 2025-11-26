@@ -3280,24 +3280,24 @@ document.querySelectorAll('.cta-button, .btn-primary, button[data-scroll]').forE
     button.addEventListener('click', function(e) {
         e.preventDefault();
         const contactSection = document.getElementById('contact');
-        if (contactSection) {
-            contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-});
+        if (contactSection) {{
+            contactSection.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        }}
+    }});
+}});
 
 // Generic buttons - check for data-target attribute
-document.querySelectorAll('button:not([type="submit"])').forEach(button => {
-    if (!button.hasAttribute('onclick') && !button.closest('form')) {
-        button.addEventListener('click', function(e) {
+document.querySelectorAll('button:not([type="submit"])').forEach(button => {{
+    if (!button.hasAttribute('onclick') && !button.closest('form')) {{
+        button.addEventListener('click', function(e) {{
             e.preventDefault();
             // Scroll to contact by default
             const contactSection = document.getElementById('contact');
-            if (contactSection) {
-                contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    }
+            if (contactSection) {{
+                contactSection.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+            }}
+        }});
+    }}
 });
 
 // Add ripple effect to buttons
