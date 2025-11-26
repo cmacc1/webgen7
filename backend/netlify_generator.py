@@ -542,13 +542,45 @@ SECTIONS REQUIRED (3-4 minimum with REAL IMAGES):
 4. GALLERY (optional) - Grid showcase using provided Pexels images
 5. CONTACT - Form with inline validation, input masks, gradient submit button
 
-CRITICAL CSS FILE (500+ lines):
-- @keyframes fadeInUp, slideIn, scaleIn, glowPulse
-- .fade-in-up, .fade-in-left, .fade-in-right, .scale-in animation classes
-- .hover-lift, .hover-glow, .hover-scale hover effects
-- Custom accordion, modal, toast notification styles
-- Responsive breakpoints (@media queries)
-- Smooth transitions on all interactive elements
+🚨 CRITICAL CSS FILE (MINIMUM 800 LINES - NO EXCEPTIONS):
+YOU MUST INCLUDE ALL OF THIS CSS:
+
+```css
+/* CRITICAL: Set base colors from randomized palette */
+:root {{
+    --primary: {colors['primary']};
+    --secondary: {colors['secondary']};
+    --accent: {colors['accent']};
+    --text: {colors['text']};
+    --bg: {colors['bg']};
+}}
+
+* {{ margin: 0; padding: 0; box-sizing: border-box; }}
+
+body {{
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+}}
+
+/* FULL WIDTH SECTIONS - MANDATORY */
+section {{
+    width: 100%;
+    min-width: 100vw;
+}}
+
+/* ANIMATIONS */
+@keyframes fadeInUp {{ from {{ opacity: 0; transform: translateY(40px); }} to {{ opacity: 1; transform: translateY(0); }} }}
+@keyframes slideIn {{ from {{ opacity: 0; transform: translateX(-40px); }} to {{ opacity: 1; transform: translateX(0); }} }}
+@keyframes scaleIn {{ from {{ opacity: 0; transform: scale(0.8); }} to {{ opacity: 1; transform: scale(1); }} }}
+@keyframes glowPulse {{ 0%, 100% {{ box-shadow: 0 0 20px var(--primary); }} 50% {{ box-shadow: 0 0 40px var(--accent); }} }}
+
+.fade-in-up {{ animation: fadeInUp 0.8s ease-out; }}
+.slide-in {{ animation: slideIn 0.8s ease-out; }}
+.scale-in {{ animation: scaleIn 0.8s ease-out; }}
+```
+🚨 ADD 600+ MORE LINES OF CSS WITH HOVER EFFECTS, RESPONSIVE BREAKPOINTS, CUSTOM STYLES!
 
 CRITICAL JS FILE (MUST INCLUDE ALL THESE FUNCTIONS):
 ```javascript
