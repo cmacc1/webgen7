@@ -254,8 +254,10 @@ class NetlifyGenerator:
         
         logger.info(f"🧭 Navigation: {nav_design['name']}")
         
-        # Build system prompt with navigation HTML inserted safely (not in f-string)
-        system_prompt_part1 = f"""🚨 CRITICAL: DO NOT CREATE A BASIC WHITE WEBSITE! 🚨
+        # Escape navigation HTML to prevent f-string evaluation issues
+        nav_html_escaped = nav_design['html'].replace('{', '{{').replace('}', '}}')
+        
+        system_prompt = f"""🚨 CRITICAL: DO NOT CREATE A BASIC WHITE WEBSITE! 🚨
 
 You MUST create a STUNNING, COLORFUL, MODERN website with RICH VISUALS.
 
@@ -281,12 +283,7 @@ EXAMPLE - USE THIS STRUCTURE:
 ```
 
 2️⃣ NAVIGATION (USE THIS CODE):
-"""
-        
-        # Insert navigation HTML safely (not evaluated by f-string)
-        nav_html_safe = nav_design['html']
-        
-        system_prompt_part2 = """
+{nav_html_escaped}
 
 
 3️⃣ FEATURES/SERVICES SECTION (COLORFUL CARDS):
