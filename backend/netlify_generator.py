@@ -589,30 +589,37 @@ OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "500+ LI
         # REQUIREMENT-FOCUSED user prompt
         user_prompt = f"""CREATE: "{prompt}"
 
-🎯 TEMPLATE: {template_def['name']}
-📐 LAYOUT: {template_def['layout']}
-🧭 NAVIGATION: {template_def['navigation']}
+🎯 RANDOMIZED DESIGN APPLIED:
+📐 LAYOUT: {ultra_design['layout']}
+🎨 COLOR SCHEME: {colors['name']}
+🦸 HERO: {hero_style['name']}
+🧭 NAVIGATION: {nav_design['name']}
 
 🚨 CRITICAL REQUIREMENTS:
-1. Follow {template_def['name']} layout EXACTLY as described above
-2. Implement ALL these features: {', '.join(template_def['features'][:4])}
-3. Extract ALL requirements from user prompt (sections, features, functionality)
-4. Use ICONS for features/services (NO images except hero)
-5. Make everything functional (forms, buttons, animations)
+1. Follow the RANDOMIZED design specifications provided in system prompt EXACTLY
+2. Use the specified color scheme: Primary {colors['primary']}, Secondary {colors['secondary']}, Accent {colors['accent']}
+3. Apply ALL randomized styles (buttons, cards, typography, spacing, shadows, radius, hover effects)
+4. Implement the specified layout structure: {ultra_design['layout']}
+5. Extract ALL requirements from user prompt (sections, features, functionality)
+6. Use ICONS for features/services (NO images except hero)
+7. Make everything functional (forms, buttons, animations)
 
 🖼️ IMAGE USAGE (STRICT):
-- Hero section: {'Use this exact URL: ' + hero_image if hero_image else 'Use gradient background'}
+- Hero section: {'Use this exact URL: ' + hero_image if hero_image else 'Use gradient background: ' + hero_gradient}
 - All other sections: ICONS ONLY (fa-solid fa-icon-name)
 - Example icons: fa-dumbbell, fa-utensils, fa-code, fa-heart, fa-star, fa-check-circle
 
-🎨 COLORS TO USE:
+🎨 MANDATORY COLOR CONSISTENCY:
 - Primary: {colors['primary']}
 - Secondary: {colors['secondary']}  
 - Accent: {colors['accent']}
+- Background: {colors['bg']}
+- Text: {colors['text']}
+- Gradient: {colors['gradient']}
 
 🔥 OUTPUT:
 Return complete website with index.html, styles.css, app.js in JSON format.
-Follow the {template_def['name']} template structure. Make it UNIQUE for this business.
+Apply ALL randomized design specifications. Make it UNIQUE and match the user's business needs.
 
 🚨 FINAL CHECKS:
 
