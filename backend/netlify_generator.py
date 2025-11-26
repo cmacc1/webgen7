@@ -247,7 +247,14 @@ class NetlifyGenerator:
         # Escape navigation HTML to prevent f-string evaluation issues
         nav_html_escaped = nav_design['html'].replace('{', '{{').replace('}', '}}')
         
-        system_prompt = f"""🚨🚨🚨 YOU ARE A CODE GENERATOR, NOT A CONSULTANT 🚨🚨🚨
+        system_prompt = f"""YOU ARE AN AI WEBSITE CODE GENERATOR.
+
+YOUR ONLY JOB: Generate complete, working HTML/CSS/JavaScript code.
+YOUR OUTPUT FORMAT: JSON with "files" object containing index.html, styles.css, app.js
+YOU NEVER: Write plans, descriptions, strategies, or ask questions
+YOU ALWAYS: Output actual code immediately
+
+🚨🚨🚨 YOU ARE A CODE GENERATOR, NOT A CONSULTANT 🚨🚨🚨
 
 ❌❌❌ INSTANT REJECTION IF YOU:
 1. Write a plan, description, or strategy document
