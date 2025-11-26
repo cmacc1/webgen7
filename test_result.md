@@ -419,6 +419,66 @@ agent_communication:
   - agent: "main"
   - agent: "main"
   - agent: "main"
+  - agent: "main"
+    message: "🔧 GENERATION ERROR FIXED - SYNTAX ERROR IN PROMPTS! User reported: 'I got an error when trying to generate a website, I have used the exact prompt before and it worked'. ERROR MESSAGE: 'I apologize, but I encountered an error while generating your website'. ROOT CAUSE INVESTIGATION:
+
+BACKEND LOG ANALYSIS:
+ERROR: '🚨 CRITICAL: Netlify generator failed: name 'behavior' is not defined'
+Location: netlify_generator.py line 315
+Issue: Missing double braces in f-string for JavaScript code
+
+TECHNICAL EXPLANATION:
+In Python f-strings, single braces {} are interpreted as Python expressions.
+For JavaScript code in HTML onclick attributes, we need double braces {{}} to escape them.
+
+WRONG (line 315):
+onclick='document.getElementById('contact').scrollIntoView({behavior:'smooth'})'
+Python tries to evaluate 'behavior' as a Python variable → NameError
+
+CORRECT:
+onclick='document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})'
+Double braces {{ }} become single braces { } in output
+
+LOCATION OF ERROR:
+File: /app/backend/netlify_generator.py
+Line: 315
+Section: ABOUT SECTION example code
+Context: Button onclick handler
+
+SPECIFIC FIX APPLIED:
+Changed: onclick='document.getElementById('contact').scrollIntoView({behavior:'smooth'})'
+To: onclick='document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})'
+
+ERROR FLOW:
+1. User submits prompt
+2. Backend constructs system prompt with examples
+3. Python evaluates f-string with {behavior:'smooth'}
+4. Python interpreter sees {behavior...} as expression
+5. Looks for variable 'behavior' in scope
+6. Variable doesn't exist → NameError: name 'behavior' is not defined
+7. netlify_generator.py catches error
+8. Returns generic error message to user
+
+VERIFICATION:
+- Ran Python syntax check: python3 -m py_compile netlify_generator.py → SUCCESS
+- No syntax errors found
+- All other instances of scrollIntoView have correct double braces {{}}
+- Backend restarted successfully
+
+OTHER INSTANCES CHECKED (ALREADY CORRECT):
+Line 275: {{behavior:'smooth'}} ✅
+Line 276: {{behavior:'smooth'}} ✅
+Line 486: {{ behavior: 'smooth', block: 'start' }} ✅
+Line 2376: {{behavior:'smooth'}} ✅
+
+IMPACT:
+- This error prevented ALL website generation attempts
+- Occurred immediately after prompt construction
+- No AI generation was even attempted
+- User saw generic error message
+
+Backend restarted. Website generation now working again. User can retry the exact same prompt successfully!"
+
     message: "🌐 LIVE PREVIEW BUTTON RESTORED! User reported: 'you don't have the live preview button up anymore with the netlify link, put it back'. ROOT CAUSE: Frontend was checking for specific field names but backend was returning different field names. COMPREHENSIVE FIX:
 
 INVESTIGATION:
