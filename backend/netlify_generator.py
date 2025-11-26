@@ -615,10 +615,26 @@ OUTPUT JSON ONLY: {{"files": {{"index.html": "FULL HTML", "styles.css": "500+ LI
         recommended_sections = detector.get_recommended_sections(website_type)
         section_hints = ", ".join(recommended_sections[:5]) if recommended_sections else "hero, features, about, contact"
         
-        # REQUIREMENT-FOCUSED user prompt
-        user_prompt = f"""CREATE: "{prompt}"
+        # REQUIREMENT-FOCUSED user prompt with CRITICAL RULES
+        user_prompt = f"""🚨🚨🚨 BEFORE YOU START - READ THIS:
 
-🎯 RANDOMIZED DESIGN APPLIED:
+YOU WILL BE REJECTED IF:
+❌ ANY section has a white background (use {colors['gradient']} or {colors['bg']})
+❌ Text is small (MUST use {ultra_design['typography']['heading']} class)
+❌ Content is narrow or left-aligned (MUST use max-w-7xl mx-auto)
+❌ Sections don't have {ultra_design['spacing']['section_padding']} padding
+❌ Colors don't match the palette (PRIMARY: {colors['primary']})
+
+✅ YOU MUST:
+✅ Use FULL-WIDTH sections (w-full class on every section)
+✅ Use LARGE text ({ultra_design['typography']['heading']} for titles)
+✅ CENTER everything (text-center, mx-auto)
+✅ Apply colors from palette to EVERY element
+✅ Use the gradient {colors['gradient']} for backgrounds
+
+NOW CREATE: "{prompt}"
+
+🎯 MANDATORY DESIGN SPECIFICATIONS:
 📐 LAYOUT: {ultra_design['layout']}
 🎨 COLOR SCHEME: {colors['name']}
 🦸 HERO: {hero_style['name']}
