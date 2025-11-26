@@ -325,22 +325,22 @@ EXAMPLE STRUCTURE (adapt to the randomized hero style):
 {nav_html_escaped}
 
 
-3️⃣ FEATURES/SERVICES SECTION (COLORFUL CARDS):
-EXAMPLE - USE THIS STRUCTURE:
+3️⃣ FEATURES/SERVICES SECTION - USE RANDOMIZED STYLES:
+Use: {component_mix['features']} layout
 ```html
-<section class="py-24 bg-gradient-to-br from-gray-50 to-blue-50">
-    <div class="max-w-7xl mx-auto px-6">
-        <h2 class="text-5xl md:text-6xl font-black text-center mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Our Services</h2>
-        <p class="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">Everything you need to succeed</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-star fa-3x text-white"></i>
+<section class="{ultra_design['spacing']['section_padding']} {ultra_design['section_bg_1']}">
+    <div class="max-w-7xl mx-auto {ultra_design['spacing']['container_padding']}">
+        <h2 class="{ultra_design['typography']['heading']} text-center mb-6" style="background: linear-gradient(to right, {colors['primary']}, {colors['secondary']}); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Our Services</h2>
+        <p class="{ultra_design['typography']['body']} text-center mb-16 max-w-2xl mx-auto">Everything you need to succeed</p>
+        <div class="grid {ultra_design['grid']['features']} {ultra_design['spacing']['element_gap']}">
+            <div class="group {ultra_design['card_style']} {ultra_design['hover']['card']} transition-all duration-300">
+                <div class="w-20 h-20 rounded-{ultra_design['radius']['card']}" style="background: linear-gradient(to bottom right, {colors['primary']}, {colors['secondary']});" class="flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-star {ultra_design['icon_size']} text-white"></i>
                 </div>
-                <h3 class="text-2xl font-bold mb-4 text-gray-800">Service Name</h3>
-                <p class="text-gray-600 leading-relaxed">Description of your amazing service goes here with details.</p>
+                <h3 class="{ultra_design['typography']['subheading']} mb-4" style="color: {colors['text']}">Service Name</h3>
+                <p class="{ultra_design['typography']['body']}" style="color: {colors['text']}; opacity: 0.8;">Description of your amazing service with relevant details.</p>
             </div>
-            <!-- REPEAT FOR EACH SERVICE -->
+            <!-- CREATE 3-6 SERVICE CARDS -->
         </div>
     </div>
 </section>
