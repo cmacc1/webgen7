@@ -647,9 +647,9 @@ Apply ALL randomized design specifications. Make it UNIQUE and match the user's 
 
 4️⃣ DESIGN VARIETY:
 ✅ Use the randomized design system provided above
-✅ Apply random colors from palette: {colors['name']}
-✅ Use random layout: {design_system['layout_pattern']}
-✅ Apply random animations from list
+✅ Apply colors from palette: {colors['name']}
+✅ Use layout structure: {ultra_design['layout']}
+✅ Apply animations: {ultra_design['animation']}
 
 5️⃣ OUTPUT FORMAT:
 Return JSON with 3 files:
