@@ -322,23 +322,41 @@ FAILURE TO FOLLOW = REJECTION
 ✅ CENTER content in containers
 ✅ Use PRIMARY color {colors['primary']} prominently
 
-1️⃣ HERO SECTION - COPY THIS EXACTLY, REPLACE TEXT ONLY:
+🚨 IMAGE USAGE RULES - CRITICAL:
+✅ Hero section: Use hero image ONCE ONLY: {hero_image if hero_image else 'gradient background'}
+❌ NO OTHER SECTIONS can use this image
+❌ NO image reuse anywhere on the site
+✅ All other sections: Use ICONS and GRADIENTS only
+✅ Feature cards: Icon in gradient circle (NO IMAGES)
+✅ About section: Large decorative icon with gradient (NO IMAGES)
+✅ Team section: Gradient avatar circles with initials (NO IMAGES)
+✅ Testimonials: Colored quote boxes (NO IMAGES)
+
+1️⃣ HERO SECTION - TEXT READABILITY IS CRITICAL:
 ```html
-<section class="{hero_style['html_class']} w-full" style="background: {colors['gradient']}; min-height: 100vh;">
-    <div class="max-w-7xl mx-auto {ultra_design['spacing']['container_padding']} h-full flex items-center justify-center">
-        <div class="text-center w-full">
-            <i class="fas fa-rocket {ultra_design['icon_size']} mb-6 {ultra_design['animation']}" style="color: {colors['primary']};"></i>
-            <h1 class="{ultra_design['typography']['heading']} mb-6" style="color: {colors['text']};">YOUR COMPELLING HEADLINE</h1>
-            <p class="{ultra_design['typography']['body']} mb-12 max-w-2xl mx-auto" style="color: {colors['text']}; opacity: 0.9;">Your engaging subtitle goes here</p>
-            <div class="flex {ultra_design['spacing']['element_gap']} justify-center flex-wrap">
-                <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="{ultra_design['button_style']}">Get Started</button>
-                <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="px-8 py-4 border-4 rounded-xl font-bold text-xl hover:scale-110 transition-all" style="border-color: {colors['primary']}; color: {colors['primary']};">Learn More</button>
-            </div>
+<section class="relative w-full min-h-screen flex items-center justify-center" style="background-image: url('{hero_image if hero_image else ''}'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <!-- CRITICAL: Dark overlay for text readability -->
+    <div class="absolute inset-0 bg-black" style="opacity: 0.5;"></div>
+    <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba({','.join(str(int(colors['primary'][i:i+2], 16)) for i in (1, 3, 5))}, 0.7), rgba({','.join(str(int(colors['secondary'][i:i+2], 16)) for i in (1, 3, 5))}, 0.7));"></div>
+    
+    <!-- Content with high contrast -->
+    <div class="relative z-10 text-center w-full max-w-7xl mx-auto {ultra_design['spacing']['container_padding']}">
+        <i class="fas fa-rocket {ultra_design['icon_size']} mb-6 {ultra_design['animation']} text-white drop-shadow-2xl"></i>
+        <h1 class="{ultra_design['typography']['heading']} mb-6 text-white drop-shadow-2xl" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.8);">YOUR COMPELLING HEADLINE</h1>
+        <p class="{ultra_design['typography']['body']} mb-12 max-w-2xl mx-auto text-white drop-shadow-xl" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.8);">Your engaging subtitle with perfect readability</p>
+        <div class="flex {ultra_design['spacing']['element_gap']} justify-center flex-wrap">
+            <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="{ultra_design['button_style']} shadow-2xl">Get Started</button>
+            <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="px-8 py-4 bg-white text-gray-900 border-4 rounded-xl font-bold text-xl hover:scale-110 transition-all shadow-2xl" style="border-color: {colors['primary']};">Learn More</button>
         </div>
     </div>
 </section>
 ```
-🚨 MANDATORY: Copy this structure EXACTLY for hero section!
+🚨 TEXT READABILITY REQUIREMENTS:
+✅ Dark overlay (bg-black opacity: 0.5) behind all text
+✅ Color gradient overlay for brand colors
+✅ White text with text-shadow for contrast
+✅ drop-shadow-2xl on all text elements
+✅ High z-index (z-10) for content layer
 
 2️⃣ NAVIGATION (USE THIS CODE):
 {nav_html_escaped}
