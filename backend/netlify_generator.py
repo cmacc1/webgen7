@@ -303,26 +303,35 @@ EXAMPLE - USE THIS STRUCTURE:
 </section>
 ```
 
-4️⃣ ABOUT SECTION (WITH GRADIENT BACKGROUND):
-EXAMPLE:
+4️⃣ ABOUT SECTION (NO IMAGES - USE GRADIENT DECORATIONS):
+EXAMPLE - MUST FOLLOW THIS EXACTLY:
 ```html
 <section class="py-24 bg-gradient-to-br from-purple-900 to-indigo-900 text-white">
     <div class="max-w-7xl mx-auto px-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
                 <h2 class="text-5xl md:text-6xl font-black mb-6">About Us</h2>
-                <p class="text-xl leading-relaxed mb-6 opacity-90">Your compelling story goes here...</p>
-                <button class="px-8 py-4 bg-white text-purple-900 rounded-xl font-bold hover:scale-105 hover:shadow-2xl transition-all">Learn More</button>
+                <p class="text-xl leading-relaxed mb-6 opacity-90">Your compelling story goes here with rich details about your business and what makes you unique...</p>
+                <button onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" class="px-8 py-4 bg-white text-purple-900 rounded-xl font-bold hover:scale-105 hover:shadow-2xl transition-all">Learn More</button>
             </div>
+            <!-- IMPORTANT: NO <img> TAG! Use gradient decoration instead -->
             <div class="relative h-96 rounded-3xl overflow-hidden shadow-2xl">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    <i class="fas fa-building text-9xl text-white opacity-30"></i>
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center">
+                    <i class="fas fa-star text-9xl text-white opacity-30 animate-pulse"></i>
                 </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             </div>
         </div>
     </div>
 </section>
 ```
+
+🚨 CRITICAL: ABOUT SECTION RULES:
+✅ Use gradient background decoration (NO <img> tags)
+✅ Large decorative icon in gradient box
+✅ Text content on left, decoration on right
+✅ NO attempts to load images
+✅ Only gradients and icons for visual interest
 
 5️⃣ CONTACT SECTION (COLORFUL FORM):
 EXAMPLE:
