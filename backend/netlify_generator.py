@@ -254,55 +254,120 @@ class NetlifyGenerator:
         
         logger.info(f"🧭 Navigation: {nav_design['name']}")
         
-        system_prompt = f"""You are an EXPERT web designer. Create a HIGH-QUALITY, FULLY FUNCTIONAL website.
+        system_prompt = f"""🚨 CRITICAL: DO NOT CREATE A BASIC WHITE WEBSITE! 🚨
 
-🎯 BUSINESS: {website_type.replace('_', ' ').title()} - {business_details.get('name', 'Professional Business')}
-📐 TEMPLATE: {template_def['name']}
+You MUST create a STUNNING, COLORFUL, MODERN website with RICH VISUALS.
 
-🚨 CRITICAL REQUIREMENTS - MUST FOLLOW:
+BUSINESS: {website_type.replace('_', ' ').title()} - {business_details.get('name', 'Professional Business')}
 
-1️⃣ NAVIGATION (USE THIS EXACT CODE):
+🚨 MANDATORY DESIGN RULES - NO EXCEPTIONS:
+
+1️⃣ HERO SECTION (MUST BE FULL-SCREEN WITH IMAGE/GRADIENT):
+EXAMPLE - USE THIS STRUCTURE:
+```html
+<section class="relative min-h-screen flex items-center justify-center" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{hero_image if hero_image else ''}'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-900/80 to-purple-900/80"></div>
+    <div class="relative z-10 text-center px-6 max-w-5xl mx-auto text-white">
+        <i class="fas fa-star text-8xl mb-6 animate-pulse"></i>
+        <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">YOUR HEADLINE HERE</h1>
+        <p class="text-2xl md:text-3xl mb-12 opacity-90">Subtitle goes here</p>
+        <div class="flex gap-6 justify-center flex-wrap">
+            <button onclick="document.getElementById('contact').scrollIntoView({{behavior:'smooth'}})" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-bold text-xl hover:scale-110 hover:shadow-2xl transition-all">Get Started</button>
+            <button onclick="document.getElementById('about').scrollIntoView({{behavior:'smooth'}})" class="px-12 py-5 bg-white text-gray-900 rounded-full font-bold text-xl hover:scale-110 hover:shadow-2xl transition-all">Learn More</button>
+        </div>
+    </div>
+</section>
+```
+
+2️⃣ NAVIGATION (USE THIS CODE):
 {nav_design['html']}
 
-NAVIGATION CSS:
-{nav_design.get('css', '')}
+3️⃣ FEATURES/SERVICES SECTION (COLORFUL CARDS):
+EXAMPLE - USE THIS STRUCTURE:
+```html
+<section class="py-24 bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-5xl md:text-6xl font-black text-center mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Our Services</h2>
+        <p class="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">Everything you need to succeed</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="group bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-star fa-3x text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-800">Service Name</h3>
+                <p class="text-gray-600 leading-relaxed">Description of your amazing service goes here with details.</p>
+            </div>
+            <!-- REPEAT FOR EACH SERVICE -->
+        </div>
+    </div>
+</section>
+```
 
-NAVIGATION JS (if needed):
-{nav_design.get('js', '')}
+4️⃣ ABOUT SECTION (WITH GRADIENT BACKGROUND):
+EXAMPLE:
+```html
+<section class="py-24 bg-gradient-to-br from-purple-900 to-indigo-900 text-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-5xl md:text-6xl font-black mb-6">About Us</h2>
+                <p class="text-xl leading-relaxed mb-6 opacity-90">Your compelling story goes here...</p>
+                <button class="px-8 py-4 bg-white text-purple-900 rounded-xl font-bold hover:scale-105 hover:shadow-2xl transition-all">Learn More</button>
+            </div>
+            <div class="relative h-96 rounded-3xl overflow-hidden shadow-2xl">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                    <i class="fas fa-building text-9xl text-white opacity-30"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+```
 
-2️⃣ HERO SECTION (PROFESSIONAL IMAGE):
-- Background image: {hero_image if hero_image else 'gradient'}
-- Image CSS: background-image: url('{hero_image}'); background-size: cover; background-position: center;
-- Must be RELEVANT to {website_type} business
-- Add dark overlay: background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{hero_image}');
+5️⃣ CONTACT SECTION (COLORFUL FORM):
+EXAMPLE:
+```html
+<section id="contact" class="py-24 bg-gradient-to-br from-blue-50 to-purple-50">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-5xl md:text-6xl font-black text-center mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Get In Touch</h2>
+        <form onsubmit="handleFormSubmit(event)" class="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
+            <div class="mb-6">
+                <input type="text" placeholder="Your Name" required class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-lg">
+            </div>
+            <div class="mb-6">
+                <input type="email" placeholder="Your Email" required class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-lg">
+            </div>
+            <div class="mb-6">
+                <textarea placeholder="Your Message" required rows="5" class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-lg"></textarea>
+            </div>
+            <button type="submit" class="w-full px-12 py-5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold text-xl hover:scale-105 hover:shadow-2xl transition-all">Send Message</button>
+        </form>
+    </div>
+</section>
+```
 
-3️⃣ RESPONSIVE DESIGN (MUST BE PERFECT):
-- Mobile (< 768px): Stack everything vertically, full-width
-- Tablet (768px - 1024px): 2-column grids
-- Desktop (> 1024px): 3-4 column grids
-- Use Tailwind responsive classes: sm: md: lg: xl:
-- Test all breakpoints
-- Ensure symmetry and even spacing
+6️⃣ COLORS TO USE:
+- Primary: {colors['primary']}
+- Secondary: {colors['secondary']}
+- Accent: {colors['accent']}
+- Use gradients: from-blue-500 to-purple-600, from-purple-900 to-indigo-900
+- Background sections: bg-gray-50, bg-blue-50, bg-purple-50, bg-gradient-to-br
 
-4️⃣ BUTTONS (ALL MUST WORK):
-- Navigation links: onclick="smoothScroll('#section-id')"
-- CTA buttons: onclick="document.getElementById('contact').scrollIntoView({{behavior: 'smooth'}})"
-- Forms: onsubmit="handleFormSubmit(event)"
-- Menu toggle: onclick="toggleMobileMenu()"
-- All buttons need hover states
+7️⃣ MANDATORY VISUAL ELEMENTS:
+✅ Gradients on EVERY section (bg-gradient-to-br)
+✅ Shadows on cards (shadow-xl, shadow-2xl)
+✅ Hover effects (hover:-translate-y-2, hover:scale-110)
+✅ Icons with gradient backgrounds
+✅ Large, bold typography (text-5xl, text-6xl, font-black)
+✅ Rounded corners (rounded-xl, rounded-2xl)
+✅ Colorful buttons (gradient backgrounds)
 
-5️⃣ DESIGN QUALITY (HIGH-END):
-- Colors: Primary={colors['primary']}, Secondary={colors['secondary']}, Accent={colors['accent']}
-- Typography: Large headings (text-5xl, text-6xl), readable body (text-lg)
-- Spacing: Generous padding (p-8, p-12), margins (mb-16, mb-24)
-- Shadows: shadow-xl, shadow-2xl for depth
-- Borders: rounded-xl, rounded-2xl for modern look
-- Transitions: transition-all duration-300 on hover states
-
-6️⃣ ICONS (NOT IMAGES):
-- Features/Services: Use Font Awesome icons
-- Example: <i class="fas fa-dumbbell fa-3x text-blue-600"></i>
-- Wrap in gradient background circle for style
+🚨 WHAT NOT TO DO:
+❌ NO plain white background for entire site
+❌ NO basic black text on white
+❌ NO minimal design
+❌ NO text just going down the page
+❌ NO boring layout
 
 CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
 <script src="https://cdn.tailwindcss.com"></script>
