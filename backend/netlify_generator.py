@@ -330,6 +330,57 @@ FAILURE TO FOLLOW = AUTOMATIC REJECTION
 
 🎯 USER'S REQUEST: {prompt}
 
+🚨🚨🚨 CRITICAL: ANALYZE THE USER'S REQUEST AND GENERATE APPROPRIATE FEATURES 🚨🚨🚨
+
+READ THE USER'S PROMPT CAREFULLY AND IMPLEMENT THE RIGHT FEATURES:
+
+If user mentions: "buy", "purchase", "shop", "store", "sell", "product", "pricing", "plans", "membership", "subscription", "checkout", "payment"
+➡️ YOU MUST CREATE: Purchase/checkout form with product selection, pricing, payment fields (card, CVV, expiry)
+➡️ DO NOT create: Generic contact form only
+➡️ INCLUDE: Pricing section/table, product cards, "Buy Now" buttons, checkout flow
+
+If user mentions: "booking", "appointment", "schedule", "consultation", "call", "meeting", "calendar"
+➡️ YOU MUST CREATE: Calendar integration (Calendly iframe), time slot selection, booking form
+➡️ DO NOT create: Generic contact form only
+➡️ INCLUDE: Available times, booking confirmation, calendar embed
+
+If user mentions: "VSL", "video", "watch", "demo video", "overview video"
+➡️ YOU MUST CREATE: Video section with 16:9 iframe (YouTube/Vimeo), video CTA below
+➡️ DO NOT create: Generic hero without video
+➡️ INCLUDE: Video container, play tracking, sticky CTA after video
+
+If user mentions: "two-step", "multi-step", "lead capture", "sign up form", "registration"
+➡️ YOU MUST CREATE: Two-step form (Step 1: email, Step 2: full details)
+➡️ DO NOT create: Single-step contact form
+➡️ INCLUDE: Step progression, back/continue buttons, validation at each step
+
+If user mentions: "dashboard", "profile", "account", "user settings", "login"
+➡️ YOU MUST CREATE: User dashboard with sidebar, profile section, settings page
+➡️ DO NOT create: Generic landing page
+➡️ INCLUDE: Sidebar navigation, user avatar, stats cards, settings forms
+
+If user mentions: "e-commerce", "shopping cart", "online store", "digital products"
+➡️ YOU MUST CREATE: Product grid, shopping cart, checkout page, purchase flow
+➡️ DO NOT create: Generic service page
+➡️ INCLUDE: Product cards with "Add to Cart", cart icon, checkout form
+
+If user mentions: "FAQ", "questions", "help"
+➡️ YOU MUST CREATE: FAQ accordion with expandable questions
+➡️ DO NOT create: Generic text section
+➡️ INCLUDE: Click-to-expand functionality, toggle icons
+
+GENERIC CONTACT FORM is ONLY for: "contact", "get in touch", "reach out", "message us" (without other features)
+
+🚨 MATCH THE WEBSITE TO THE REQUEST:
+- Restaurant → Menu with prices, online ordering, reservation form
+- Gym/Fitness → Class schedule, membership pricing, sign up form
+- Agency → Service packages, pricing tiers, consultation booking
+- SaaS → Feature comparison, pricing plans, free trial signup
+- E-commerce → Product catalog, shopping cart, checkout
+- Coaching → About coach, packages/pricing, booking calendar
+
+DO NOT GENERATE GENERIC TEMPLATES! CUSTOMIZE BASED ON USER'S SPECIFIC REQUEST!
+
 🎲 MANDATORY DESIGN SPECIFICATIONS - YOU MUST USE ALL OF THESE:
 
 📐 LAYOUT STRUCTURE: {ultra_design['layout']}
