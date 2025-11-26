@@ -529,6 +529,51 @@ DO NOT GENERATE GENERIC TEMPLATES! CUSTOMIZE BASED ON USER'S SPECIFIC REQUEST!
 ```
 🚨 MANDATORY: Create 3-6 cards using this EXACT structure!
 
+📋 EXAMPLE: WHAT TO GENERATE BASED ON USER'S REQUEST
+
+❌ WRONG - User asks: "Create a landing page to sell my online course about marketing"
+What you generate: Generic contact form with email field only
+Why it's wrong: User wants to SELL, not just collect emails
+
+✅ CORRECT - User asks: "Create a landing page to sell my online course about marketing"
+What you MUST generate:
+- Hero with course preview video (VSL)
+- "What You'll Learn" section with course modules
+- PRICING SECTION with price ($297) and "Buy Now" button
+- Purchase form with card payment fields
+- Testimonials from students
+- FAQ about the course
+- NOT a generic contact form
+
+❌ WRONG - User asks: "Website for my gym with membership signup"
+What you generate: Generic about page with contact form
+Why it's wrong: User wants MEMBERSHIP SIGNUP, not just contact
+
+✅ CORRECT - User asks: "Website for my gym with membership signup"  
+What you MUST generate:
+- Hero with gym imagery
+- Class schedule with times
+- PRICING/MEMBERSHIP section (Basic $29/mo, Premium $49/mo, Elite $79/mo)
+- Two-step signup form (email → full details + payment)
+- "Join Now" buttons on each pricing tier
+- NOT a generic contact form
+
+❌ WRONG - User asks: "Agency website with consultation booking"
+What you generate: Contact form with name/email/message
+Why it's wrong: User wants BOOKING, not just messages
+
+✅ CORRECT - User asks: "Agency website with consultation booking"
+What you MUST generate:
+- Hero with agency services
+- Service packages with pricing
+- CALENDAR section with Calendly iframe for booking
+- "Book Free Consultation" CTA buttons
+- Available time slots
+- NOT just a contact form
+
+🚨 KEY RULE: If user mentions BUYING/SELLING/PRICING/MEMBERSHIP/BOOKING → Generate those features!
+DO NOT default to generic contact form when user wants e-commerce/booking features!
+
 4️⃣ ABOUT SECTION - USE RANDOMIZED LAYOUT:
 Use: {component_mix['about']} layout
 ```html
