@@ -341,26 +341,39 @@ FAILURE TO FOLLOW = REJECTION
 {nav_html_escaped}
 
 
-3️⃣ FEATURES/SERVICES SECTION - USE RANDOMIZED STYLES:
-Use: {component_mix['features']} layout
+2️⃣ FEATURES SECTION - COPY THIS EXACTLY, ADD MORE CARDS:
 ```html
-<section class="{ultra_design['spacing']['section_padding']} {ultra_design['section_bg_1']}">
-    <div class="max-w-7xl mx-auto {ultra_design['spacing']['container_padding']}">
-        <h2 class="{ultra_design['typography']['heading']} text-center mb-6" style="background: linear-gradient(to right, {colors['primary']}, {colors['secondary']}); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Our Services</h2>
-        <p class="{ultra_design['typography']['body']} text-center mb-16 max-w-2xl mx-auto">Everything you need to succeed</p>
-        <div class="grid {ultra_design['grid']['features']} {ultra_design['spacing']['element_gap']}">
-            <div class="group {ultra_design['card_style']} {ultra_design['hover']['card']} transition-all duration-300">
-                <div class="w-20 h-20 rounded-{ultra_design['radius']['card']}" style="background: linear-gradient(to bottom right, {colors['primary']}, {colors['secondary']});" class="flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<section class="{ultra_design['spacing']['section_padding']} w-full" style="background: {colors['bg'] if colors['bg'] != '#ffffff' else colors['gradient']};">
+    <div class="max-w-7xl mx-auto {ultra_design['spacing']['container_padding']} w-full">
+        <h2 class="{ultra_design['typography']['heading']} text-center mb-6" style="color: {colors['primary']};">Our Amazing Services</h2>
+        <p class="{ultra_design['typography']['body']} text-center mb-16 max-w-3xl mx-auto" style="color: {colors['text']};">Everything you need to succeed in your business</p>
+        <div class="grid {ultra_design['grid']['features']} {ultra_design['spacing']['element_gap']} w-full">
+            <div class="{ultra_design['card_style']} p-8 text-center">
+                <div class="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center" style="background: {colors['gradient']};">
+                    <i class="fas fa-rocket {ultra_design['icon_size']} text-white"></i>
+                </div>
+                <h3 class="{ultra_design['typography']['subheading']} mb-4" style="color: {colors['primary']};">Service Title</h3>
+                <p class="{ultra_design['typography']['body']}" style="color: {colors['text']};">Detailed description of this amazing service that helps customers.</p>
+            </div>
+            <div class="{ultra_design['card_style']} p-8 text-center">
+                <div class="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center" style="background: {colors['gradient']};">
                     <i class="fas fa-star {ultra_design['icon_size']} text-white"></i>
                 </div>
-                <h3 class="{ultra_design['typography']['subheading']} mb-4" style="color: {colors['text']}">Service Name</h3>
-                <p class="{ultra_design['typography']['body']}" style="color: {colors['text']}; opacity: 0.8;">Description of your amazing service with relevant details.</p>
+                <h3 class="{ultra_design['typography']['subheading']} mb-4" style="color: {colors['primary']};">Another Service</h3>
+                <p class="{ultra_design['typography']['body']}" style="color: {colors['text']};">More details about what makes this service special.</p>
             </div>
-            <!-- CREATE 3-6 SERVICE CARDS -->
+            <div class="{ultra_design['card_style']} p-8 text-center">
+                <div class="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center" style="background: {colors['gradient']};">
+                    <i class="fas fa-heart {ultra_design['icon_size']} text-white"></i>
+                </div>
+                <h3 class="{ultra_design['typography']['subheading']} mb-4" style="color: {colors['primary']};">Third Service</h3>
+                <p class="{ultra_design['typography']['body']}" style="color: {colors['text']};">Compelling description that engages the visitor.</p>
+            </div>
         </div>
     </div>
 </section>
 ```
+🚨 MANDATORY: Create 3-6 cards using this EXACT structure!
 
 4️⃣ ABOUT SECTION - USE RANDOMIZED LAYOUT:
 Use: {component_mix['about']} layout
