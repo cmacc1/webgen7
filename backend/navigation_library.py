@@ -150,43 +150,109 @@ NAVIGATION_DESIGNS = [
     
     {
         "id": "sidebar_collapsible",
-        "name": "Collapsible Sidebar",
+        "name": "Collapsible Sidebar Premium",
         "type": "sidebar",
-        "html": """<nav id="collapsible-sidebar" class="fixed left-0 top-0 h-full bg-gray-900 text-white transition-all duration-300 z-50" style="width: 240px;">
-    <button onclick="toggleSidebar()" class="absolute -right-4 top-6 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-        <i class="fas fa-angle-left" id="sidebar-arrow"></i>
-    </button>
-    <div class="p-6">
-        <div class="text-2xl font-bold mb-12 sidebar-text">Logo</div>
-        <div class="space-y-2">
-            <a href="#home" class="sidebar-link-coll">
-                <i class="fas fa-home text-xl"></i>
-                <span class="sidebar-text ml-3">Home</span>
-            </a>
-            <a href="#about" class="sidebar-link-coll">
-                <i class="fas fa-info-circle text-xl"></i>
-                <span class="sidebar-text ml-3">About</span>
-            </a>
-            <a href="#services" class="sidebar-link-coll">
-                <i class="fas fa-briefcase text-xl"></i>
-                <span class="sidebar-text ml-3">Services</span>
-            </a>
-            <a href="#contact" class="sidebar-link-coll">
-                <i class="fas fa-envelope text-xl"></i>
-                <span class="sidebar-text ml-3">Contact</span>
-            </a>
+        "html": """<!-- Toggle Button -->
+<button onclick="toggleCollapsibleSidebar()" class="fixed top-6 left-6 z-[60] w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-white shadow-2xl hover:scale-110 hover:rotate-12 transition-all">
+    <i class="fas fa-bars text-2xl" id="collapse-icon"></i>
+</button>
+
+<!-- Collapsible Sidebar -->
+<nav id="collapsible-sidebar" class="fixed left-0 top-0 h-full bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white transition-all duration-500 z-50 shadow-2xl" style="width: 320px;">
+    <!-- Logo Area -->
+    <div class="p-8 border-b-2 border-pink-500/40 sidebar-content">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-400 rounded-xl flex items-center justify-center">
+                <i class="fas fa-star text-white text-2xl"></i>
+            </div>
+            <div class="sidebar-text">
+                <div class="text-2xl font-black">BRAND</div>
+                <div class="text-xs text-purple-300">Premium</div>
+            </div>
         </div>
     </div>
-</nav>""",
-        "css": """.sidebar-link-coll { @apply flex items-center px-4 py-3 rounded-lg hover:bg-gray-800 transition-all; }
-#collapsible-sidebar.collapsed { width: 80px; }
-#collapsible-sidebar.collapsed .sidebar-text { @apply hidden; }""",
-        "js": """function toggleSidebar() {
+    
+    <!-- Navigation Links -->
+    <div class="p-6 space-y-3 sidebar-content">
+        <a href="#home" class="group">
+            <div class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/10 border-2 border-purple-400/30 hover:border-purple-300 hover:bg-white/20 transition-all backdrop-blur-sm">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-home text-white text-lg"></i>
+                </div>
+                <span class="sidebar-text text-lg font-bold">Home</span>
+            </div>
+        </a>
+        <a href="#about" class="group">
+            <div class="flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/10 border-2 border-transparent hover:border-pink-400/50 transition-all">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-info-circle text-white text-lg"></i>
+                </div>
+                <span class="sidebar-text text-lg font-bold">About</span>
+            </div>
+        </a>
+        <a href="#services" class="group">
+            <div class="flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/10 border-2 border-transparent hover:border-blue-400/50 transition-all">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-briefcase text-white text-lg"></i>
+                </div>
+                <span class="sidebar-text text-lg font-bold">Services</span>
+            </div>
+        </a>
+        <a href="#contact" class="group">
+            <div class="flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/10 border-2 border-transparent hover:border-green-400/50 transition-all">
+                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-envelope text-white text-lg"></i>
+                </div>
+                <span class="sidebar-text text-lg font-bold">Contact</span>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Bottom Section -->
+    <div class="absolute bottom-0 left-0 right-0 p-6 border-t-2 border-pink-500/40 sidebar-content">
+        <button class="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 rounded-2xl font-bold shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
+            Get Started
+        </button>
+    </div>
+    
+    <!-- Decorative Edge -->
+    <div class="absolute right-0 top-0 bottom-0 w-2 bg-gradient-to-b from-pink-500 via-purple-500 to-indigo-500 shadow-lg"></div>
+</nav>
+
+<!-- Main Content with Adjustment -->
+<div id="main-content-collapsible" class="transition-all duration-500" style="margin-left: 320px;">
+    <!-- Content -->
+</div>""",
+        "css": """#collapsible-sidebar.collapsed { width: 90px; }
+#collapsible-sidebar.collapsed .sidebar-text { @apply hidden; }
+#collapsible-sidebar.collapsed .sidebar-content { @apply px-4; }
+#main-content-collapsible.sidebar-collapsed { margin-left: 90px; }
+@media (max-width: 768px) {
+    #collapsible-sidebar { transform: translateX(-100%); }
+    #collapsible-sidebar.mobile-open { transform: translateX(0); }
+    #main-content-collapsible { margin-left: 0 !important; }
+}""",
+        "js": """function toggleCollapsibleSidebar() {
     const sidebar = document.getElementById('collapsible-sidebar');
-    const arrow = document.getElementById('sidebar-arrow');
+    const content = document.getElementById('main-content-collapsible');
+    const icon = document.getElementById('collapse-icon');
+    
     sidebar.classList.toggle('collapsed');
-    arrow.classList.toggle('fa-angle-left');
-    arrow.classList.toggle('fa-angle-right');
+    content.classList.toggle('sidebar-collapsed');
+    
+    // Mobile toggle
+    if (window.innerWidth <= 768) {
+        sidebar.classList.toggle('mobile-open');
+    }
+    
+    // Icon animation
+    if (sidebar.classList.contains('collapsed')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-angle-right');
+    } else {
+        icon.classList.remove('fa-angle-right');
+        icon.classList.add('fa-bars');
+    }
 }"""
     },
     
