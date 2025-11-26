@@ -806,19 +806,32 @@ Apply ALL randomized design specifications. Make it UNIQUE and match the user's 
 ✅ Apply animations: {ultra_design['animation']}
 ✅ Use spacing: {ultra_design['spacing']['section_padding']}
 
-5️⃣ OUTPUT FORMAT:
-Return JSON with 3 files:
-- index.html: Complete HTML with ALL sections from prompt
-- styles.css: 400+ lines with animations, hover effects, responsive
-- app.js: Interactive features (scroll, forms, animations)
+🚨🚨🚨 CRITICAL: YOU MUST OUTPUT CODE, NOT A PLAN 🚨🚨🚨
 
-EXAMPLE ICON USAGE:
-Fitness: fa-dumbbell, fa-heart-pulse, fa-trophy
-Restaurant: fa-utensils, fa-burger, fa-martini-glass
-Tech: fa-code, fa-server, fa-rocket
-Business: fa-briefcase, fa-chart-line, fa-handshake
-Medical: fa-stethoscope, fa-pills, fa-user-doctor
-✅ Make it industry-appropriate, visually STUNNING, with smooth animations!"""
+❌ DO NOT WRITE:
+- "Here's the plan"
+- "Next steps"
+- "What I need from you"
+- "Deliverables"
+- "I'll build"
+- "Let me create"
+- Any descriptions or explanations
+
+✅ ONLY OUTPUT THIS EXACT JSON FORMAT:
+{{
+  "files": {{
+    "index.html": "<COMPLETE 1000+ LINE HTML CODE HERE>",
+    "styles.css": "<COMPLETE 800+ LINE CSS CODE HERE>",
+    "app.js": "<COMPLETE 200+ LINE JAVASCRIPT CODE HERE>"
+  }}
+}}
+
+🚨 FINAL WARNING:
+If your response does NOT contain actual HTML/CSS/JS code in JSON format, you have FAILED.
+If your response contains phrases like "strategy", "plan", "deliverables", you have FAILED.
+If you ask questions or request more info, you have FAILED.
+
+GENERATE THE COMPLETE WEBSITE CODE NOW!"""
 
         # Try multiple models if one fails
         # ONLY use models that actually work with this Emergent API key
