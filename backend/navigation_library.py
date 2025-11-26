@@ -36,31 +36,87 @@ NAVIGATION_DESIGNS = [
     
     {
         "id": "sidebar_fixed_left",
-        "name": "Sidebar Fixed Left",
+        "name": "Sidebar Fixed Left Premium",
         "type": "sidebar",
-        "html": """<nav class="fixed left-0 top-0 h-full w-64 bg-gray-900 text-white flex flex-col p-6 z-50">
-    <div class="text-2xl font-bold mb-12">Logo</div>
-    <div class="flex-1 space-y-2">
-        <a href="#home" class="sidebar-link">
-            <i class="fas fa-home mr-3"></i>Home
+        "html": """<!-- Hamburger Toggle Button -->
+<button onclick="toggleSidebar()" class="fixed top-6 left-6 z-[60] w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-xl hover:scale-110 transition-all">
+    <i class="fas fa-bars text-xl" id="sidebar-icon"></i>
+</button>
+
+<!-- Sidebar Navigation -->
+<nav id="main-sidebar" class="fixed left-0 top-0 h-full w-80 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col shadow-2xl z-50 transition-transform duration-300">
+    <!-- Logo Section with Border -->
+    <div class="p-8 border-b-2 border-blue-500/30">
+        <div class="text-3xl font-black bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">LOGO</div>
+        <p class="text-sm text-gray-400 mt-2">Premium Navigation</p>
+    </div>
+    
+    <!-- Navigation Links with Premium Styling -->
+    <div class="flex-1 p-6 space-y-3 overflow-y-auto">
+        <a href="#home" class="sidebar-link-premium group">
+            <div class="flex items-center gap-4 px-6 py-4 rounded-xl bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-2 border-blue-500/30 hover:border-blue-400 hover:from-blue-600/40 hover:to-purple-600/40 transition-all">
+                <i class="fas fa-home text-2xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-lg font-bold">Home</span>
+            </div>
         </a>
-        <a href="#about" class="sidebar-link">
-            <i class="fas fa-info-circle mr-3"></i>About
+        <a href="#about" class="sidebar-link-premium group">
+            <div class="flex items-center gap-4 px-6 py-4 rounded-xl border-2 border-transparent hover:border-purple-500/50 hover:bg-purple-600/20 transition-all">
+                <i class="fas fa-info-circle text-2xl text-purple-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-lg font-bold">About</span>
+            </div>
         </a>
-        <a href="#services" class="sidebar-link">
-            <i class="fas fa-briefcase mr-3"></i>Services
+        <a href="#services" class="sidebar-link-premium group">
+            <div class="flex items-center gap-4 px-6 py-4 rounded-xl border-2 border-transparent hover:border-blue-500/50 hover:bg-blue-600/20 transition-all">
+                <i class="fas fa-briefcase text-2xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-lg font-bold">Services</span>
+            </div>
         </a>
-        <a href="#contact" class="sidebar-link">
-            <i class="fas fa-envelope mr-3"></i>Contact
+        <a href="#contact" class="sidebar-link-premium group">
+            <div class="flex items-center gap-4 px-6 py-4 rounded-xl border-2 border-transparent hover:border-green-500/50 hover:bg-green-600/20 transition-all">
+                <i class="fas fa-envelope text-2xl text-green-400 group-hover:scale-110 transition-transform"></i>
+                <span class="text-lg font-bold">Contact</span>
+            </div>
         </a>
     </div>
-    <div class="mt-auto pt-6 border-t border-gray-700">
-        <button class="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">Get Started</button>
+    
+    <!-- Bottom CTA with Visual Separator -->
+    <div class="p-6 border-t-2 border-purple-500/30">
+        <button onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl font-bold text-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all">
+            Get Started →
+        </button>
     </div>
+    
+    <!-- Visual Edge Decoration -->
+    <div class="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-purple-500 to-blue-500"></div>
 </nav>
-<div class="ml-64"><!-- Content goes here --></div>""",
-        "css": """.sidebar-link { @apply block px-4 py-3 rounded-lg hover:bg-gray-800 transition-all; }
-body { @apply ml-64; }"""
+
+<!-- Main Content Area (adjusts for sidebar) -->
+<div id="main-content" class="ml-80 transition-all duration-300">
+    <!-- Content goes here -->
+</div>""",
+        "css": """.sidebar-link-premium { @apply block transition-all duration-300; }
+#main-sidebar.collapsed { transform: translateX(-100%); }
+#main-content.sidebar-collapsed { @apply ml-0; }
+@media (max-width: 768px) {
+    #main-sidebar { transform: translateX(-100%); }
+    #main-content { @apply ml-0; }
+}""",
+        "js": """function toggleSidebar() {
+    const sidebar = document.getElementById('main-sidebar');
+    const content = document.getElementById('main-content');
+    const icon = document.getElementById('sidebar-icon');
+    
+    sidebar.classList.toggle('collapsed');
+    content.classList.toggle('sidebar-collapsed');
+    
+    if (sidebar.classList.contains('collapsed')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+    } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+    }
+}"""
     },
     
     {
