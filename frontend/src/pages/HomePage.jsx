@@ -282,11 +282,14 @@ export default function HomePage() {
         created_at: project.created_at
       };
       
-      console.log('Website data extracted:', {
+      console.log('✅ Website generation complete!');
+      console.log('Backend response:', response.data);
+      console.log('Extracted data:', {
         hasHTML: !!websiteData.html_content,
         hasCSS: !!websiteData.css_content,
         hasJS: !!websiteData.js_content,
-        deployUrl: websiteData.netlify_deploy_url,
+        netlifyUrl: netlifyUrl,
+        deploySuccess: websiteData.netlify_deployed,
         fileCount: Object.keys(files).length
       });
       
