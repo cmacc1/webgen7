@@ -618,7 +618,7 @@ Use: {component_mix['about']} layout
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Feature 2</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Feature 3</li>
                 </ul>
-                <button onclick="openPurchaseForm('basic')" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
+                <button onclick="document.getElementById('purchase').scrollIntoView({{behavior:'smooth'}})" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
             </div>
             <div class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-primary transform scale-105">
                 <div class="text-center mb-4"><span class="bg-primary text-white px-4 py-1 rounded-full text-sm font-bold">MOST POPULAR</span></div>
@@ -629,7 +629,7 @@ Use: {component_mix['about']} layout
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Pro Feature 1</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Pro Feature 2</li>
                 </ul>
-                <button onclick="openPurchaseForm('pro')" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
+                <button onclick="document.getElementById('purchase').scrollIntoView({{behavior:'smooth'}})" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
             </div>
             <div class="bg-white p-8 rounded-3xl shadow-xl">
                 <h3 class="text-2xl font-bold mb-4" style="color: {colors['primary']};">Enterprise</h3>
@@ -639,7 +639,7 @@ Use: {component_mix['about']} layout
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Enterprise Feature 1</li>
                     <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Priority Support</li>
                 </ul>
-                <button onclick="openPurchaseForm('enterprise')" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
+                <button onclick="document.getElementById('purchase').scrollIntoView({{behavior:'smooth'}})" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
             </div>
         </div>
     </div>
