@@ -388,16 +388,50 @@ Section 2: Dark gradient (bg-gradient-to-br from-purple-900 to-indigo-900 text-w
 Section 3: Light gradient (bg-gradient-to-br from-blue-50 to-purple-50)
 Section 4: Dark gradient (bg-gradient-to-br from-indigo-900 to-blue-900 text-white)
 
-9️⃣ FINAL CHECKLIST BEFORE GENERATING:
-✅ Hero has full-screen image or dark gradient
-✅ Navigation is included from template
-✅ At least 4 sections with alternating colors
+9️⃣ SIDEBAR CONTENT LAYOUT (IF SIDEBAR NAV USED):
+🚨 CRITICAL: When sidebar navigation is used, content MUST adjust properly:
+```html
+<!-- If sidebar is 320px wide, main content has margin-left: 320px -->
+<div id="main-content" class="ml-80 transition-all duration-300">
+    <section class="min-h-screen"><!-- Hero Section --></section>
+    <section class="py-24"><!-- Features Section --></section>
+    <!-- All content inside this wrapper -->
+</div>
+```
+
+SIDEBAR LAYOUT RULES:
+✅ Main content wrapper has margin-left equal to sidebar width
+✅ Content remains centered within remaining space
+✅ Grids use max-w-7xl mx-auto px-6 for symmetry
+✅ Mobile: sidebar collapses, content goes full-width
+✅ Responsive: @media (max-width: 768px) { margin-left: 0; }
+
+🔟 IMAGE RULES (SUPER CRITICAL - NO EXCEPTIONS):
+🚨 ONLY HERO SECTION CAN HAVE IMAGE:
+✅ Hero: background-image: url('{hero_image}') - YES
+❌ About section: NO <img> tag - Use gradient decoration
+❌ Features section: NO images - Use icon cards
+❌ Team section: NO images - Use gradient avatar circles
+❌ Gallery section: NO images - Use gradient placeholders or icons
+❌ Testimonials: NO images - Use colored quote boxes
+
+IF YOU ATTEMPT TO ADD <img> TAG OUTSIDE HERO, IT WILL FAIL.
+Use gradients and icons for ALL visual decorations except hero.
+
+1️⃣1️⃣ FINAL CHECKLIST BEFORE GENERATING:
+✅ Hero has full-screen background image with gradient overlay
+✅ Navigation included with premium styling (boxes, borders, large text)
+✅ If sidebar nav: main content has proper margin-left
+✅ At least 4 sections with alternating light/dark gradients
 ✅ Every card has shadow-xl or shadow-2xl
-✅ Every button has gradient background
-✅ All text is readable (white on dark, dark on light)
-✅ Icons wrapped in gradient circles
-✅ Forms have colorful styling
-✅ Mobile responsive (grid-cols-1 md:grid-cols-2 lg:grid-cols-3)
+✅ Every button has gradient background (from-blue-500 to-purple-600)
+✅ All text is readable (white on dark backgrounds, dark on light)
+✅ Icons wrapped in gradient circles (w-20 h-20 rounded-xl)
+✅ Forms have colorful styling with gradient buttons
+✅ Mobile responsive with proper breakpoints
+✅ NO <img> tags except in hero section
+✅ About/team sections use gradient decorations not images
+✅ Content is symmetrical and centered when sidebar present
 
 CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
 <script src="https://cdn.tailwindcss.com"></script>
