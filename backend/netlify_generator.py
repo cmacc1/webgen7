@@ -455,8 +455,8 @@ COMPREHENSIVE UI COMPONENT LIBRARY (1000+ Components Available):
 DESIGN STANDARDS (ULTRA-MODERN):
 ✨ USE TAILWIND EXTENSIVELY - Every element needs Tailwind classes
 🖼️ REAL IMAGES: Use provided Pexels URLs in hero background and sections
-🎨 Hero: min-h-screen relative with real image {'<img src="'+hero_image+'">' if hero_image else 'gradient background'}
-🎭 Large Icons: <i class="fas {hero_bg['icon']} text-8xl md:text-9xl text-white mb-6"></i>
+🎨 Hero: min-h-screen relative with real image background
+🎭 Large Icons: Use Font Awesome icons with gradient backgrounds
 📐 Sections: py-20 md:py-24 max-w-7xl mx-auto px-6
 🎯 Cards: bg-white shadow-2xl rounded-3xl p-8 md:p-12 hover:-translate-y-2 transition-all duration-300
 🔤 Typography: text-6xl md:text-7xl lg:text-9xl font-black for headlines
