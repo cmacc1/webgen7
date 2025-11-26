@@ -259,6 +259,15 @@ export default function HomePage() {
       const project = response.data.project || {};
       const files = project.files || {};
       
+      // Extract Netlify URL from multiple possible field names
+      const netlifyUrl = response.data.netlify_url || 
+                        response.data.deploy_preview_url || 
+                        response.data.preview_url ||
+                        response.data.instant_url || 
+                        response.data.deployment?.deploy_url ||
+                        response.data.deployment?.deploy_preview_url ||
+                        response.data.deployment?.site_url;
+      
       const websiteData = {
         project_id: project.project_id,
         session_id: project.session_id,
@@ -267,9 +276,9 @@ export default function HomePage() {
         css_content: files['styles.css'] || '',
         js_content: files['app.js'] || files['script.js'] || '',
         python_content: files['main.py'] || '',
-        netlify_deploy_url: response.data.deploy_preview_url || response.data.instant_url || response.data.deployment?.deploy_url,
+        netlify_deploy_url: netlifyUrl,
         netlify_site_id: response.data.deployment?.site_id,
-        netlify_deployed: response.data.deployment?.success,
+        netlify_deployed: response.data.success !== false,
         created_at: project.created_at
       };
       
