@@ -375,23 +375,23 @@ Use: {component_mix['about']} layout
 ✅ NO attempts to load images
 ✅ Only gradients and icons for visual interest
 
-5️⃣ CONTACT SECTION (COLORFUL FORM):
-EXAMPLE:
+5️⃣ CONTACT SECTION - USE RANDOMIZED CTA STYLE:
+Use: {component_mix['cta']} layout
 ```html
-<section id="contact" class="py-24 bg-gradient-to-br from-blue-50 to-purple-50">
-    <div class="max-w-4xl mx-auto px-6">
-        <h2 class="text-5xl md:text-6xl font-black text-center mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Get In Touch</h2>
-        <form onsubmit="handleFormSubmit(event)" class="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
+<section id="contact" class="{ultra_design['spacing']['section_padding']} {ultra_design['section_bg_3']}">
+    <div class="max-w-4xl mx-auto {ultra_design['spacing']['container_padding']}">
+        <h2 class="{ultra_design['typography']['heading']} text-center mb-6" style="background: linear-gradient(to right, {colors['primary']}, {colors['secondary']}); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Get In Touch</h2>
+        <form onsubmit="handleFormSubmit(event)" class="{ultra_design['card_style']} p-8 md:p-12">
             <div class="mb-6">
-                <input type="text" placeholder="Your Name" required class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-lg">
+                <input type="text" placeholder="Your Name" required class="w-full px-6 py-4 border-2 rounded-{ultra_design['radius']['button']}" style="border-color: {colors['primary']}30; outline-color: {colors['primary']};" class="focus:outline-none transition-colors {ultra_design['typography']['body']}">
             </div>
             <div class="mb-6">
-                <input type="email" placeholder="Your Email" required class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-lg">
+                <input type="email" placeholder="Your Email" required class="w-full px-6 py-4 border-2 rounded-{ultra_design['radius']['button']}" style="border-color: {colors['primary']}30; outline-color: {colors['primary']};" class="focus:outline-none transition-colors {ultra_design['typography']['body']}">
             </div>
             <div class="mb-6">
-                <textarea placeholder="Your Message" required rows="5" class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-lg"></textarea>
+                <textarea placeholder="Your Message" required rows="5" class="w-full px-6 py-4 border-2 rounded-{ultra_design['radius']['button']}" style="border-color: {colors['primary']}30; outline-color: {colors['primary']};" class="focus:outline-none transition-colors {ultra_design['typography']['body']}"></textarea>
             </div>
-            <button type="submit" class="w-full px-12 py-5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold text-xl hover:scale-105 hover:shadow-2xl transition-all">Send Message</button>
+            <button type="submit" class="w-full {ultra_design['button_style']} {ultra_design['hover']['button']}">Send Message</button>
         </form>
     </div>
 </section>
