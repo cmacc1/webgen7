@@ -808,6 +808,10 @@ Use gradients and icons for ALL visual decorations except hero.
 ✅ At least 4 sections with alternating light/dark gradients
 ✅ Every card has shadow-xl or shadow-2xl
 ✅ Every button has gradient background (from-blue-500 to-purple-600)
+✅ TEXT CONTRAST CHECK: Light backgrounds = dark text, Dark backgrounds = white text
+✅ NO white text on white/light backgrounds
+✅ NO dark text on dark backgrounds
+✅ All text is easily readable with proper contrast
 ✅ All text is readable (white on dark backgrounds, dark on light)
 ✅ Icons wrapped in gradient circles (w-20 h-20 rounded-xl)
 ✅ Forms have colorful styling with gradient buttons
