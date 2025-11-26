@@ -418,6 +418,84 @@ agent_communication:
   - agent: "main"
   - agent: "main"
   - agent: "main"
+  - agent: "main"
+    message: "🌐 LIVE PREVIEW BUTTON RESTORED! User reported: 'you don't have the live preview button up anymore with the netlify link, put it back'. ROOT CAUSE: Frontend was checking for specific field names but backend was returning different field names. COMPREHENSIVE FIX:
+
+INVESTIGATION:
+- PreviewPanel.jsx already has button code (lines 67-77)
+- Button displays when website?.netlify_deploy_url is present
+- Button HTML: <Button>🌐 View Live Site</Button> with gradient styling
+- HomePage.jsx was extracting URL from response but field names didn't match
+
+FIELD NAME MISMATCH:
+Backend returns: netlify_url, preview_url, deploy_url
+Frontend was checking: deploy_preview_url, instant_url, deployment?.deploy_url
+Result: Button never showed because field wasn't populated
+
+SOLUTION IMPLEMENTED:
+1️⃣ ENHANCED URL EXTRACTION (HomePage.jsx line 261-268):
+const netlifyUrl = response.data.netlify_url ||           // NEW: Primary field
+                  response.data.deploy_preview_url ||     // Existing
+                  response.data.preview_url ||            // NEW: Alternative
+                  response.data.instant_url ||            // Existing
+                  response.data.deployment?.deploy_url || // Existing
+                  response.data.deployment?.deploy_preview_url || // NEW
+                  response.data.deployment?.site_url;     // NEW: Fallback
+
+Checks ALL possible field names from backend
+
+2️⃣ PROPER STATE SETTING:
+websiteData = {
+  netlify_deploy_url: netlifyUrl,  // Uses extracted URL
+  netlify_deployed: response.data.success !== false,  // Better success check
+  ...other fields
+}
+
+3️⃣ IMPROVED SUCCESS MESSAGE:
+- Mentions '🌐 View Live Site' button specifically
+- Shows extracted netlify URL
+- Better user guidance: 'Click the button to visit your deployed website'
+
+4️⃣ ENHANCED LOGGING:
+console.log('✅ Website generation complete!');
+console.log('Backend response:', response.data);
+console.log('Extracted data:', {
+  netlifyUrl: netlifyUrl,
+  deploySuccess: websiteData.netlify_deployed
+});
+
+BUTTON SPECIFICATIONS:
+- Location: PreviewPanel top-right toolbar
+- Appearance: Gradient button (from-teal-500 to-cyan-600)
+- Text: '🌐 View Live Site'
+- Action: Opens Netlify URL in new tab
+- Visibility: Shows when netlify_deploy_url is present
+
+FRONTEND COMPONENT (PreviewPanel.jsx lines 67-77):
+{website?.netlify_deploy_url && (
+  <Button
+    variant='default'
+    size='sm'
+    onClick={() => window.open(website.netlify_deploy_url, '_blank')}
+    className='bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-semibold'
+  >
+    🌐 View Live Site
+  </Button>
+)}
+
+EXPECTED USER EXPERIENCE:
+1. User generates website
+2. Backend deploys to Netlify
+3. Response includes netlify_url field
+4. Frontend extracts URL from multiple possible fields
+5. Sets websiteData.netlify_deploy_url
+6. PreviewPanel checks this field
+7. Button appears in toolbar: '🌐 View Live Site'
+8. User clicks button
+9. New tab opens with deployed Netlify site
+
+Frontend restarted successfully. Live preview button will now appear after generation with working Netlify link!"
+
     message: "🚀 NETLIFY DEPLOYMENT FIXED - PREVIEWS NOW UPLOADING! User reported: 'previews are not uploading to netlify'. ROOT CAUSE INVESTIGATION: Backend logs showed deployments completing successfully ('✅ Build completed successfully!') but error when saving: 'NoneType object has no attribute get'. Issue was in error handling when deploy_result validation failed. COMPREHENSIVE FIX:
 
 PROBLEM ANALYSIS:
