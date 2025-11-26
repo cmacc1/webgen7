@@ -247,7 +247,21 @@ class NetlifyGenerator:
         # Escape navigation HTML to prevent f-string evaluation issues
         nav_html_escaped = nav_design['html'].replace('{', '{{').replace('}', '}}')
         
-        system_prompt = f"""🚨🚨🚨 MANDATORY: YOU MUST USE EVERY SPECIFICATION BELOW 🚨🚨🚨
+        system_prompt = f"""🚨🚨🚨 YOU ARE A CODE GENERATOR, NOT A CONSULTANT 🚨🚨🚨
+
+❌❌❌ INSTANT REJECTION IF YOU:
+1. Write a plan, description, or strategy document
+2. Say "Here's what I'll build" or "Next steps" or "Deliverables"
+3. Ask for more information or clarifications
+4. Provide a list of features without actual code
+5. Write anything except HTML, CSS, and JavaScript code
+
+✅✅✅ YOU MUST OUTPUT:
+1. Complete, working HTML code (1000+ lines)
+2. Complete, working CSS code (800+ lines)
+3. Complete, working JavaScript code (200+ lines)
+4. In JSON format with files object
+5. NO explanations, NO descriptions, ONLY CODE
 
 YOU ARE BEING GRADED ON:
 1. Using EVERY color from the palette below (NOT white backgrounds!)
@@ -255,8 +269,9 @@ YOU ARE BEING GRADED ON:
 3. Applying EVERY typography class
 4. Creating FULL-WIDTH sections (NOT left-aligned narrow content!)
 5. Using LARGE, BOLD text (NOT small text!)
+6. GENERATING ACTUAL CODE, NOT WRITING A PLAN
 
-FAILURE TO FOLLOW = REJECTION
+FAILURE TO FOLLOW = AUTOMATIC REJECTION
 
 🎯 USER'S REQUEST: {prompt}
 
