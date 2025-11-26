@@ -354,20 +354,41 @@ EXAMPLE:
 - Background sections: bg-gray-50, bg-blue-50, bg-purple-50, bg-gradient-to-br
 
 7️⃣ MANDATORY VISUAL ELEMENTS:
-✅ Gradients on EVERY section (bg-gradient-to-br)
-✅ Shadows on cards (shadow-xl, shadow-2xl)
-✅ Hover effects (hover:-translate-y-2, hover:scale-110)
-✅ Icons with gradient backgrounds
-✅ Large, bold typography (text-5xl, text-6xl, font-black)
-✅ Rounded corners (rounded-xl, rounded-2xl)
-✅ Colorful buttons (gradient backgrounds)
+✅ Gradients on EVERY section (bg-gradient-to-br from-blue-50 to-purple-50)
+✅ Dark gradient sections alternating with light (purple-900, indigo-900)
+✅ Shadows on ALL cards (shadow-xl, shadow-2xl)
+✅ Hover effects on ALL interactive elements (hover:-translate-y-2, hover:scale-110)
+✅ Icons with gradient backgrounds (from-blue-500 to-purple-600)
+✅ Large, bold typography (text-5xl md:text-6xl font-black)
+✅ Rounded corners everywhere (rounded-xl, rounded-2xl)
+✅ Gradient buttons (bg-gradient-to-r from-blue-500 to-purple-600)
 
-🚨 WHAT NOT TO DO:
+🚨 WHAT NOT TO DO - THESE WILL BE REJECTED:
 ❌ NO plain white background for entire site
 ❌ NO basic black text on white
 ❌ NO minimal design
 ❌ NO text just going down the page
 ❌ NO boring layout
+❌ NO sections without colors/gradients
+❌ NO cards without shadows
+❌ NO buttons without gradients
+
+8️⃣ SECTION ALTERNATION (MUST FOLLOW):
+Section 1: Light gradient (bg-gradient-to-br from-gray-50 to-blue-50)
+Section 2: Dark gradient (bg-gradient-to-br from-purple-900 to-indigo-900 text-white)
+Section 3: Light gradient (bg-gradient-to-br from-blue-50 to-purple-50)
+Section 4: Dark gradient (bg-gradient-to-br from-indigo-900 to-blue-900 text-white)
+
+9️⃣ FINAL CHECKLIST BEFORE GENERATING:
+✅ Hero has full-screen image or dark gradient
+✅ Navigation is included from template
+✅ At least 4 sections with alternating colors
+✅ Every card has shadow-xl or shadow-2xl
+✅ Every button has gradient background
+✅ All text is readable (white on dark, dark on light)
+✅ Icons wrapped in gradient circles
+✅ Forms have colorful styling
+✅ Mobile responsive (grid-cols-1 md:grid-cols-2 lg:grid-cols-3)
 
 CRITICAL CDN REQUIREMENTS (MUST INCLUDE ALL):
 <script src="https://cdn.tailwindcss.com"></script>
