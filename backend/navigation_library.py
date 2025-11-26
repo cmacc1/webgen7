@@ -493,3 +493,7 @@ def get_navigation_by_template(template_name: str):
         return ALL_NAVIGATIONS[2]  # Transparent sticky
     else:
         return get_random_navigation()
+
+def get_all_navigations():
+    """Get all available navigation designs for random selection"""
+    return ALL_NAVIGATIONS
