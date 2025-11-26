@@ -603,8 +603,51 @@ Use: {component_mix['about']} layout
 ✅ NO attempts to load images
 ✅ Only gradients and icons for visual interest
 
-5️⃣ CONTACT SECTION - USE RANDOMIZED CTA STYLE:
-Use: {component_mix['cta']} layout
+5️⃣ PRICING/PURCHASE SECTION (If user wants to sell/buy/membership):
+```html
+<section id="pricing" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-5xl font-bold text-center mb-4" style="color: {colors['primary']};">Choose Your Plan</h2>
+        <p class="text-xl text-center mb-16 max-w-2xl mx-auto">Select the perfect package for your needs</p>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-3xl shadow-xl">
+                <h3 class="text-2xl font-bold mb-4" style="color: {colors['primary']};">Basic</h3>
+                <div class="text-5xl font-black mb-6" style="color: {colors['text']};">$49<span class="text-2xl">/mo</span></div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Feature 1</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Feature 2</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Feature 3</li>
+                </ul>
+                <button onclick="openPurchaseForm('basic')" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
+            </div>
+            <div class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-primary transform scale-105">
+                <div class="text-center mb-4"><span class="bg-primary text-white px-4 py-1 rounded-full text-sm font-bold">MOST POPULAR</span></div>
+                <h3 class="text-2xl font-bold mb-4" style="color: {colors['primary']};">Pro</h3>
+                <div class="text-5xl font-black mb-6" style="color: {colors['text']};">$99<span class="text-2xl">/mo</span></div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Everything in Basic</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Pro Feature 1</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Pro Feature 2</li>
+                </ul>
+                <button onclick="openPurchaseForm('pro')" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
+            </div>
+            <div class="bg-white p-8 rounded-3xl shadow-xl">
+                <h3 class="text-2xl font-bold mb-4" style="color: {colors['primary']};">Enterprise</h3>
+                <div class="text-5xl font-black mb-6" style="color: {colors['text']};">$199<span class="text-2xl">/mo</span></div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Everything in Pro</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Enterprise Feature 1</li>
+                    <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Priority Support</li>
+                </ul>
+                <button onclick="openPurchaseForm('enterprise')" class="w-full px-8 py-4 bg-primary text-white rounded-xl font-bold hover:scale-105 transition-all">Get Started</button>
+            </div>
+        </div>
+    </div>
+</section>
+```
+🚨 Include this section if user mentions: buy, sell, pricing, plans, membership, subscription, purchase
+
+6️⃣ CONTACT SECTION (Only for "contact" requests without purchase):
 ```html
 <section id="contact" class="{ultra_design['spacing']['section_padding']} {ultra_design['section_bg_3']}">
     <div class="max-w-4xl mx-auto {ultra_design['spacing']['container_padding']}">
